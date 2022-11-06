@@ -1,6 +1,6 @@
 {
-  "name": "speedlog.io",
-  "version": "1.0.5",
+  "name": "root",
+  "version": "1.0.0",
   "description": "This library makes easy to establish connection between your client and Speedlog dashboard.",
   "private": false,
   "workspaces": [
