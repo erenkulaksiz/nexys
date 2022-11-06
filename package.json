@@ -1,11 +1,21 @@
 {
-  "name": "my-turborepo",
-  "version": "0.0.0",
+  "name": "root",
+  "version": "1.0.0",
+  "description": "This library makes easy to establish connection between your client and Speedlog dashboard.",
   "private": true,
   "workspaces": [
     "apps/*",
     "packages/*"
   ],
+  "keywords": [
+    "speedlog",
+    "log",
+    "logging"
+  ],
+  "author": {
+    "name": "Eren Kulaksiz",
+    "email": "erenkulaksz@gmail.com"
+  },
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
@@ -21,5 +31,10 @@
     "node": ">=14.0.0"
   },
   "dependencies": {},
-  "packageManager": "npm@8.11.0"
+  "packageManager": "npm@8.11.0",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/erenkulaksiz/speedlog/issues"
+  },
+  "homepage": "https://github.com/erenkulaksiz/speedlog#readme"
 }
