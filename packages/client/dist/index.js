@@ -1,3 +1,2 @@
-export default {
-    init: require("./init").init,
-};
+export * from "./init";
+export * from "./init.types";

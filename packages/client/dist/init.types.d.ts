@@ -5,13 +5,13 @@ export interface initParams {
     domain: string;
 }
 export interface initSuccessReturnTypes {
-    success: boolean;
-    status: number;
-    authToken: string;
+    success?: boolean;
+    status?: number;
+    authToken?: string;
 }
 export interface initErrorReturnTypes {
-    success: boolean;
-    status: number;
-    message: string;
+    success?: boolean;
+    status?: number;
+    message?: string;
 }
 //# sourceMappingURL=init.types.d.ts.map

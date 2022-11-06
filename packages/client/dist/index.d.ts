@@ -1,6 +1,3 @@
-export type { initParams, initSuccessReturnTypes, initErrorReturnTypes, } from "./init.types";
-declare const _default: {
-    init: any;
-};
-export default _default;
+export * from "./init";
+export * from "./init.types";
 //# sourceMappingURL=index.d.ts.map
