@@ -1,0 +1,1 @@
+## Speedlog example web app with nextjs

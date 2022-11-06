@@ -20,6 +20,7 @@
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
+    "clean": "turbo run clean",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
@@ -30,7 +31,9 @@
   "engines": {
     "node": ">=14.0.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "fs": "^0.0.1-security"
+  },
   "packageManager": "npm@8.11.0",
   "license": "ISC",
   "bugs": {
