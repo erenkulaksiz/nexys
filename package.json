@@ -1,8 +1,8 @@
 {
-  "name": "root",
+  "name": "superlog.io",
   "version": "1.0.0",
   "description": "This library makes easy to establish connection between your client and Speedlog dashboard.",
-  "private": true,
+  "private": false,
   "workspaces": [
     "apps/*",
     "packages/*"
