@@ -1,24 +1,10 @@
 import fetch, { Response } from "node-fetch";
 import { server } from "./utils";
-
-export interface initParams {
-  apiKey: string;
-  app: string;
-  version: string;
-  domain: string;
-}
-
-export interface initSuccessReturnTypes {
-  success: boolean;
-  status: number;
-  authToken: string;
-}
-
-export interface initErrorReturnTypes {
-  success: boolean;
-  status: number;
-  message: string;
-}
+import type {
+  initSuccessReturnTypes,
+  initErrorReturnTypes,
+  initParams,
+} from "./init.types";
 
 export async function init({
   apiKey,
@@ -51,7 +37,7 @@ export async function init({
   }
   return Promise.reject({
     success: false,
-    status: data.status,
+    status: data.status ?? 500,
     message: data.message,
   });
 }

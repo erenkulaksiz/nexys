@@ -1,6 +1,6 @@
 {
-  "name": "superlog.io",
-  "version": "1.0.1",
+  "name": "speedlog.io",
+  "version": "1.0.5",
   "description": "This library makes easy to establish connection between your client and Speedlog dashboard.",
   "private": false,
   "workspaces": [
@@ -21,7 +21,6 @@
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
     "clean": "turbo run clean",
-    "publish": "npm publish",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
@@ -31,9 +30,6 @@
   },
   "engines": {
     "node": ">=14.0.0"
-  },
-  "dependencies": {
-    "fs": "^0.0.1-security"
   },
   "packageManager": "npm@8.11.0",
   "license": "ISC",
