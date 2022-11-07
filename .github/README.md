@@ -1,1 +1,1 @@
-./packages/client/README.md
+../packages/client/README.md
