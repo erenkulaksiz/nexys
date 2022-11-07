@@ -1,9 +1,10 @@
-import { init, log } from "./init";
+import type { initSuccessReturnTypes, initErrorReturnTypes, initParams } from "./init.types";
+import type { logSuccessReturnTypes, logErrorReturnTypes } from "./log.types";
 export * from "./init";
 export * from "./init.types";
-declare const _default: {
-    log: typeof log;
-    init: typeof init;
+declare let superlog: {
+    init: (params: initParams) => Promise<initSuccessReturnTypes | initErrorReturnTypes>;
+    log: (logMsg: any, logTag?: string, token?: string) => Promise<logSuccessReturnTypes | logErrorReturnTypes>;
 };
-export default _default;
+export default superlog;
 //# sourceMappingURL=index.d.ts.map

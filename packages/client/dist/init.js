@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { request } from "./request";
 import { log as internalLog } from "./log";
+// server and client token
 let authToken = "";
 export function init({ apiKey, app, version, domain, }) {
     var _a;

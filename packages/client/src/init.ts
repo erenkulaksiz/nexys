@@ -8,6 +8,8 @@ import { request } from "./request";
 import { log as internalLog } from "./log";
 import { logSuccessReturnTypes, logErrorReturnTypes } from "./log.types";
 
+// server and client token
+
 let authToken = "";
 
 /**
