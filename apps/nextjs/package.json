@@ -1,5 +1,5 @@
 {
-  "name": "speedlog-nextjs",
+  "name": "nexys-nextjs",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -12,7 +12,7 @@
     "next": "13.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "speedlog-client": "*"
+    "nexys": "*"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",

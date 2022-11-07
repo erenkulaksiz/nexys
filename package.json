@@ -1,14 +1,14 @@
 {
   "name": "root",
   "version": "1.0.0",
-  "description": "This library makes easy to establish connection between your client and Speedlog dashboard.",
+  "description": "This library makes easy to establish connection between your client and Nexys dashboard.",
   "private": false,
   "workspaces": [
     "apps/*",
     "packages/*"
   ],
   "keywords": [
-    "speedlog",
+    "nexys",
     "log",
     "logging"
   ],
@@ -33,7 +33,7 @@
   "packageManager": "npm@8.11.0",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/erenkulaksiz/speedlog/issues"
+    "url": "https://github.com/erenkulaksiz/nexys/issues"
   },
-  "homepage": "https://github.com/erenkulaksiz/speedlog#readme"
+  "homepage": "https://github.com/erenkulaksiz/nexys#readme"
 }

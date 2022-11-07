@@ -1,21 +1,21 @@
 import type { AppProps } from "next/app";
 import { useEffect } from "react";
-import speedlog from "speedlog-client";
+import nexys from "nexys";
 
 export default function App({ Component, pageProps }: AppProps) {
-  async function initSpeedlog() {
-    await speedlog.init({
+  async function init() {
+    await nexys.init({
       apiKey: "1234567891234567",
-      app: "speedlog-nextjs-example",
+      app: "nexys-nextjs-example",
       version: "1.0.0",
-      domain: "speedlog.io",
+      domain: "nexys.app",
     });
 
-    speedlog.log("test");
+    nexys.log("test");
   }
 
   useEffect(() => {
-    initSpeedlog();
+    init();
   }, []);
 
   return <Component {...pageProps} />;

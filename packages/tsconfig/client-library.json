@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "Speedlog Client Library",
+  "display": "Nexys Client Library",
   "extends": "./base.json",
   "compilerOptions": {
     "lib": ["ES2015"],

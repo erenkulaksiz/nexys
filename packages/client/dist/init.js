@@ -9,8 +9,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { request } from "./request";
 import { log as internalLog } from "./log";
-// server and client token
 let authToken = "";
+/**
+ * Creates and initializes a Nexys instance.
+ *
+ * @example
+ * ```javascript
+ * init({
+ *   apiKey: "AIzaSyDQWc6JY6KzV1r6g8g",
+ *   app: "nexys",
+ *   version: "1.0.0",
+ *   domain: "https://nexys.app",
+ * });
+ * ```
+ *
+ * @param apiKey: string
+ * @param app: string
+ * @param version: string
+ * @param domain: string
+ * @returns {Promise<initSuccessReturnTypes | initErrorReturnTypes>}
+ *
+ * @public
+ */
 export function init({ apiKey, app, version, domain, }) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
@@ -50,6 +70,22 @@ export function init({ apiKey, app, version, domain, }) {
         });
     });
 }
+/**
+ * Sends log request to server.
+ * You don't need to send authToken manually.
+ *
+ * @example
+ * ```javascript
+ * log("Hello World", "info");
+ * ```
+ *
+ * @param logMsg: any
+ * @param logTag?: string
+ *
+ * @returns {Promise<initSuccessReturnTypes | initErrorReturnTypes>}
+ *
+ * @public
+ */
 export function log(logMsg, logTag) {
     return internalLog(logMsg, logTag, authToken);
 }

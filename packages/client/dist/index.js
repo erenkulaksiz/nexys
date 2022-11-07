@@ -3,8 +3,8 @@ import { init, log } from "./init";
 export * from "./init";
 export * from "./init.types";
 // export all functions
-let superlog = {
+let nexys = {
     init,
     log,
 };
-export default superlog;
+export default nexys;

@@ -1,4 +1,4 @@
 export const server =
   process.env.NODE_ENV === "production"
-    ? "https://speedlog.io/api"
+    ? "https://nexys.app/api"
     : "http://localhost:8080/api";

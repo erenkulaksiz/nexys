@@ -2,9 +2,9 @@ import type { initSuccessReturnTypes, initErrorReturnTypes, initParams } from ".
 import type { logSuccessReturnTypes, logErrorReturnTypes } from "./log.types";
 export * from "./init";
 export * from "./init.types";
-declare let superlog: {
+declare let nexys: {
     init: (params: initParams) => Promise<initSuccessReturnTypes | initErrorReturnTypes>;
     log: (logMsg: any, logTag?: string, token?: string) => Promise<logSuccessReturnTypes | logErrorReturnTypes>;
 };
-export default superlog;
+export default nexys;
 //# sourceMappingURL=index.d.ts.map

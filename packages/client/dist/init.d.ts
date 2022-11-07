@@ -1,20 +1,22 @@
 import type { initSuccessReturnTypes, initErrorReturnTypes, initParams } from "./init.types";
 import { logSuccessReturnTypes, logErrorReturnTypes } from "./log.types";
 /**
- * Creates and initializes a Superlog instance.
+ * Creates and initializes a Nexys instance.
  *
  * @example
  * ```javascript
  * init({
  *   apiKey: "AIzaSyDQWc6JY6KzV1r6g8g",
- *   app: "superlog",
+ *   app: "nexys",
  *   version: "1.0.0",
- *   domain: "https://superlog.io",
- * })
+ *   domain: "https://nexys.app",
+ * });
  * ```
  *
- * @param {initParams}
-
+ * @param apiKey: string
+ * @param app: string
+ * @param version: string
+ * @param domain: string
  * @returns {Promise<initSuccessReturnTypes | initErrorReturnTypes>}
  *
  * @public
@@ -22,7 +24,7 @@ import { logSuccessReturnTypes, logErrorReturnTypes } from "./log.types";
 export declare function init({ apiKey, app, version, domain, }: initParams): Promise<initSuccessReturnTypes | initErrorReturnTypes>;
 /**
  * Sends log request to server.
- * You dont need to send authToken manually.
+ * You don't need to send authToken manually.
  *
  * @example
  * ```javascript

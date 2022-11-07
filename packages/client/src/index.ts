@@ -12,7 +12,7 @@ export * from "./init";
 export * from "./init.types";
 
 // export all functions
-let superlog = {
+let nexys = {
   init,
   log,
 } as {
@@ -26,4 +26,4 @@ let superlog = {
   ) => Promise<logSuccessReturnTypes | logErrorReturnTypes>;
 };
 
-export default superlog;
+export default nexys;
