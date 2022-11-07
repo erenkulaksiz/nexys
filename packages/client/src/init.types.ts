@@ -6,6 +6,10 @@ export interface initParams {
 }
 
 export interface initSuccessReturnTypes {
+  apiKey?: initParams["apiKey"];
+  app?: initParams["app"];
+  version?: initParams["version"];
+  domain?: initParams["domain"];
   success?: boolean;
   status?: number;
   authToken?: string;

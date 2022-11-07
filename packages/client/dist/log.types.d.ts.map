@@ -1,0 +1,1 @@
+{"version":3,"file":"log.types.d.ts","sourceRoot":"","sources":["../src/log.types.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,mBAAmB;IAClC,OAAO,CAAC,EAAE,OAAO,CAAC;IAClB,MAAM,CAAC,EAAE,MAAM,CAAC;IAChB,OAAO,CAAC,EAAE,MAAM,CAAC;CAClB;AAED,MAAM,WAAW,qBAAqB;IACpC,OAAO,CAAC,EAAE,OAAO,CAAC;IAClB,MAAM,CAAC,EAAE,MAAM,CAAC;CACjB"}

@@ -7,29 +7,36 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import fetch from "node-fetch";
-import { server } from "./utils";
+import { request } from "./request";
+import { log as internalLog } from "./log";
+let authToken = "";
 export function init({ apiKey, app, version, domain, }) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
-        const data = yield fetch(`${server}/auth`, {
+        if (apiKey.length != 16)
+            return Promise.reject({
+                success: false,
+                status: 401,
+                message: "auth/invalid-api-key",
+            });
+        // Once token is recieved, we will not going to store it in localstorage.
+        // We will store it in memory and use it for all the subsequent requests.
+        const data = yield request({
+            url: "auth",
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                apiKey,
-                app,
-                version,
-                domain,
-            }),
+            body: { apiKey, app, version, domain },
         })
             .then((response) => response.json())
             .catch((err) => {
             return err;
         });
         if (data.success) {
+            authToken = data.authToken;
             return Promise.resolve({
+                apiKey,
+                app,
+                version,
+                domain,
                 success: data.success,
                 status: data.status,
                 authToken: data.authToken,
@@ -41,4 +48,7 @@ export function init({ apiKey, app, version, domain, }) {
             message: data.message,
         });
     });
+}
+export function log(logMsg, logTag) {
+    return internalLog(logMsg, logTag, authToken);
 }
