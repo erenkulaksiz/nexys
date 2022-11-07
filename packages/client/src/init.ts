@@ -8,8 +8,6 @@ import { request } from "./request";
 import { log as internalLog } from "./log";
 import { logSuccessReturnTypes, logErrorReturnTypes } from "./log.types";
 
-// server and client token
-
 let authToken = "";
 
 /**
@@ -26,18 +24,10 @@ let authToken = "";
  * ```
  *
  * @param {initParams}
-
  * @returns {Promise<initSuccessReturnTypes | initErrorReturnTypes>}
  *
  * @public
  */
-export async function init({
-  apiKey,
-  app,
-  version,
-  domain,
-}: initParams): Promise<initSuccessReturnTypes | initErrorReturnTypes>;
-
 export async function init({
   apiKey,
   app,
@@ -96,11 +86,6 @@ export async function init({
  *
  * @public
  */
-export function log(
-  logMsg: any,
-  logTag?: string
-): Promise<logSuccessReturnTypes | logErrorReturnTypes>;
-
 export function log(
   logMsg: any,
   logTag?: string

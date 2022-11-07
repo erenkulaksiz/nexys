@@ -4,9 +4,7 @@ This library makes easy to establish connection between your client and Speedlog
 
 ## How it works?
 
-Speedlog is a dashboard that allows you to monitor your application logs and performance. It is a tool that helps you to understand how your application is performing and how it is behaving in production. You can view each user's detailed logs and performance data in a single place.
-
-
+Speedlog is a dashboard that allows you to monitor your application logs and performance. It is a tool that helps you to understand how your application is performing and how it is behaving in production. You can view each user's detailed logs and performance data in a single place. Currently in beta and still being built.
 
 ## Installation
 
@@ -17,10 +15,10 @@ npm install speedlog-client
 ## Usage
 
 ```javascript
-import { init, initSuccessReturnTypes, initErrorReturnTypes } from 'speedlog-client';
+import speedlog from 'speedlog-client';
 
 // async function since we are sending init request
-const speedlog = await init({
+await speedlog.init({
     apiKey: 'YOUR_API_KEY',
     app: "YOUR_APP_NAME",
     version: "YOUR_APP_VERSION",
@@ -28,7 +26,7 @@ const speedlog = await init({
 });
 
 // also you can use it with .then
-init({
+speedlog.init({
     apiKey: 'YOUR_API_KEY',
     app: "YOUR_APP_NAME",
     version: "YOUR_APP_VERSION",
@@ -46,4 +44,10 @@ speedlog.log('Hello World!');
 // or with tags to categorize logs
 
 speedlog.log("Hello, with tags!", "ERROR");
+```
+
+or you can import only the methods you need
+
+```javascript
+import { init, log } from 'speedlog-client';
 ```

@@ -4,14 +4,12 @@ import speedlog from "speedlog-client";
 
 export default function App({ Component, pageProps }: AppProps) {
   async function initSpeedlog() {
-    const _speedlog = await speedlog.init({
+    await speedlog.init({
       apiKey: "1234567891234567",
       app: "speedlog-nextjs-example",
       version: "1.0.0",
       domain: "speedlog.io",
     });
-
-    console.log("speedlog", _speedlog);
 
     speedlog.log("test");
   }
