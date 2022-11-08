@@ -7,18 +7,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-export function log(logMsg, logTag, token) {
+import { addToLogPool } from "./logpool";
+export function log({ logMsg, logTag, logType, internalData, }) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (!token)
-            return Promise.reject({
-                success: false,
-                status: 401,
-                message: "auth/no-token",
-            });
-        console.log("logmsg", logMsg, " tag:", logTag, " token:", token);
-        return Promise.resolve({
-            success: true,
-            status: 200,
-        });
+        return addToLogPool({ logMsg, logTag, internalData, logType });
     });
 }

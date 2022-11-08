@@ -7,16 +7,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { request } from "./request";
 import { log as internalLog } from "./log";
-let authToken = "";
+let _internalData = {
+    apiKey: "",
+};
+const initSettingsDefaults = {
+    logTreshold: 0,
+    logToConsole: true,
+};
 /**
  * Creates and initializes a Nexys instance.
  *
  * @example
  * ```javascript
  * init({
- *   apiKey: "AIzaSyDQWc6JY6KzV1r6g8g",
+ *   apiKey: "YOUR-AUTH-TOKEN",
  *   app: "nexys",
  *   version: "1.0.0",
  *   domain: "https://nexys.app",
@@ -27,46 +32,23 @@ let authToken = "";
  * @param app: string
  * @param version: string
  * @param domain: string
- * @returns {Promise<initSuccessReturnTypes | initErrorReturnTypes>}
+ * @returns {Promise<initReturnTypes>}
  *
  * @public
  */
-export function init({ apiKey, app, version, domain, }) {
-    var _a;
+export function init({ apiKey, app, version, domain }, settings = initSettingsDefaults) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (apiKey.length != 16)
-            return Promise.reject({
-                success: false,
-                status: 401,
-                message: "auth/invalid-api-key",
-            });
-        // Once token is recieved, we will not going to store it in localstorage.
-        // We will store it in memory and use it for all the subsequent requests.
-        const data = yield request({
-            url: "auth",
-            method: "POST",
-            body: { apiKey, app, version, domain },
-        })
-            .then((response) => response.json())
-            .catch((err) => {
-            return err;
-        });
-        if (data.success) {
-            authToken = data.authToken;
-            return Promise.resolve({
-                apiKey,
-                app,
-                version,
-                domain,
-                success: data.success,
-                status: data.status,
-                authToken: data.authToken,
-            });
-        }
-        return Promise.reject({
-            success: false,
-            status: (_a = data.status) !== null && _a !== void 0 ? _a : 500,
-            message: data.message,
+        _internalData.apiKey = apiKey;
+        _internalData.app = app;
+        _internalData.version = version;
+        _internalData.domain = domain;
+        _internalData.settings = settings;
+        return Promise.resolve({
+            apiKey,
+            app,
+            version,
+            domain,
+            settings,
         });
     });
 }
@@ -82,10 +64,23 @@ export function init({ apiKey, app, version, domain, }) {
  * @param logMsg: any
  * @param logTag?: string
  *
- * @returns {Promise<initSuccessReturnTypes | initErrorReturnTypes>}
+ * @returns {Promise<logSuccessReturnTypes | logErrorReturnTypes>}
  *
  * @public
  */
 export function log(logMsg, logTag) {
-    return internalLog(logMsg, logTag, authToken);
+    return internalLog({
+        logMsg,
+        logTag,
+        logType: "log",
+        internalData: _internalData,
+    });
+}
+export function error(logMsg, logTag) {
+    return internalLog({
+        logMsg,
+        logTag,
+        logType: "error",
+        internalData: _internalData,
+    });
 }

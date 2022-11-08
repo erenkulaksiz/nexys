@@ -19,5 +19,7 @@ export function request({
       ...headers,
     },
     body: JSON.stringify(body),
+  }).catch((err) => {
+    return err;
   });
 }

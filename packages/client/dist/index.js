@@ -1,4 +1,4 @@
-import { init, log } from "./init";
+import { init, log, error } from "./init";
 // export individual functions
 export * from "./init";
 export * from "./init.types";
@@ -6,5 +6,6 @@ export * from "./init.types";
 let nexys = {
     init,
     log,
+    error,
 };
 export default nexys;

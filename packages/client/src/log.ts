@@ -1,20 +1,20 @@
-import type { logSuccessReturnTypes, logErrorReturnTypes } from "./log.types";
+import { internalDataTypes } from "./init.types";
+import type {
+  logTypes,
+  logSuccessReturnTypes,
+  logErrorReturnTypes,
+} from "./log.types";
+import { addToLogPool } from "./logpool";
 
-export async function log(
-  logMsg: any,
-  logTag?: string,
-  token?: string
-): Promise<logSuccessReturnTypes | logErrorReturnTypes> {
-  if (!token)
-    return Promise.reject({
-      success: false,
-      status: 401,
-      message: "auth/no-token",
-    });
-  console.log("logmsg", logMsg, " tag:", logTag, " token:", token);
+interface extendedLogTypes extends logTypes {
+  internalData: internalDataTypes;
+}
 
-  return Promise.resolve({
-    success: true,
-    status: 200,
-  });
+export async function log({
+  logMsg,
+  logTag,
+  logType,
+  internalData,
+}: extendedLogTypes): Promise<logSuccessReturnTypes | logErrorReturnTypes> {
+  return addToLogPool({ logMsg, logTag, internalData, logType });
 }

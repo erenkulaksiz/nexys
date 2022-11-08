@@ -1,9 +1,9 @@
-import { init, log } from "./init";
+import { init, log, error } from "./init";
 
 import type {
-  initSuccessReturnTypes,
-  initErrorReturnTypes,
   initParams,
+  initReturnTypes,
+  initSettingsTypes,
 } from "./init.types";
 import type { logSuccessReturnTypes, logErrorReturnTypes } from "./log.types";
 
@@ -15,14 +15,19 @@ export * from "./init.types";
 let nexys = {
   init,
   log,
+  error,
 } as {
   init: (
-    params: initParams
-  ) => Promise<initSuccessReturnTypes | initErrorReturnTypes>;
+    params: initParams,
+    settings?: initSettingsTypes
+  ) => Promise<initReturnTypes>;
   log: (
     logMsg: any,
-    logTag?: string,
-    token?: string
+    logTag?: string
+  ) => Promise<logSuccessReturnTypes | logErrorReturnTypes>;
+  error: (
+    logMsg: any,
+    logTag?: string
   ) => Promise<logSuccessReturnTypes | logErrorReturnTypes>;
 };
 

@@ -5,5 +5,7 @@ export function request({ url, method, body, headers, }) {
         method,
         headers: Object.assign({ "Content-Type": "application/json" }, headers),
         body: JSON.stringify(body),
+    }).catch((err) => {
+        return err;
     });
 }
