@@ -1,4 +1,4 @@
-<img src="./logo.png" width="200" height="200" align="center" />
+<img src="./logo.png" width="400" height="200" align="center" />
 
 This library makes it easy to establish connection between your client and Nexys dashboard.
 
