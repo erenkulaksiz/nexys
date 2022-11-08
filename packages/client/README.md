@@ -35,28 +35,15 @@ then:
 
 ```javascript
 
-// async function since we are sending init request
-await nexys.init({
-    apiKey: "YOUR_API_KEY",
-    app: "YOUR_APP_NAME",
-    version: "YOUR_APP_VERSION",
-    domain: "YOUR_APP_DOMAIN",
-});
-
-// also you can use it with Promises
+// init nexys
 nexys.init({
     apiKey: "YOUR_API_KEY",
     app: "YOUR_APP_NAME",
     version: "YOUR_APP_VERSION",
     domain: "YOUR_APP_DOMAIN",
-}).then((client: initSuccessReturnTypes) => {
-    // do something with client object
-    // client is an object that contains all the methods you need to use
-    // it also holds the authToken, apiKey, app, version and domain you've sent
-}).catch((error: initErrorReturnTypes) => {
-    // handle error
-});
+})
 
+// then start logging!
 nexys.log("Hello World!");
 
 // or with tags
