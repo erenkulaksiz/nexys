@@ -5,7 +5,7 @@ import { MDXRemote } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
 import path from "path";
 
-import { Container, Header, DocsNav, DocsContainer } from "@components";
+import { DocPage } from "@components";
 import { docsFilePaths, DOCS_PATH } from "../utils";
 
 export default function App({
@@ -17,25 +17,7 @@ export default function App({
   source: any;
   frontMatter: any;
 }) {
-  return (
-    <Container>
-      <Header />
-      <DocsContainer>
-        <DocsNav docs={docs} id={source.scope.id} />
-        <div className="h-full flex flex-col p-4 w-full">
-          <h1 className="text-4xl">{frontMatter.title}</h1>
-          {frontMatter.description && (
-            <p className="dark:text-neutral-400 text-neutral-900">
-              {frontMatter.description}
-            </p>
-          )}
-          <div className="pt-2 overflow-y-auto h-full">
-            <MDXRemote {...source} components={{}} />
-          </div>
-        </div>
-      </DocsContainer>
-    </Container>
-  );
+  return <DocPage source={source} frontMatter={frontMatter} docs={docs} />;
 }
 
 export async function getStaticProps() {

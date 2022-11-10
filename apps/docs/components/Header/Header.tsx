@@ -29,7 +29,7 @@ export function Header() {
           className="w-10 h-10 flex items-center justify-center"
           onClick={() => setTheme(theme == "dark" ? "light" : "dark")}
         >
-          {theme == "dark" ? (
+          {theme != null && theme == "dark" ? (
             <LightIcon width={16} height={16} className="text-neutral-300" />
           ) : (
             <DarkIcon width={16} height={16} className="text-neutral-700" />

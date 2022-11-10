@@ -2,16 +2,13 @@ import fs from "fs";
 import matter from "gray-matter";
 import { MDXRemote } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
-import dynamic from "next/dynamic";
-import Head from "next/head";
-import Link from "next/link";
 import path from "path";
 
-import { Container, Header, DocsNav, DocsContainer } from "@components";
+import { DocPage } from "@components";
 
 import { docsFilePaths, DOCS_PATH } from "../../utils";
 
-export default function PostPage({
+export default function Docs({
   source,
   frontMatter,
   docs,
@@ -20,25 +17,7 @@ export default function PostPage({
   frontMatter: any;
   docs: any;
 }) {
-  return (
-    <Container>
-      <Header />
-      <DocsContainer>
-        <DocsNav docs={docs} id={source.scope.id} />
-        <div className="h-full flex flex-col p-4">
-          <h1 className="text-4xl">{frontMatter.title}</h1>
-          {frontMatter.description && (
-            <p className="dark:text-neutral-400 text-neutral-900">
-              {frontMatter.description}
-            </p>
-          )}
-          <div className="pt-2 overflow-y-auto h-full">
-            <MDXRemote {...source} components={{}} />
-          </div>
-        </div>
-      </DocsContainer>
-    </Container>
-  );
+  return <DocPage source={source} frontMatter={frontMatter} docs={docs} />;
 }
 
 export const getStaticProps = async ({ params }: { params: any }) => {
