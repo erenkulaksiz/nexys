@@ -12,7 +12,7 @@ export function DocsNav({ docs, id }: { docs: any; id: string }) {
   return (
     <div className="flex flex-col gap-2 sm:w-40 w-full p-2">
       {Object.keys(categoriedDocs).map((category) => (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2" key={category}>
           <div className="text-xs font-bold uppercase text-neutral-500">
             {category}
           </div>

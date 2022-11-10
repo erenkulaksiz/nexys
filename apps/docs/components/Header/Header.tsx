@@ -6,7 +6,7 @@ import { DarkIcon, LightIcon } from "@icons";
 
 export function Header() {
   const [loaded, setLoaded] = useState(false);
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
 
   useEffect(() => {
     setLoaded(true);
@@ -27,9 +27,9 @@ export function Header() {
       {loaded && (
         <button
           className="w-10 h-10 flex items-center justify-center"
-          onClick={() => setTheme(theme == "dark" ? "light" : "dark")}
+          onClick={() => setTheme(resolvedTheme == "dark" ? "light" : "dark")}
         >
-          {theme != null && theme == "dark" ? (
+          {resolvedTheme != null && resolvedTheme == "dark" ? (
             <LightIcon width={16} height={16} className="text-neutral-300" />
           ) : (
             <DarkIcon width={16} height={16} className="text-neutral-700" />
