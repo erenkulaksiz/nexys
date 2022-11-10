@@ -19,7 +19,11 @@ export function processLogPool() {
             return request({
                 url: "log",
                 method: "POST",
-                body: Object.assign(Object.assign({}, log), { ts: Date.now(), apiKey: _internalData.apiKey }),
+                body: {
+                    _l: Object.assign({}, log),
+                    ts: Date.now(),
+                    apiKey: _internalData.apiKey,
+                },
             });
         })).then(() => {
             logPool = [];

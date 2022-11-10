@@ -1,7 +1,6 @@
-import { logTypes } from "./log.types";
 export interface initSettingsTypes {
     logToConsole?: boolean;
-    logTreshold?: number | logTypes["logType"];
+    logTreshold?: number;
 }
 export interface initParams {
     apiKey: string;

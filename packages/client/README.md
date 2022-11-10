@@ -1,4 +1,9 @@
+# Nexys
+
 <img src="./logo.png" width="400" height="200" align="center" />
+
+🚧 This project is under development 🚧
+I dont recommend you to use it in production yet.
 
 This library makes it easy to establish connection between your client and Nexys dashboard.
 

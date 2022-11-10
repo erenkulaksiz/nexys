@@ -2,7 +2,7 @@ import { logTypes } from "./log.types";
 
 export interface initSettingsTypes {
   logToConsole?: boolean;
-  logTreshold?: number | logTypes["logType"]; // min number of logs to send all logs to the server
+  logTreshold?: number; //| logTypes["logType"]; // min number of logs to send all logs to the server
 }
 
 export interface initParams {

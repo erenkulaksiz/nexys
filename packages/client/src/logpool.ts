@@ -32,7 +32,11 @@ export function processLogPool(): Promise<any> {
         return request({
           url: "log",
           method: "POST",
-          body: { ...log, ts: Date.now(), apiKey: _internalData.apiKey },
+          body: {
+            _l: { ...log },
+            ts: Date.now(),
+            apiKey: _internalData.apiKey,
+          },
         });
       })
     ).then(() => {
