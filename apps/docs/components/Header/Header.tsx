@@ -13,7 +13,7 @@ export function Header() {
   }, []);
 
   return (
-    <nav className="w-full pl-4 pr-4 h-[4rem] flex justify-between items-center">
+    <nav className="w-full pl-4 pr-4 min-h-[4rem] flex justify-between items-center">
       <div className="flex flex-row items-center gap-2">
         <Link href="https://docs.nexys.app">
           <img

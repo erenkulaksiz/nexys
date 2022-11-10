@@ -10,7 +10,7 @@ export function DocsNav({ docs, id }: { docs: any; id: string }) {
   }, {});
 
   return (
-    <div className="flex flex-col gap-2 sm:w-40 w-full p-2">
+    <div className="flex flex-col gap-2 sm:w-40 w-full p-4">
       {Object.keys(categoriedDocs).map((category) => (
         <div className="flex flex-col gap-2" key={category}>
           <div className="text-xs font-bold uppercase text-neutral-500">
@@ -26,8 +26,8 @@ export function DocsNav({ docs, id }: { docs: any; id: string }) {
                   key={doc.filePath}
                   className={
                     doc.data.id == id
-                      ? "w-full dark:bg-neutral-800 bg-neutral-300 hover:bg-neutral-300 hover:dark:bg-neutral-800 rounded-md p-1 flex justify-center"
-                      : "w-full rounded-md p-1 flex justify-center hover:bg-neutral-300 hover:dark:bg-neutral-800"
+                      ? "w-full sm:w-32 dark:bg-neutral-800 bg-neutral-300 hover:bg-neutral-300 hover:dark:bg-neutral-800 rounded-md p-1 flex justify-center"
+                      : "w-full sm:w-32 rounded-md p-1 flex justify-center hover:bg-neutral-300 hover:dark:bg-neutral-800"
                   }
                 >
                   {doc.data.title}

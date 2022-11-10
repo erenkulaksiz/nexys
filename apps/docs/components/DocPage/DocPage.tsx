@@ -19,16 +19,18 @@ export function DocPage({
       <Header />
       <DocsContainer>
         <DocsNav docs={docs} id={source.scope.id} />
-        <div className="h-full flex flex-col p-4">
-          {frontMatter.title && (
-            <h1 className="text-4xl font-medium">{frontMatter.title}</h1>
-          )}
-          {frontMatter.description && (
-            <p className="dark:text-neutral-400 text-neutral-900">
-              {frontMatter.description}
-            </p>
-          )}
-          <div className="pt-2 overflow-y-auto h-full">
+        <div className="flex flex-col w-full overflow-auto">
+          <div className="p-4 sm:p-0 mb-4">
+            {frontMatter.title && (
+              <h1 className="text-4xl font-medium">{frontMatter.title}</h1>
+            )}
+            {frontMatter.description && (
+              <p className="dark:text-neutral-400 text-neutral-900">
+                {frontMatter.description}
+              </p>
+            )}
+          </div>
+          <div className="p-4 sm:p-0 overflow-auto flex flex-col gap-6">
             <MDXRemote {...source} components={{}} />
           </div>
         </div>

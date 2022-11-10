@@ -4,4 +4,64 @@ id: install
 category: installation
 ---
 
-böyle falan
+## Install Nexys with npm
+```bash
+npm install nexys
+```
+
+## Import Nexys to your project
+```javascript
+import nexys from "nexys";
+```
+
+## Or you can import only the methods you need
+```javascript
+import { init, log } from "nexys";
+```
+
+## Then initialize Nexys
+```javascript
+nexys.init({
+    apiKey: "YOUR_API_KEY",
+    app: "YOUR_APP_NAME",
+    version: "YOUR_APP_VERSION",
+    domain: "YOUR_APP_DOMAIN",
+})
+```
+
+
+## Start logging!
+```javascript
+nexys.log("Hello World!");
+```
+
+
+## Or with tags
+```javascript
+nexys.log("Hello, with tags!", "INFO");
+```
+
+## Or tags with categories
+```javascript
+nexys.log("USER 1 LOGIN", "General/Info/UserLogin");
+```
+
+## Or send custom data
+```javascript
+nexys.log(
+    { // custom data, need to send as an object
+        message: "USER 1 LOGIN", // this is important, you need to send message with a log message
+        data: { // you can send any data you want, inside data object after message
+            user: {
+                id: 1,
+                name: "John Doe",
+            },
+            timestamp: Date.now()
+        },
+    }, 
+    "General/Info/UserLogin" // Tag with category
+);
+```
+
+More examples and documentation will be available soon.
+

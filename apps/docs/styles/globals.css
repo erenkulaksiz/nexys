@@ -24,3 +24,7 @@ div#__next > div:first-child {
 div#__next {
   position: relative;
 }
+
+h2{
+  font-size: 1.2em;
+}

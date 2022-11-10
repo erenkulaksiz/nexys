@@ -1,7 +1,6 @@
 import fs from "fs";
 import matter from "gray-matter";
-import Link from "next/link";
-import { MDXRemote } from "next-mdx-remote";
+import rehypeHighlight from "rehype-highlight";
 import { serialize } from "next-mdx-remote/serialize";
 import path from "path";
 
@@ -40,7 +39,7 @@ export async function getStaticProps() {
   const mdxSource = await serialize(content, {
     mdxOptions: {
       remarkPlugins: [],
-      rehypePlugins: [],
+      rehypePlugins: [rehypeHighlight],
     },
     scope: data,
   });
