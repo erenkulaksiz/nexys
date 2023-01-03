@@ -54,7 +54,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
-import { request, server, version } from "./utils";
+import { request, server, debugServer, version } from "./utils";
 /**
  * Nexys Client
  *
@@ -89,7 +89,7 @@ var Nexys = /** @class */ (function () {
      *
      * @param API_KEY - The Public API key you retrieve from our dashboard
      * @param options - Object containing all options below
-     * @param options.debug - Enables debug mode for internal logs
+     * @param options.debug - Enables debug mode for internal logs - also uses debug server
      * @param options.logPoolSize - Sets the logPool max log size to send when logPool size exceedes this limit
      * @param options.sendAllOnType - Ignores logPoolSize when any log with specified type is recieved, then sends all logs
      * @param options.server - Change logging server
@@ -98,18 +98,22 @@ var Nexys = /** @class */ (function () {
         this._server = server;
         this._version = version;
         this._options = {
-            debug: false,
-            logPoolSize: 0,
-            sendAllOnType: null,
+            logPoolSize: 5,
         };
         this._logPool = [];
         // Recieved from API
         this._hardUpdate = false; // Determine if library needs to be hard updated
-        this._softUpdate = false; // Determina if library needs to be soft updated
+        this._softUpdate = false; // Determine if library needs to be soft updated
         this._apiKey = API_KEY;
         this._options = options || {};
-        if (options === null || options === void 0 ? void 0 : options.server) {
+        if ((options === null || options === void 0 ? void 0 : options.server) && !(options === null || options === void 0 ? void 0 : options.debug)) {
             this._server = options === null || options === void 0 ? void 0 : options.server;
+        }
+        if (!(options === null || options === void 0 ? void 0 : options.server) && (options === null || options === void 0 ? void 0 : options.debug)) {
+            this._server = debugServer;
+        }
+        if ((options === null || options === void 0 ? void 0 : options.server) && (options === null || options === void 0 ? void 0 : options.debug)) {
+            this._server = options.server;
         }
     }
     /**
@@ -250,7 +254,9 @@ var Nexys = /** @class */ (function () {
                         if (!(res.status == 200)) return [3 /*break*/, 2];
                         return [4 /*yield*/, res.json()];
                     case 1: return [2 /*return*/, _a.sent()];
-                    case 2: return [2 /*return*/, res];
+                    case 2:
+                        this._internalLog("Request failed", res);
+                        return [2 /*return*/, res];
                 }
             });
         }); });

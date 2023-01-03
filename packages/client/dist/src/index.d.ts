@@ -40,7 +40,7 @@ declare class Nexys {
      *
      * @param API_KEY - The Public API key you retrieve from our dashboard
      * @param options - Object containing all options below
-     * @param options.debug - Enables debug mode for internal logs
+     * @param options.debug - Enables debug mode for internal logs - also uses debug server
      * @param options.logPoolSize - Sets the logPool max log size to send when logPool size exceedes this limit
      * @param options.sendAllOnType - Ignores logPoolSize when any log with specified type is recieved, then sends all logs
      * @param options.server - Change logging server

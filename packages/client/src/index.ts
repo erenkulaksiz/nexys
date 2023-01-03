@@ -1,6 +1,6 @@
-import { request, server, version } from "./utils";
+import { request, server, debugServer, version } from "./utils";
+import type { Response } from "node-fetch";
 import type { initOptions, logOptions, logReturnType } from "./types";
-import { Response } from "node-fetch";
 
 /**
  * Nexys Client
@@ -30,9 +30,7 @@ class Nexys {
   public _version: string = version;
   private _apiKey: string;
   private _options: initOptions = {
-    debug: false,
-    logPoolSize: 0,
-    sendAllOnType: null,
+    logPoolSize: 5,
   };
   private _logPool: {
     data: any;
@@ -40,7 +38,7 @@ class Nexys {
   }[] = [];
   // Recieved from API
   private _hardUpdate: boolean = false; // Determine if library needs to be hard updated
-  private _softUpdate: boolean = false; // Determina if library needs to be soft updated
+  private _softUpdate: boolean = false; // Determine if library needs to be soft updated
 
   /**
    * Creates a Nexys instance that can be used anywhere in your application.
@@ -53,7 +51,7 @@ class Nexys {
    *
    * @param API_KEY - The Public API key you retrieve from our dashboard
    * @param options - Object containing all options below
-   * @param options.debug - Enables debug mode for internal logs
+   * @param options.debug - Enables debug mode for internal logs - also uses debug server
    * @param options.logPoolSize - Sets the logPool max log size to send when logPool size exceedes this limit
    * @param options.sendAllOnType - Ignores logPoolSize when any log with specified type is recieved, then sends all logs
    * @param options.server - Change logging server
@@ -61,8 +59,14 @@ class Nexys {
   constructor(API_KEY: string, options?: initOptions) {
     this._apiKey = API_KEY;
     this._options = options || {};
-    if (options?.server) {
+    if (options?.server && !options?.debug) {
       this._server = options?.server;
+    }
+    if (!options?.server && options?.debug) {
+      this._server = debugServer;
+    }
+    if (options?.server && options?.debug) {
+      this._server = options.server;
     }
   }
 
@@ -216,6 +220,7 @@ class Nexys {
       if (res.status == 200) {
         return await res.json();
       }
+      this._internalLog("Request failed", res);
       return res;
     });
   }
