@@ -1,0 +1,40 @@
+{
+    "name": "nexys",
+    "version": "0.0.3",
+    "main": "./dist/src/index.js",
+    "types": "./dist/src/index.d.ts",
+    "license": "MIT",
+    "private": false,
+    "exports": {
+        ".": {
+            "import": "./dist/src/index.js",
+            "types": "./dist/src/index.d.ts"
+        }
+    },
+    "files": [
+        "lib",
+        "dist",
+        "es"
+    ],
+    "scripts": {
+        "lint": "eslint \"**/*.ts*\"",
+        "build": "tsc",
+        "dev": "tsc-watch --onSuccess tsc"
+    },
+    "devDependencies": {
+        "@types/node": "^18.11.9",
+        "@types/node-fetch": "^2.6.2",
+        "eslint": "^7.32.0",
+        "eslint-config-custom": "*",
+        "tsc-watch": "^5.0.3",
+        "tsconfig": "*",
+        "typescript": "^4.5.2"
+    },
+    "dependencies": {
+        "node-fetch": "^2.6.1"
+    },
+    "author": {
+        "name": "Eren Kulaksiz",
+        "email": "erenkulaksz@gmail.com"
+    }
+}

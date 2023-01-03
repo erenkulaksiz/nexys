@@ -3,6 +3,9 @@
   "include": ["./src"],
   "exclude": ["dist", "build", "node_modules"],
   "compilerOptions": {
-    "outDir": "./dist"
+    "target": "es5",
+    "baseUrl": ".",
+    "outDir": "./dist",
+    "resolveJsonModule": true
   }
 }

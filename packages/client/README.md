@@ -1,6 +1,6 @@
 # Nexys
 
-<img src="./logo.png" width="400" height="200" align="center" />
+<img src="./logo.png" width="300" height="120" align="center" />
 
 🚧 This project is under development 🚧
 I dont recommend you to use it in production yet.
@@ -18,6 +18,6 @@ Nexys will be available on these platforms soon:
 - Desktop: Electron
 - Backend: NodeJS
 
-## Docs
+## Documentation
 
-[Documentation](https://docs.nexys.app)
+[View Nexys documentation here](https://docs.nexys.app)

@@ -1,10 +1,22 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 
-import { DarkIcon, LightIcon } from "@icons";
+import { DarkIcon, LightIcon, MenuIcon } from "@icons";
+import { DocsNav } from "components/DocsNav";
 
-export function Header() {
+export function Header({
+  docs,
+  id,
+  mobileMenu,
+  setMobileMenuVisible,
+}: {
+  docs: any;
+  id: string;
+  mobileMenu?: boolean;
+  setMobileMenuVisible?: (visible: boolean) => void;
+}) {
   const [loaded, setLoaded] = useState(false);
   const { resolvedTheme, setTheme } = useTheme();
 
@@ -13,7 +25,19 @@ export function Header() {
   }, []);
 
   return (
-    <nav className="w-full pl-4 pr-4 min-h-[4rem] flex justify-between items-center">
+    <nav className="sticky top-0 left-0 right-0 z-50 bg-white/50 dark:bg-black/50 backdrop-blur-md w-full pl-4 pr-4 min-h-[4rem] flex justify-between items-center border-b-[1px] border-b-neutral-300 dark:border-b-neutral-800">
+      {mobileMenu &&
+        createPortal(<DocsNav docs={docs} id={id} mobile />, document.body)}
+      <div className="sm:hidden flex">
+        <button
+          onClick={() =>
+            typeof setMobileMenuVisible == "function" &&
+            setMobileMenuVisible(!mobileMenu)
+          }
+        >
+          <MenuIcon size={24} fill="currentColor" />
+        </button>
+      </div>
       <div className="flex flex-row items-center gap-2">
         <Link href="https://docs.nexys.app">
           <img

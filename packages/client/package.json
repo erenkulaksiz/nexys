@@ -1,14 +1,14 @@
 {
   "name": "nexys",
-  "version": "0.0.2",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "version": "0.0.3",
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
   "license": "MIT",
   "private": false,
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/src/index.js",
+      "types": "./dist/src/index.d.ts"
     }
   },
   "files": [

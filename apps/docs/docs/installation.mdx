@@ -2,6 +2,7 @@
 title: Installation
 id: install
 category: installation
+order: 0
 ---
 
 ## Install Nexys with npm
@@ -11,30 +12,19 @@ npm install nexys
 
 ## Import Nexys to your project
 ```javascript
-import nexys from "nexys";
-```
-
-## Or you can import only the methods you need
-```javascript
-import { init, log } from "nexys";
+import Nexys from "nexys";
 ```
 
 ## Then initialize Nexys
 ```javascript
-nexys.init({
-    apiKey: "YOUR_API_KEY",
-    app: "YOUR_APP_NAME",
-    version: "YOUR_APP_VERSION",
-    domain: "YOUR_APP_DOMAIN",
-})
+const nexys = new Nexys("API_KEY");
+nexys.log("Then start logging!");
 ```
-
 
 ## Start logging!
 ```javascript
 nexys.log("Hello World!");
 ```
-
 
 ## Or with tags
 ```javascript
