@@ -1,1 +1,1 @@
-## Nexys example web app with nextjs
+## Nexys example web app with nextjs + typescript

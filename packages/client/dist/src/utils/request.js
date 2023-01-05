@@ -9,13 +9,14 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-import fetch from "node-fetch";
 export function request(_a) {
-    var server = _a.server, url = _a.url, method = _a.method, body = _a.body, headers = _a.headers, apiKey = _a.apiKey;
+    var server = _a.server, url = _a.url, method = _a.method, body = _a.body, headers = _a.headers;
+    if (typeof fetch === "undefined")
+        throw new Error("fetch is not defined (node environment)");
     return fetch("".concat(server, "/").concat(url), {
         method: method,
         headers: __assign({ "Content-Type": "application/json" }, headers),
-        body: JSON.stringify({ data: body, API_KEY: apiKey }),
+        body: JSON.stringify(body),
     }).catch(function (err) {
         return err;
     });

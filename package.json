@@ -1,7 +1,7 @@
 {
   "name": "root",
   "version": "1.0.0",
-  "description": "This repo holds docs, nextjs example and client of Nexys platform.",
+  "description": "This repo holds docs, NextJS example and client library of Nexys platform.",
   "private": false,
   "workspaces": [
     "apps/*",
@@ -18,7 +18,8 @@
   },
   "scripts": {
     "build": "turbo run build",
-    "dev:client": "turbo run dev --filter=nexys --filter=nexys-nextjs",
+    "dev:nextjs": "turbo run dev --filter=nexys --filter=nexys-nextjs",
+    "dev:react": "turbo run dev --filter=nexys --filter=nexys-react --no-daemon",
     "dev:docs": "turbo run dev --filter=nexys-docs",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""

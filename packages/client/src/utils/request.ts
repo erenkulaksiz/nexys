@@ -1,12 +1,9 @@
-import fetch, { Response } from "node-fetch";
-
 export interface requestParams {
   server: string;
   url: string;
   method: string;
   body?: any;
   headers?: any;
-  apiKey?: string;
 }
 
 export function request({
@@ -15,15 +12,17 @@ export function request({
   method,
   body,
   headers,
-  apiKey,
 }: requestParams): Promise<Response> {
+  if (typeof fetch === "undefined")
+    throw new Error("fetch is not defined (node environment)");
+
   return fetch(`${server}/${url}`, {
     method,
     headers: {
       "Content-Type": "application/json",
       ...headers,
     },
-    body: JSON.stringify({ data: body, API_KEY: apiKey }),
+    body: JSON.stringify(body),
   }).catch((err) => {
     return err;
   });

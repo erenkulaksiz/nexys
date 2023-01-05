@@ -1,6 +1,6 @@
-import { nexys } from "../utils";
+import { nexys } from "./utils";
 
-export default function App() {
+function App() {
   return (
     <div>
       <h1>Web</h1>
@@ -54,6 +54,15 @@ export default function App() {
 
       <button
         onClick={async () => {
+          const log = await nexys.clearLogPool();
+          console.log("Client return:", log);
+        }}
+      >
+        click to clear
+      </button>
+
+      <button
+        onClick={async () => {
           const log = await nexys.log(
             {
               halo: true,
@@ -101,3 +110,5 @@ export default function App() {
     </div>
   );
 }
+
+export default App;

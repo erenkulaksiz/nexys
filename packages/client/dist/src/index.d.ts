@@ -25,6 +25,11 @@ declare class Nexys {
     _server: string;
     _version: string;
     private _apiKey;
+    private _appName;
+    private _isLocalStorageAvailable;
+    private _useBase64;
+    private _localStorageKey;
+    private _localStorageTestKey;
     private _options;
     private _logPool;
     private _hardUpdate;
@@ -35,15 +40,20 @@ declare class Nexys {
      *  * @example
      * ```javascript
      * // Initialize the client
-     * const nexys = new Nexys("API_KEY");
+     * const nexys = new Nexys("API_KEY", { appName: "My_app" });
      * ```
      *
-     * @param API_KEY - The Public API key you retrieve from our dashboard
-     * @param options - Object containing all options below
-     * @param options.debug - Enables debug mode for internal logs - also uses debug server
-     * @param options.logPoolSize - Sets the logPool max log size to send when logPool size exceedes this limit
-     * @param options.sendAllOnType - Ignores logPoolSize when any log with specified type is recieved, then sends all logs
-     * @param options.server - Change logging server
+     * @param API_KEY - `Required` - The Public API key you retrieve from our dashboard
+     * @param options - `Required` - Object containing all options below
+     * @param options.appName - `Required` - Name of your application
+     * @param options.debug - `Optional` - Enables debug mode for internal logs - also uses debug server - Default is `false`
+     * @param options.logPoolSize - `Optional` - Sets the logPool max log size to send when logPool size exceedes this limit - Default is `5`
+     * @param options.sendAllLogsOnType - `Optional` - Ignores logPoolSize when any log with specified type is recieved, then sends all logs in logPool - Default is `null`
+     * @param options.server - `Optional` - Change logging server - Default is `https://api.nexys.dev`
+     * @param options.storeInLocalStorage - `Optional` - Store logPool in localStorage - Default is `true`
+     * @param options.useLocalStorageKey - `Optional` - Use a different localStorage key for logPool - Default is `__nexysLogPool__`
+     * @param options.useLocalStorageTestKey - `Optional` - Use a different localStorage key for testing localStorage availability - Default is `__nexysTest__`
+     * @param options.useCryptionOnLocalStorage - `Optional` - Use encryption on localStorage - Default is `true`
      */
     constructor(API_KEY: string, options?: initOptions);
     /**
@@ -52,30 +62,69 @@ declare class Nexys {
      * @example
      * ```javascript
      * // Initialize the client and log "Hello World"
-     * const nexys = new Nexys("API_KEY");
+     * const nexys = new Nexys("API_KEY", { appName: "My_app" });
      * nexys.log("Hello World");
      * ```
      *
-     * @param data - Any data to be logged
-     * @param options - Log options specified below
-     * @param options.type - Log type
-     * @param options.level - Log level
-     * @param options.tags - Log tags
+     * ```javascript
+     * // Initialize the client and log "Hello World" with options
+     * nexys.log("Hello World", { type: "info" });
+     * ```
      *
-     * @returns - Returns a promise that resolves to "SUCCESS" or "ERROR"
+     * @param data - Any data to be logged
+     * @param options - `Optional` - Log options specified below
+     * @param options.type - `Optional` - Log type
+     * @param options.level - `Optional` - Log level
+     * @param options.tags - `Optional` - Log tags
+     *
+     * @returns - Returns a promise
      *
      * @public
      */
     log(data: any, options?: logOptions): Promise<logReturnType>;
     /**
      * Logs all details about Nexys instance. Just dont use it.
+     * @public
      */
     __DO_NOT_USE_THIS(): void;
+    /**
+     * Sets internal options for Nexys instance.
+     *
+     * @param options - Object containing all options below
+     * @param options.debug - Enables debug mode for internal logs - also uses debug server
+     * @param options.logPoolSize - Sets the logPool max log size to send when logPool size exceedes this limit
+     * @param options.sendAllOnType - Ignores logPoolSize when any log with specified type is recieved, then sends all logs
+     * @param options.server - Change logging server
+     * @public
+     */
     setOptions(options: initOptions): void;
-    private _internalLog;
+    /**
+     * Sends all logs in logPool to server and clears the logPool.
+     *
+     * @returns - Returns a promise that resolves to "SUCCESS" or "ERROR"
+     * @public
+     */
+    flushLogPool(): Promise<string | Response[]>;
+    /**
+     * Clears all logs in logPool.
+     * @public
+     */
+    clearLogPool(): void;
+    /**
+     * Returns the logPool.
+     * @public
+     */
+    getLogPool(): {
+        data: any;
+        options?: logOptions;
+    }[];
+    private syncLocalStorage;
+    private getLocalLogs;
+    private internalLog;
     private pushLog;
     private processLogPool;
     private sendRequest;
+    private requestFailed;
 }
 export default Nexys;
 //# sourceMappingURL=index.d.ts.map

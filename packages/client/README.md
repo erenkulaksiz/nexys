@@ -1,7 +1,5 @@
 # Nexys
 
-<img src="./logo.png" width="300" height="120" align="center" />
-
 🚧 This project is under development 🚧
 I dont recommend you to use it in production yet.
 

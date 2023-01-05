@@ -3,6 +3,7 @@
   "include": ["./src"],
   "exclude": ["dist", "build", "node_modules"],
   "compilerOptions": {
+    "lib": ["DOM"],
     "target": "es5",
     "baseUrl": ".",
     "outDir": "./dist",
