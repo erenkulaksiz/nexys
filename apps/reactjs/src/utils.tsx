@@ -1,8 +1,9 @@
 import Nexys from "nexys";
 
-export const nexys = new Nexys("API_KEY", {
+export const nexys: Nexys = new Nexys("API_KEY", {
   appName: "APP_NAME",
-  storeInLocalStorage: true,
-  useCryptionOnLocalStorage: true,
   debug: true,
+  localStorage: {
+    cryption: false,
+  },
 });

@@ -6,13 +6,37 @@ function App() {
       <h1>Web</h1>
       <button
         onClick={async () => {
-          const log = await nexys.log("test.");
-          console.log("Client return:", log);
+          const log = nexys.log("test.");
+          //console.log("Client return:", log);
         }}
       >
         click to log
       </button>
+      <button
+        onClick={() => {
+          throw new Error("test");
+        }}
+      >
+        click to cause an error
+      </button>
 
+      <button
+        onClick={() => {
+          console.log(nexys);
+        }}
+      >
+        click to console log nexys
+      </button>
+
+      <button
+        onClick={async () => {
+          const pos = await nexys.Device.getUserAgent();
+          console.log(pos);
+        }}
+      >
+        click to console log pos
+      </button>
+      {/*
       <button
         onClick={async () => {
           const log = await nexys.log("test.", { type: "INFO" });
@@ -107,6 +131,14 @@ function App() {
       >
         click to console log nexys
       </button>
+
+      <button
+        onClick={() => {
+          throw new Error("test");
+        }}
+      >
+        click to cause an error
+      </button>*/}
     </div>
   );
 }
