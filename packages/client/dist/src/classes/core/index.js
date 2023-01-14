@@ -31,8 +31,9 @@ import { InternalLogger } from "./../internalLogger";
 import { LocalStorage } from "./../localStorage";
 import { LogPool } from "./../logPool";
 import { Device } from "./../device";
-import { server, debugServer, version } from "../../utils";
+import { server, debugServer, version, isClient } from "../../utils";
 var defaultOptions = {
+    // NexysOptions
     localStorage: {
         useLocalStorage: true,
         cryption: true,
@@ -48,17 +49,28 @@ var defaultOptions = {
 var NexysCore = /** @class */ (function () {
     // Core
     function NexysCore(API_KEY, options) {
-        var _this = this;
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s;
         this._version = version;
         this._server = server;
         this._logPoolSize = 5;
         this._options = defaultOptions;
+        this._isClient = isClient();
+        this._sendAllOnType = [
+            "AUTO:ERROR",
+            "AUTO:UNHANDLEDREJECTION",
+        ];
+        this._config = {
+            user: null,
+        };
         // Options
         this._options = __assign(__assign({}, options), { localStorage: __assign(__assign({}, this._options.localStorage), options === null || options === void 0 ? void 0 : options.localStorage), errors: __assign(__assign({}, this._options.errors), options === null || options === void 0 ? void 0 : options.errors) });
         this._apiKey = API_KEY;
         this._server = (options === null || options === void 0 ? void 0 : options.debug) ? debugServer : (_a = options === null || options === void 0 ? void 0 : options.server) !== null && _a !== void 0 ? _a : server;
         this._logPoolSize = (_b = options === null || options === void 0 ? void 0 : options.logPoolSize) !== null && _b !== void 0 ? _b : this._logPoolSize;
+        this._sendAllOnType =
+            typeof (options === null || options === void 0 ? void 0 : options.sendAllOnType) == "undefined"
+                ? this._sendAllOnType
+                : options === null || options === void 0 ? void 0 : options.sendAllOnType;
         if (!this._apiKey)
             throw new Error("NexysCore: API_KEY is not defined");
         if (!this._options.appName)
@@ -71,9 +83,6 @@ var NexysCore = /** @class */ (function () {
         this.LogPool = new LogPool(this);
         // Event Handler
         this.Events = new Events(this);
-        this.Events.on.error = function (event) {
-            _this.InternalLogger.log("test", event);
-        };
         // API
         this.API = new API(this, {
             server: this._server,
@@ -82,35 +91,98 @@ var NexysCore = /** @class */ (function () {
         });
         // Device
         this.Device = new Device();
+        // LocalStorage
         this.LocalStorage = new LocalStorage(this, {
             key: (_e = (_d = this._options.localStorage) === null || _d === void 0 ? void 0 : _d.key) !== null && _e !== void 0 ? _e : (_f = defaultOptions.localStorage) === null || _f === void 0 ? void 0 : _f.key,
             testKey: (_h = (_g = this._options.localStorage) === null || _g === void 0 ? void 0 : _g.testKey) !== null && _h !== void 0 ? _h : (_j = defaultOptions.localStorage) === null || _j === void 0 ? void 0 : _j.testKey,
             isEncrypted: (_l = (_k = this._options.localStorage) === null || _k === void 0 ? void 0 : _k.cryption) !== null && _l !== void 0 ? _l : (_m = defaultOptions.localStorage) === null || _m === void 0 ? void 0 : _m.cryption,
             active: (_p = (_o = this._options.localStorage) === null || _o === void 0 ? void 0 : _o.useLocalStorage) !== null && _p !== void 0 ? _p : (_q = defaultOptions.localStorage) === null || _q === void 0 ? void 0 : _q.useLocalStorage,
         });
+        // Initialize others
+        this.setupEventHandlers();
+        this.loadFromLocalStorage();
+        if (!this._isClient) {
+            this.InternalLogger.log("NexysCore: Detected that we are running NexysCore on server side environment.");
+            this.InternalLogger.log("NexysCore: Altough NexysCore is designed to run on client side, it can be used on server side as well but some features will might not work.");
+        }
+        // Core Init Event
+        (_s = (_r = this.Events.on).coreInit) === null || _s === void 0 ? void 0 : _s.call(_r);
+        // Log initialization
+        this.InternalLogger.log("NexysCore: Initialized", this._version, this._options);
+    }
+    /**
+     * Automatic error handling.
+     */
+    NexysCore.prototype.setupEventHandlers = function () {
+        var _this = this;
+        this.Events.on.error = function (event) {
+            _this.InternalLogger.log("Events: Received error", event);
+            var extractedError = {
+                message: event.message,
+                errmessage: event.error.message,
+                stack: event.error.stack,
+                type: event.type,
+                colno: event.colno,
+                lineno: event.lineno,
+                filename: event.filename,
+                defaultPrevented: event.defaultPrevented,
+                isTrusted: event.isTrusted,
+                timeStamp: event.timeStamp,
+            };
+            _this.LogPool.push({
+                data: __assign({}, extractedError),
+                ts: new Date().getTime(),
+                options: {
+                    type: "AUTO:ERROR",
+                },
+            });
+        };
+        this.Events.on.unhandledRejection = function (event) {
+            _this.InternalLogger.log("Events: Received unhandledRejection: ", event);
+            var extractedRejection = {
+                reason: event.reason,
+                type: event.type,
+                isTrusted: event.isTrusted,
+                defaultPrevented: event.defaultPrevented,
+            };
+            _this.LogPool.push({
+                data: __assign({}, extractedRejection),
+                ts: new Date().getTime(),
+                options: {
+                    type: "AUTO:UNHANDLEDREJECTION",
+                },
+            });
+        };
+    };
+    NexysCore.prototype.loadFromLocalStorage = function () {
+        var _a, _b, _c, _d;
         // Load logs from localStorage
         var localLogs = this.LocalStorage.getLocalLogs();
-        if (Array.isArray(localLogs) && localLogs.length > 0 && ((_r = this._options.localStorage) === null || _r === void 0 ? void 0 : _r.useLocalStorage)) {
+        if (Array.isArray(localLogs) &&
+            localLogs.length > 0 &&
+            ((_a = this._options.localStorage) === null || _a === void 0 ? void 0 : _a.useLocalStorage)) {
             this.LogPool.setLogs(localLogs);
             this.InternalLogger.log("NexysCore: Set logs from localStorage.", localLogs);
         }
-        else if (Array.isArray(localLogs) && localLogs.length == 0 && ((_s = this._options.localStorage) === null || _s === void 0 ? void 0 : _s.useLocalStorage)) {
+        else if (Array.isArray(localLogs) &&
+            localLogs.length == 0 &&
+            ((_b = this._options.localStorage) === null || _b === void 0 ? void 0 : _b.useLocalStorage)) {
             this.InternalLogger.log("NexysCore: LocalStorage is empty, no logs found.");
         }
         // Load requests from localStorage
         var localRequests = this.LocalStorage.getLocalRequests();
-        if (Array.isArray(localRequests) && localRequests.length > 0 && ((_t = this._options.localStorage) === null || _t === void 0 ? void 0 : _t.useLocalStorage)) {
+        if (Array.isArray(localRequests) &&
+            localRequests.length > 0 &&
+            ((_c = this._options.localStorage) === null || _c === void 0 ? void 0 : _c.useLocalStorage)) {
             this.LogPool.setRequests(localRequests);
             this.InternalLogger.log("NexysCore: Set requests from localStorage.", localRequests);
         }
-        else if (Array.isArray(localRequests) && localRequests.length == 0 && ((_u = this._options.localStorage) === null || _u === void 0 ? void 0 : _u.useLocalStorage)) {
+        else if (Array.isArray(localRequests) &&
+            localRequests.length == 0 &&
+            ((_d = this._options.localStorage) === null || _d === void 0 ? void 0 : _d.useLocalStorage)) {
             this.InternalLogger.log("NexysCore: LocalStorage is empty, no requests found.");
         }
-        // Core Init Event
-        (_w = (_v = this.Events.on).coreInit) === null || _w === void 0 ? void 0 : _w.call(_v);
-        // Log initialization
-        this.InternalLogger.log("NexysCore: Initialized", this._version, this._options);
-    }
+    };
     /**
      * Adds log request to logPool in Nexys instance.
      *
@@ -140,6 +212,44 @@ var NexysCore = /** @class */ (function () {
             options: options,
             ts: new Date().getTime(),
         });
+    };
+    /**
+     * Configures Nexys instance. All logs sent to Nexys will use these configurations.
+     * This method will help you trough identifying your logs where came from like which user or which device.
+     *
+     * @example
+     * ```javascript
+     * // Import types (Optional: If TypeScript is being used)
+     * import type { configFunctions } from "nexys/dist/src/types";
+     * // Set user
+     * nexys.configure((config: configFunctions) => {
+     *  config.setUser("123456789_UNIQUE_ID");
+     * });
+     * ```
+     */
+    NexysCore.prototype.configure = function (config) {
+        var _this = this;
+        (function () {
+            return typeof config == "function" &&
+                config({
+                    setUser: function (user) {
+                        _this._config.user = user;
+                        _this.InternalLogger.log("NexysCore: User configured", user);
+                    },
+                });
+        })();
+    };
+    /**
+     * This method will clear whatever stored in Nexys.
+     *
+     * @example
+     * ```javascript
+     * nexys.clear();
+     * ```
+     */
+    NexysCore.prototype.clear = function () {
+        this.LogPool.clearLogs();
+        this.LogPool.clearRequests();
     };
     return NexysCore;
 }());

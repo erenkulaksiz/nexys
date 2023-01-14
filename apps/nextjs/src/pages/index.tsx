@@ -6,6 +6,37 @@ export default function App() {
       <h1>Web</h1>
       <button
         onClick={async () => {
+          const log = nexys.log("test.");
+          //console.log("Client return:", log);
+        }}
+      >
+        click to log
+      </button>
+      <button
+        onClick={() => {
+          Promise.reject(new Error("test"));
+        }}
+      >
+        click to cause an error
+      </button>
+
+      <button
+        onClick={() => {
+          console.log(nexys);
+        }}
+      >
+        click to console log nexys
+      </button>
+
+      <button
+        onClick={() => {
+          nexys.clear();
+        }}
+      >
+        click to clear nexys
+      </button>
+      {/*<button
+        onClick={async () => {
           const log = await nexys.log("test.");
           console.log("Client return:", log);
         }}
@@ -97,7 +128,7 @@ export default function App() {
         }}
       >
         click to console log nexys
-      </button>
+      </button>*/}
     </div>
   );
 }

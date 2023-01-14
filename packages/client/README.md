@@ -19,3 +19,8 @@ Nexys will be available on these platforms soon:
 ## Documentation
 
 [View Nexys documentation here](https://docs.nexys.app)
+
+## Changelog (client library)
+
+1.0.1 - some fixes and features - 14.01.2023
+1.0.0 - initial release - 13.01.2023

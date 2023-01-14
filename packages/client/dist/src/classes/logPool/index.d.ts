@@ -16,7 +16,7 @@
  */
 import { NexysCore } from "../core";
 import type { requestTypes } from "../../types";
-import type { logTypes } from './../../types';
+import type { logTypes } from "./../../types";
 export declare class LogPool {
     private core;
     logs: logTypes[];

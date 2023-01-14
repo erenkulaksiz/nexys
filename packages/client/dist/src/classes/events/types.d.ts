@@ -1,6 +1,7 @@
 import type { logTypes, requestTypes } from "../../types";
 export interface EventTypes {
     error: ((event: ErrorEvent) => void) | null;
+    unhandledRejection: ((event: PromiseRejectionEvent) => void) | null;
     logAdd: (({ data, options, ts }: logTypes) => void) | null;
     logsClear: (() => void) | null;
     requestsClear: (() => void) | null;

@@ -21,7 +21,7 @@ export declare class API {
     private _server;
     private _apiKey;
     private _appName;
-    private _sendingRequest;
+    _sendingRequest: boolean;
     constructor(core: NexysCore, { server, apiKey, appName }: APIConstructorParams);
     sendRequest({ headers, data, }: sendRequestParams): Promise<Response | any>;
     requestCompleted(): void;

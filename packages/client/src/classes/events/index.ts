@@ -25,6 +25,7 @@ export class Events {
 
   public on: EventTypes = {
     error: null,
+    unhandledRejection: null,
     logAdd: null,
     logsClear: null,
     requestsClear: null,
@@ -55,15 +56,28 @@ export class Events {
     }
     if (isClient()) {
       this.core.InternalLogger.log("Events: Binding error event");
-      try{
+      try {
+        window.addEventListener("error", (event: ErrorEvent) => {
+          event.stopImmediatePropagation();
+          if (event.error.hasBeenCaught !== undefined) {
+            return false;
+          }
+          event.error.hasBeenCaught = true;
+          typeof this.on.error == "function" && this.on.error(event);
+          return true;
+        });
         window.addEventListener(
-          "error",
-          (event: ErrorEvent) =>
-            typeof this.on.error == "function" && this.on.error(event)
+          "unhandledrejection",
+          (event: PromiseRejectionEvent) => {
+            event.stopImmediatePropagation();
+            typeof this.on.unhandledRejection == "function" &&
+              this.on.unhandledRejection(event);
+            return true;
+          }
         );
         this._bindedErrorEvent = true;
-        this.core.InternalLogger.log("Events: Binded error event");
-      }catch(err){
+        this.core.InternalLogger.log("Events: Binded error events.");
+      } catch (err) {
         this.core.InternalLogger.log("Events: Couuldnt bind error event.", err);
       }
       return;

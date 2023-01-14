@@ -23,7 +23,7 @@ export class API {
   private _server: string = "";
   private _apiKey: string = "";
   private _appName: string = "";
-  private _sendingRequest: boolean = false;
+  public _sendingRequest: boolean = false;
 
   constructor(
     core: NexysCore,

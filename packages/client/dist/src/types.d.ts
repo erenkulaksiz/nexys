@@ -33,7 +33,7 @@ export interface NexysOptions {
     };
     _i_EXTREMELY_SECRET_DO_NOT_USE_PLEASE?: boolean;
 }
-export type logOptionTypes = "DEBUG" | "INFO" | "WARNING" | "ERROR" | "FATAL" | "AUTO:ERROR";
+export type logOptionTypes = "DEBUG" | "INFO" | "WARNING" | "ERROR" | "FATAL" | "AUTO:ERROR" | "AUTO:UNHANDLEDREJECTION";
 export type logOptionLevels = "LOW" | "MEDIUM" | "HIGH";
 export interface logOptions {
     type?: logOptionTypes;
@@ -55,5 +55,11 @@ export interface requestTypes {
     res: string | object;
     status: string;
     ts: number;
+}
+export interface configTypes {
+    user?: string | null;
+}
+export interface configFunctions {
+    setUser: (user: string) => void;
 }
 //# sourceMappingURL=types.d.ts.map

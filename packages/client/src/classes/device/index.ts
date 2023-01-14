@@ -16,7 +16,11 @@
  */
 
 import { isClient } from "../../utils";
-import { BatteryManager, getDeviceDataReturnTypes, NetworkInformation } from "./types";
+import {
+  BatteryManager,
+  getDeviceDataReturnTypes,
+  NetworkInformation,
+} from "./types";
 
 export class Device {
   private _isAvailable: boolean = false;
@@ -126,13 +130,13 @@ export class Device {
     };
   }
 
-  public async getDeviceData(): Promise<getDeviceDataReturnTypes>{
-    if (!this._isAvailable){
+  public async getDeviceData(): Promise<getDeviceDataReturnTypes> {
+    if (!this._isAvailable) {
       return Promise.reject(null);
     }
     const battery = await this.getBattery().catch((err) => null);
-    const connection = await this.getConnection().catch((err) => null);;
-    const geo = await this.getGeolocation().catch((err) => null);;
+    const connection = await this.getConnection().catch((err) => null);
+    const geo = await this.getGeolocation().catch((err) => null);
     return Promise.resolve({
       platform: this.getPlatform(),
       language: this.getLanguage(),
@@ -147,7 +151,7 @@ export class Device {
         level: battery?.level,
       },
       connection,
-      geo
+      geo,
     });
   }
 }

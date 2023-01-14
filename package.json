@@ -1,6 +1,6 @@
 {
   "name": "root",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "This repo holds docs, NextJS & React example and client library of Nexys.",
   "private": false,
   "workspaces": [

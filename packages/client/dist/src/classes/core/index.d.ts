@@ -14,14 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { logTypes } from "src/types";
 import { API } from "../API";
 import { Events } from "../events";
 import { InternalLogger } from "./../internalLogger";
 import { LocalStorage } from "./../localStorage";
 import { LogPool } from "./../logPool";
 import { Device } from "./../device";
-import type { NexysOptions } from "../../types";
+import type { NexysOptions, logTypes, configTypes, configFunctions } from "../../types";
 export declare class NexysCore {
     InternalLogger: InternalLogger;
     LogPool: LogPool;
@@ -34,7 +33,15 @@ export declare class NexysCore {
     _server: string;
     _logPoolSize: number;
     _options: NexysOptions;
+    _isClient: boolean;
+    _sendAllOnType: NexysOptions["sendAllOnType"];
+    _config: configTypes;
     constructor(API_KEY: string, options?: NexysOptions);
+    /**
+     * Automatic error handling.
+     */
+    private setupEventHandlers;
+    private loadFromLocalStorage;
     /**
      * Adds log request to logPool in Nexys instance.
      *
@@ -59,5 +66,29 @@ export declare class NexysCore {
      * @public
      */
     log(data: logTypes["data"], options?: logTypes["options"]): void;
+    /**
+     * Configures Nexys instance. All logs sent to Nexys will use these configurations.
+     * This method will help you trough identifying your logs where came from like which user or which device.
+     *
+     * @example
+     * ```javascript
+     * // Import types (Optional: If TypeScript is being used)
+     * import type { configFunctions } from "nexys/dist/src/types";
+     * // Set user
+     * nexys.configure((config: configFunctions) => {
+     *  config.setUser("123456789_UNIQUE_ID");
+     * });
+     * ```
+     */
+    configure(config: (config: configFunctions) => void): void;
+    /**
+     * This method will clear whatever stored in Nexys.
+     *
+     * @example
+     * ```javascript
+     * nexys.clear();
+     * ```
+     */
+    clear(): void;
 }
 //# sourceMappingURL=index.d.ts.map

@@ -56,9 +56,9 @@ class Nexys extends NexysCore {
    * @param API_KEY - `Required` - The Public API key you retrieve from our dashboard
    * @param options - `Required` - Object containing all options below
    * @param options.appName - `Required` - Name of your application
-   * @param options.debug - `Optional` - Enables debug mode for internal logs - also uses debug server - Default is `false`
+   * @param options.debug - `Optional` - Enables debug mode for internal logs - Default is `false`
    * @param options.logPoolSize - `Optional` - Sets the logPool max log size to send when logPool size exceedes this limit - Default is `5`
-   * @param options.sendAllOnType - `Optional` - Ignores logPoolSize when any log with specified type is recieved, then sends all logs in logPool - Default is `null`
+   * @param options.sendAllOnType - `Optional` - Ignores logPoolSize when any log with specified type is recieved sends data to API - Default is `["AUTO:ERROR", "AUTO:UNHANDLEDREJECTION"]`
    * @param options.server - `Optional` - Change logging server - Default is `https://api.nexys.dev`
    * @param options.localStorage - `Optional` - Object containing options about localStorage
    * @param options.localStorage.useLocalStorage - `Optional` - Should use localStorage - Default is `true`
@@ -71,7 +71,6 @@ class Nexys extends NexysCore {
    */
   constructor(API_KEY: string, options?: NexysOptions) {
     super(API_KEY, options);
-    this.log = super.log;
   }
 }
 

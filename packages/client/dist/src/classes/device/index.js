@@ -176,11 +176,9 @@ var Device = /** @class */ (function () {
                         return [4 /*yield*/, this.getConnection().catch(function (err) { return null; })];
                     case 2:
                         connection = _a.sent();
-                        ;
                         return [4 /*yield*/, this.getGeolocation().catch(function (err) { return null; })];
                     case 3:
                         geo = _a.sent();
-                        ;
                         return [2 /*return*/, Promise.resolve({
                                 platform: this.getPlatform(),
                                 language: this.getLanguage(),
@@ -195,7 +193,7 @@ var Device = /** @class */ (function () {
                                     level: battery === null || battery === void 0 ? void 0 : battery.level,
                                 },
                                 connection: connection,
-                                geo: geo
+                                geo: geo,
                             })];
                 }
             });

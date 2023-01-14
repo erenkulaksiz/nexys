@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Base64 } from "../../utils";
+import { Base64, isClient } from "../../utils";
 /**
  * @class LocalStorage
  * @description This class is used to handle internal localStorage operations.
@@ -29,7 +29,7 @@ var LocalStorage = /** @class */ (function () {
         this.key = "__nexys__";
         this.testKey = "__nexysTest__";
         this.shouldUseLocalStorage = false;
-        this._localStorage = window.localStorage;
+        this._localStorage = isClient() ? window === null || window === void 0 ? void 0 : window.localStorage : null;
         this.key = key;
         this.testKey = testKey;
         this.isEncrypted = isEncrypted;
@@ -38,9 +38,16 @@ var LocalStorage = /** @class */ (function () {
         this.core = core;
         this.core.InternalLogger.log("LocalStorage: Available:", this.isAvailable);
         if (this.isActive) {
-            this.core.InternalLogger.log("LocalStorage: Active");
+            this.core.InternalLogger.log("LocalStorage: Set to Active");
+            // We will not going to use localStorage if library is loaded in server environment.
             this.shouldUseLocalStorage =
-                this.isAvailable && this._localStorage ? true : false;
+                this.isAvailable && this._localStorage && isClient() ? true : false;
+            if (this.shouldUseLocalStorage) {
+                this.core.InternalLogger.log("LocalStorage: Using localStorage.");
+            }
+            else {
+                this.core.InternalLogger.log("LocalStorage: Not using localStorage.");
+            }
         }
         this.init();
     }
@@ -193,8 +200,9 @@ var LocalStorage = /** @class */ (function () {
         localValue.logPool.push({
             ts: new Date().getTime(),
             data: data,
-            options: options
+            options: options,
         });
+        localValue.lastLogUpdate = new Date().getTime();
         this.set(localValue);
     };
     LocalStorage.prototype.addToRequest = function (_a) {

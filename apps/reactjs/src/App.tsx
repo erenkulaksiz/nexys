@@ -14,7 +14,7 @@ function App() {
       </button>
       <button
         onClick={() => {
-          throw new Error("test");
+          throw new Error("test error");
         }}
       >
         click to cause an error
@@ -30,11 +30,19 @@ function App() {
 
       <button
         onClick={async () => {
-          const pos = await nexys.Device.getUserAgent();
-          console.log(pos);
+          const userAgent = await nexys.Device.getUserAgent();
+          console.log(userAgent);
         }}
       >
-        click to console log pos
+        click to console log useragent
+      </button>
+
+      <button
+        onClick={async () => {
+          nexys.clear();
+        }}
+      >
+        click to clear
       </button>
       {/*
       <button

@@ -21,6 +21,7 @@ var Events = /** @class */ (function () {
         this._bindedErrorEvent = false;
         this.on = {
             error: null,
+            unhandledRejection: null,
             logAdd: null,
             logsClear: null,
             requestsClear: null,
@@ -48,10 +49,22 @@ var Events = /** @class */ (function () {
             this.core.InternalLogger.log("Events: Binding error event");
             try {
                 window.addEventListener("error", function (event) {
-                    return typeof _this.on.error == "function" && _this.on.error(event);
+                    event.stopImmediatePropagation();
+                    if (event.error.hasBeenCaught !== undefined) {
+                        return false;
+                    }
+                    event.error.hasBeenCaught = true;
+                    typeof _this.on.error == "function" && _this.on.error(event);
+                    return true;
+                });
+                window.addEventListener("unhandledrejection", function (event) {
+                    event.stopImmediatePropagation();
+                    typeof _this.on.unhandledRejection == "function" &&
+                        _this.on.unhandledRejection(event);
+                    return true;
                 });
                 this._bindedErrorEvent = true;
-                this.core.InternalLogger.log("Events: Binded error event");
+                this.core.InternalLogger.log("Events: Binded error events.");
             }
             catch (err) {
                 this.core.InternalLogger.log("Events: Couuldnt bind error event.", err);

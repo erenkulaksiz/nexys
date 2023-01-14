@@ -44,7 +44,8 @@ export type logOptionTypes =
   | "WARNING"
   | "ERROR"
   | "FATAL"
-  | "AUTO:ERROR";
+  | "AUTO:ERROR"
+  | "AUTO:UNHANDLEDREJECTION";
 export type logOptionLevels = "LOW" | "MEDIUM" | "HIGH";
 
 export interface logOptions {
@@ -71,4 +72,12 @@ export interface requestTypes {
   res: string | object;
   status: string;
   ts: number;
+}
+
+export interface configTypes {
+  user?: string | null;
+}
+
+export interface configFunctions {
+  setUser: (user: string) => void;
 }

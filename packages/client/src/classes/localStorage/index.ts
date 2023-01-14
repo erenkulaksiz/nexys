@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Base64 } from "../../utils";
+import { Base64, isClient } from "../../utils";
 import { NexysCore } from "../core";
 import type { logTypes, requestTypes } from "../../types";
 import type { LocalStorageConstructorParams, LocalStorageTypes } from "./types";
@@ -39,7 +39,7 @@ export class LocalStorage {
     core: NexysCore,
     { key, testKey, isEncrypted, active }: LocalStorageConstructorParams
   ) {
-    this._localStorage = window.localStorage;
+    this._localStorage = isClient() ? window?.localStorage : null;
     this.key = key;
     this.testKey = testKey;
     this.isEncrypted = isEncrypted;
@@ -50,21 +50,30 @@ export class LocalStorage {
     this.core.InternalLogger.log("LocalStorage: Available:", this.isAvailable);
 
     if (this.isActive) {
-      this.core.InternalLogger.log("LocalStorage: Active");
+      this.core.InternalLogger.log("LocalStorage: Set to Active");
+      // We will not going to use localStorage if library is loaded in server environment.
       this.shouldUseLocalStorage =
-        this.isAvailable && this._localStorage ? true : false;
+        this.isAvailable && this._localStorage && isClient() ? true : false;
+      if (this.shouldUseLocalStorage) {
+        this.core.InternalLogger.log("LocalStorage: Using localStorage.");
+      } else {
+        this.core.InternalLogger.log("LocalStorage: Not using localStorage.");
+      }
     }
 
     this.init();
   }
 
-  private init(): void{
+  private init(): void {
     if (!this.shouldUseLocalStorage) return;
     this.core.InternalLogger.log("LocalStorage: Initializing...");
     let localItem = this.get();
     if (localItem) {
-      this.core.InternalLogger.log("LocalStorage: Found local item:", localItem);
-    }else{
+      this.core.InternalLogger.log(
+        "LocalStorage: Found local item:",
+        localItem
+      );
+    } else {
       this.core.InternalLogger.log("LocalStorage: No local item found.");
       localItem = this.resetLocalValue();
     }
@@ -162,8 +171,10 @@ export class LocalStorage {
   public clearLogPool(): void {
     if (!this.shouldUseLocalStorage) return;
     const localValue = this.get();
-    if (!localValue){
-      this.core.InternalLogger.log("LocalStorage: Local value is null in clearLogPool.");
+    if (!localValue) {
+      this.core.InternalLogger.log(
+        "LocalStorage: Local value is null in clearLogPool."
+      );
       this.resetLocalValue();
       return;
     }
@@ -174,8 +185,10 @@ export class LocalStorage {
   public clearRequests(): void {
     if (!this.shouldUseLocalStorage) return;
     const localValue = this.get();
-    if (!localValue){
-      this.core.InternalLogger.log("LocalStorage: Local value is null in clearRequests.");
+    if (!localValue) {
+      this.core.InternalLogger.log(
+        "LocalStorage: Local value is null in clearRequests."
+      );
       this.resetLocalValue();
       return;
     }
@@ -183,52 +196,53 @@ export class LocalStorage {
     this.set(localValue);
   }
 
-  public addToLogPool({data, options}: logTypes): void {
+  public addToLogPool({ data, options }: logTypes): void {
     if (!this.shouldUseLocalStorage) return;
     let localValue = this.get();
-    if (!localValue){
+    if (!localValue) {
       this.core.InternalLogger.log("LocalStorage: Local value is null.");
       this.resetLocalValue();
       // Resets and pushes first log.
       localValue = {
-        logPool: [{ts: new Date().getTime(), data, options}],
+        logPool: [{ ts: new Date().getTime(), data, options }],
         requests: [],
         lastLogUpdate: new Date().getTime(),
-      }
+      };
       this.set(localValue);
       return;
     }
     localValue.logPool.push({
       ts: new Date().getTime(),
       data,
-      options
+      options,
     });
+    localValue.lastLogUpdate = new Date().getTime();
     this.set(localValue);
   }
 
-  public addToRequest({res, status, ts}: requestTypes): void{
+  public addToRequest({ res, status, ts }: requestTypes): void {
     if (!this.shouldUseLocalStorage) return;
     let localValue = this.get();
-    if (!localValue){
+    if (!localValue) {
       this.core.InternalLogger.log("LocalStorage: Local value is null.");
       this.resetLocalValue();
       // Resets and pushes first log.
       localValue = {
         logPool: [],
-        requests: [{res, status, ts}],
+        requests: [{ res, status, ts }],
         lastLogUpdate: 0,
-      }
+      };
       this.set(localValue);
       return;
     }
-    localValue.requests.push({res, status, ts});
+    localValue.requests.push({ res, status, ts });
     this.set(localValue);
   }
 
   public getLocalLogs(): logTypes[] | null {
     if (!this.shouldUseLocalStorage) return null;
     let localValue = this.get();
-    if (!localValue){
+    if (!localValue) {
       this.core.InternalLogger.log("LocalStorage: Local value is null.");
       this.resetLocalValue();
       return null;
@@ -236,24 +250,24 @@ export class LocalStorage {
     return localValue?.logPool;
   }
 
-  public getLocalRequests(): requestTypes[] | null { 
+  public getLocalRequests(): requestTypes[] | null {
     if (!this.shouldUseLocalStorage) return null;
     let localValue = this.get();
-    if (!localValue){
+    if (!localValue) {
       this.core.InternalLogger.log("LocalStorage: Local value is null.");
       this.resetLocalValue();
       return null;
     }
     return localValue?.requests;
   }
-  
+
   public resetLocalValue(): LocalStorageTypes {
     this.core.InternalLogger.log("LocalStorage: Resetting local value.");
     const val = {
       logPool: [],
       requests: [],
       lastLogUpdate: 0,
-    }
+    };
     this.set(val);
     return val;
   }

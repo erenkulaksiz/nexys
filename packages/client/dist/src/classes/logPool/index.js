@@ -115,26 +115,63 @@ var LogPool = /** @class */ (function () {
         this.logs = [];
         this.core.LocalStorage.clearLogPool();
         (_b = (_a = this.core.Events.on).logsClear) === null || _b === void 0 ? void 0 : _b.call(_a);
-        this.core.InternalLogger.log("LogPool: Clearing logs...");
+        this.core.InternalLogger.log("LogPool: Cleared logs.");
     };
     LogPool.prototype.clearRequests = function () {
         var _a, _b;
         this.requests = [];
         this.core.LocalStorage.clearRequests();
         (_b = (_a = this.core.Events.on).requestsClear) === null || _b === void 0 ? void 0 : _b.call(_a);
-        this.core.InternalLogger.log("LogPool: Clearing requests...");
+        this.core.InternalLogger.log("LogPool: Cleared requests.");
     };
     /**
      * Process internal data to determine whether or not we should need to send data to the server.
      */
     LogPool.prototype.process = function () {
+        var _a, _b;
         this.core.InternalLogger.log("LogPool: Processing logs...");
-        this.core.InternalLogger.log("LogPool: logPoolSize is ", this.core._logPoolSize, " but logs length is ", this.logs.length);
-        /*
-        if(this.core._options.sendAllOnType){}
-        */
+        if (this.logs.length > 0 && this.core._logPoolSize != 0) {
+            var sendAllOnType = this.core._sendAllOnType;
+            if (!sendAllOnType)
+                return;
+            // Check if sendAllOnType is array or string.
+            if (Array.isArray(sendAllOnType)) {
+                // Array
+                for (var i = 0; i < this.logs.length; i++) {
+                    var log = this.logs[i];
+                    if (!((_a = log === null || log === void 0 ? void 0 : log.options) === null || _a === void 0 ? void 0 : _a.type))
+                        continue;
+                    if (this.core.API._sendingRequest)
+                        continue;
+                    if (sendAllOnType.includes(log.options.type)) {
+                        this.core.InternalLogger.log("LogPool: sendAllOnType is array and log includes ".concat(log.options.type, " type."));
+                        this.sendAll();
+                        break;
+                    }
+                }
+            }
+            else {
+                // String
+                for (var i = 0; i < this.logs.length; i++) {
+                    var log = this.logs[i];
+                    if (!((_b = log === null || log === void 0 ? void 0 : log.options) === null || _b === void 0 ? void 0 : _b.type))
+                        continue;
+                    if (this.core.API._sendingRequest)
+                        continue;
+                    if (log.options.type == sendAllOnType) {
+                        this.core.InternalLogger.log("LogPool: sendAllOnType is string and log is ".concat(log.options.type, " type."));
+                        this.sendAll();
+                        break;
+                    }
+                }
+            }
+        }
         if (this.logs.length < this.core._logPoolSize) {
             this.core.InternalLogger.log("LogPool: logPoolSize is ".concat(this.core._logPoolSize, " but logs length is ").concat(this.logs.length));
+            return;
+        }
+        if (this.core.API._sendingRequest) {
+            this.core.InternalLogger.log("LogPool: Already sending all logs to the server.");
             return;
         }
         this.sendAll();
@@ -144,20 +181,23 @@ var LogPool = /** @class */ (function () {
      */
     LogPool.prototype.sendAll = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var deviceData;
+            var deviceData, config;
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.core.InternalLogger.log("LogPool: Sending all logs to the server...");
-                        return [4 /*yield*/, this.core.Device.getDeviceData()];
+                        this.core.InternalLogger.log("LogPool: sendAll() called.");
+                        return [4 /*yield*/, this.core.Device.getDeviceData().catch(function (err) { return null; } // If we can't get device data, we don't need to send it.
+                            )];
                     case 1:
                         deviceData = _a.sent();
+                        config = this.core._config;
                         this.core.API.sendRequest({
                             data: {
                                 logs: this.logs,
                                 requests: this.requests,
                                 deviceData: deviceData,
+                                config: config,
                             },
                         })
                             .then(function (res) {
