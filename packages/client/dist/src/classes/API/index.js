@@ -77,6 +77,7 @@ var API = /** @class */ (function () {
         var _b, _c;
         var headers = _a.headers, data = _a.data;
         return __awaiter(this, void 0, void 0, function () {
+            var server;
             var _this = this;
             return __generator(this, function (_d) {
                 if (!this.checkAvailability())
@@ -86,7 +87,9 @@ var API = /** @class */ (function () {
                 }
                 this._sendingRequest = true;
                 (_c = (_b = this.core.Events.on.request).sending) === null || _c === void 0 ? void 0 : _c.call(_b, data);
-                return [2 /*return*/, fetch("".concat(this._server, "/api/").concat(this._apiKey, "/").concat(this._appName), {
+                server = "".concat(this._server, "/api/report/").concat(this._apiKey, "/").concat(this._appName);
+                this.core.InternalLogger.log("API: Sending request to server", server);
+                return [2 /*return*/, fetch(server, {
                         method: "POST",
                         headers: __assign({ "Content-Type": "application/json" }, headers),
                         body: JSON.stringify(data),
@@ -97,7 +100,6 @@ var API = /** @class */ (function () {
                             switch (_c.label) {
                                 case 0:
                                     if (!(res === null || res === void 0 ? void 0 : res.ok)) return [3 /*break*/, 2];
-                                    this.core.InternalLogger.log("API: Request sent successfully.");
                                     this.requestCompleted();
                                     return [4 /*yield*/, res.json()];
                                 case 1:

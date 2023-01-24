@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 import Package from "../../package.json";
-export var server = "https://api.nexys.app";
-export var debugServer = "http://localhost";
+export var server = "https://dash.nexys.app";
+export var debugServer = "http://localhost:3000";
+export var libraryName = Package.name;
 export var version = Package.version;
 export { Base64 } from "./base64";
 export { isClient } from "./isClient";

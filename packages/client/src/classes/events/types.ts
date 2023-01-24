@@ -7,6 +7,7 @@ export interface EventTypes {
   logsClear: (() => void) | null;
   requestsClear: (() => void) | null;
   coreInit: (() => void) | null;
+  process: (() => void) | null;
   request: {
     sending: ((data?: any) => void) | null; // data: any
     success: (({ res, json }: { res?: Response; json: any }) => void) | null;

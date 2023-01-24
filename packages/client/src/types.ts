@@ -19,8 +19,11 @@ export interface NexysOptions {
   appName?: string;
   debug?: boolean;
   logPoolSize?: number;
-  sendAllOnType?: null | logOptionTypes | logOptionTypes[];
+  sendAllOnType?: false | logOptionTypes | logOptionTypes[];
   server?: string;
+  allowDeviceData?: boolean;
+  ignoreType?: false | logOptionTypes | logOptionTypes[];
+  ignoreTypeSize?: number;
 
   errors?: {
     allowAutomaticHandling?: boolean;
@@ -45,7 +48,8 @@ export type logOptionTypes =
   | "ERROR"
   | "FATAL"
   | "AUTO:ERROR"
-  | "AUTO:UNHANDLEDREJECTION";
+  | "AUTO:UNHANDLEDREJECTION"
+  | "METRIC";
 export type logOptionLevels = "LOW" | "MEDIUM" | "HIGH";
 
 export interface logOptions {
@@ -60,14 +64,6 @@ export interface logTypes {
   ts: number;
 }
 
-export type logReturnType = "SUCCESS:LOGPOOLSIZE" | "ERROR";
-
-export interface localStorageType {
-  data: logTypes[];
-  lastUpdated: number;
-  requests: any;
-}
-
 export interface requestTypes {
   res: string | object;
   status: string;
@@ -76,8 +72,10 @@ export interface requestTypes {
 
 export interface configTypes {
   user?: string | null;
+  client?: string | null;
 }
 
 export interface configFunctions {
   setUser: (user: string) => void;
+  setClient: (client: string) => void;
 }

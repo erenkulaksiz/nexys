@@ -52,8 +52,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 import { isClient } from "../../utils";
 var Device = /** @class */ (function () {
-    function Device() {
+    function Device(core) {
         this._isAvailable = false;
+        this.core = core;
         this._isAvailable = isClient() && this.checkAvailability();
     }
     Device.prototype.checkAvailability = function () {
@@ -168,6 +169,10 @@ var Device = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         if (!this._isAvailable) {
+                            return [2 /*return*/, Promise.reject(null)];
+                        }
+                        if (!this.core._allowDeviceData) {
+                            this.core.InternalLogger.log("Device: Device data is disabled but getDeviceData() is called.");
                             return [2 /*return*/, Promise.reject(null)];
                         }
                         return [4 /*yield*/, this.getBattery().catch(function (err) { return null; })];

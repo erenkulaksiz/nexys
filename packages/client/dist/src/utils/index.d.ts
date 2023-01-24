@@ -14,8 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export declare const server = "https://api.nexys.app";
-export declare const debugServer = "http://localhost";
+export declare const server = "https://dash.nexys.app";
+export declare const debugServer = "http://localhost:3000";
+export declare const libraryName: string;
 export declare const version: string;
 export { Base64 } from "./base64";
 export { isClient } from "./isClient";

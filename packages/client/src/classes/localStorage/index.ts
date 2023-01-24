@@ -39,13 +39,13 @@ export class LocalStorage {
     core: NexysCore,
     { key, testKey, isEncrypted, active }: LocalStorageConstructorParams
   ) {
+    this.core = core;
     this._localStorage = isClient() ? window?.localStorage : null;
     this.key = key;
     this.testKey = testKey;
     this.isEncrypted = isEncrypted;
     this.isActive = active;
     this.isAvailable = this.checkAvailability();
-    this.core = core;
 
     this.core.InternalLogger.log("LocalStorage: Available:", this.isAvailable);
 
@@ -244,8 +244,7 @@ export class LocalStorage {
     let localValue = this.get();
     if (!localValue) {
       this.core.InternalLogger.log("LocalStorage: Local value is null.");
-      this.resetLocalValue();
-      return null;
+      return this.resetLocalValue().logPool;
     }
     return localValue?.logPool;
   }
@@ -255,8 +254,7 @@ export class LocalStorage {
     let localValue = this.get();
     if (!localValue) {
       this.core.InternalLogger.log("LocalStorage: Local value is null.");
-      this.resetLocalValue();
-      return null;
+      return this.resetLocalValue().requests;
     }
     return localValue?.requests;
   }

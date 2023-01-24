@@ -8,3 +8,8 @@ export const nexys = new Nexys("TESTING_API_KEY", {
     cryption: false,
   },
 });
+
+nexys.configure((config) => {
+  config.setUser("test");
+  config.setClient("test");
+});

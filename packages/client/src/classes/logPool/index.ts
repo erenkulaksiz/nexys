@@ -16,9 +16,11 @@
  */
 
 import { NexysCore } from "../core";
+import { version, libraryName } from "../../utils";
 import type { LogPoolConstructorParams } from "./types";
 import type { requestTypes } from "../../types";
 import type { logTypes } from "./../../types";
+import type { getDeviceDataReturnTypes } from "./../device/types";
 
 export class LogPool {
   private core: NexysCore;
@@ -144,42 +146,97 @@ export class LogPool {
       }
     }
 
-    if (this.logs.length < this.core._logPoolSize) {
+    let logsLength = 0;
+
+    if (this.core._ignoreType !== false) {
+      logsLength = this.logs.filter((log) => {
+        if (!log?.options?.type) return true;
+        if (
+          Array.isArray(this.core._ignoreType) &&
+          this.core._ignoreType.includes(log.options.type)
+        )
+          return false;
+        if (
+          typeof this.core._ignoreType == "string" &&
+          this.core._ignoreType == log.options.type
+        )
+          return false;
+        return true;
+      }).length;
+      const diffLength = this.logs.length - logsLength;
+      if (diffLength > this.core._ignoreTypeSize) {
+        this.core.InternalLogger.log(
+          `LogPool: diffLength (this.logs.length - logsLength): ${diffLength} ignoreTypeSize: ${this.core._ignoreTypeSize} - Ignored logs max reached.`
+        );
+        logsLength += diffLength;
+      } else {
+        this.core.InternalLogger.log(
+          `LogPool: Ignoring ${diffLength} logs. ignoreType: ${this.core._ignoreType} ignoreTypeSize: ${this.core._ignoreTypeSize}`
+        );
+      }
+    }
+
+    if (logsLength < this.core._logPoolSize) {
       this.core.InternalLogger.log(
-        `LogPool: logPoolSize is ${this.core._logPoolSize} but logs length is ${this.logs.length}`
+        `LogPool: logPoolSize is ${this.core._logPoolSize} but logs length is ${logsLength}`
       );
       return;
     }
 
     if (this.core.API._sendingRequest) {
       this.core.InternalLogger.log(
-        "LogPool: Already sending all logs to the server."
+        "LogPool: Already sending request to the server."
       );
       return;
     }
 
+    this.core.Events.on.process?.();
     this.sendAll();
   }
 
   /**
-   * Sends everything to the server.
+   * Sends all data on Nexys to the server.
    */
-  private async sendAll() {
+  public async sendAll() {
     this.core.InternalLogger.log("LogPool: sendAll() called.");
-    const deviceData = await this.core.Device.getDeviceData().catch(
-      (err) => null // If we can't get device data, we don't need to send it.
-    );
+    let deviceData: getDeviceDataReturnTypes | "disabled" | "client-disabled" =
+      "disabled";
+    if (this.core._allowDeviceData) {
+      deviceData =
+        (await this.core.Device.getDeviceData().catch((err) => null)) ??
+        "client-disabled";
+    } else {
+      deviceData = "disabled";
+    }
     const config = this.core._config;
+
+    if (this.logs.length === 0 && this.requests.length === 0) {
+      this.core.InternalLogger.log("LogPool: No logs or requests to send.");
+      return;
+    }
+
     this.core.API.sendRequest({
       data: {
         logs: this.logs,
         requests: this.requests,
         deviceData,
         config,
+        package: {
+          libraryName,
+          version,
+        },
+        options: {
+          ...this.core._options,
+          logPoolSize: this.core._logPoolSize,
+          allowDeviceData: this.core._allowDeviceData,
+          sendAllOnType: this.core._sendAllOnType,
+          ignoreType: this.core._ignoreType,
+          ignoreTypeSize: this.core._ignoreTypeSize,
+        },
       },
     })
       .then((res) => {
-        this.core.InternalLogger.log("burda success olmasi lazim", res);
+        this.core.InternalLogger.log("API: Successful request", res);
         this.core.Events.on.request.success?.(res);
         this.clearRequests();
         this.clearLogs();

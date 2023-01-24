@@ -29,13 +29,13 @@ var LocalStorage = /** @class */ (function () {
         this.key = "__nexys__";
         this.testKey = "__nexysTest__";
         this.shouldUseLocalStorage = false;
+        this.core = core;
         this._localStorage = isClient() ? window === null || window === void 0 ? void 0 : window.localStorage : null;
         this.key = key;
         this.testKey = testKey;
         this.isEncrypted = isEncrypted;
         this.isActive = active;
         this.isAvailable = this.checkAvailability();
-        this.core = core;
         this.core.InternalLogger.log("LocalStorage: Available:", this.isAvailable);
         if (this.isActive) {
             this.core.InternalLogger.log("LocalStorage: Set to Active");
@@ -231,8 +231,7 @@ var LocalStorage = /** @class */ (function () {
         var localValue = this.get();
         if (!localValue) {
             this.core.InternalLogger.log("LocalStorage: Local value is null.");
-            this.resetLocalValue();
-            return null;
+            return this.resetLocalValue().logPool;
         }
         return localValue === null || localValue === void 0 ? void 0 : localValue.logPool;
     };
@@ -242,8 +241,7 @@ var LocalStorage = /** @class */ (function () {
         var localValue = this.get();
         if (!localValue) {
             this.core.InternalLogger.log("LocalStorage: Local value is null.");
-            this.resetLocalValue();
-            return null;
+            return this.resetLocalValue().requests;
         }
         return localValue === null || localValue === void 0 ? void 0 : localValue.requests;
     };

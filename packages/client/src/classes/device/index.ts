@@ -16,6 +16,7 @@
  */
 
 import { isClient } from "../../utils";
+import { NexysCore } from "./../core/index";
 import {
   BatteryManager,
   getDeviceDataReturnTypes,
@@ -23,9 +24,11 @@ import {
 } from "./types";
 
 export class Device {
+  private core: NexysCore;
   private _isAvailable: boolean = false;
 
-  constructor() {
+  constructor(core: NexysCore) {
+    this.core = core;
     this._isAvailable = isClient() && this.checkAvailability();
   }
 
@@ -132,6 +135,12 @@ export class Device {
 
   public async getDeviceData(): Promise<getDeviceDataReturnTypes> {
     if (!this._isAvailable) {
+      return Promise.reject(null);
+    }
+    if (!this.core._allowDeviceData) {
+      this.core.InternalLogger.log(
+        "Device: Device data is disabled but getDeviceData() is called."
+      );
       return Promise.reject(null);
     }
     const battery = await this.getBattery().catch((err) => null);

@@ -37,8 +37,6 @@ const defaultOptions = {
     cryption: true,
     key: "__nexysLogPool__",
     testKey: "__nexysTest__",
-    successRequestsMaxSize: 20,
-    failedRequestsMaxSize: 50,
   },
   errors: {
     allowAutomaticHandling: true, // Used for automatic exception handling.
@@ -58,16 +56,17 @@ export class NexysCore {
   _server: string = server;
   _logPoolSize: number = 5;
   _options: NexysOptions = defaultOptions;
-
   _isClient: boolean = isClient();
-
+  _allowDeviceData: boolean = true;
   _sendAllOnType: NexysOptions["sendAllOnType"] = [
     "AUTO:ERROR",
     "AUTO:UNHANDLEDREJECTION",
   ];
-
+  _ignoreType: NexysOptions["ignoreType"] = "METRIC";
+  _ignoreTypeSize: number = 50;
   _config: configTypes = {
     user: null,
+    client: null,
   };
 
   // Core
@@ -87,10 +86,22 @@ export class NexysCore {
     this._apiKey = API_KEY;
     this._server = options?.debug ? debugServer : options?.server ?? server;
     this._logPoolSize = options?.logPoolSize ?? this._logPoolSize;
+    this._allowDeviceData = options?.allowDeviceData ?? this._allowDeviceData;
+
     this._sendAllOnType =
       typeof options?.sendAllOnType == "undefined"
         ? this._sendAllOnType
         : options?.sendAllOnType;
+
+    this._ignoreType =
+      typeof options?.ignoreType == "undefined"
+        ? this._ignoreType
+        : options?.ignoreType;
+
+    this._ignoreTypeSize =
+      typeof options?.ignoreTypeSize == "undefined"
+        ? this._ignoreTypeSize
+        : options?.ignoreTypeSize;
 
     if (!this._apiKey) throw new Error("NexysCore: API_KEY is not defined");
     if (!this._options.appName)
@@ -117,7 +128,7 @@ export class NexysCore {
     });
 
     // Device
-    this.Device = new Device();
+    this.Device = new Device(this);
 
     // LocalStorage
     this.LocalStorage = new LocalStorage(this, {
@@ -139,7 +150,7 @@ export class NexysCore {
 
     if (!this._isClient) {
       this.InternalLogger.log(
-        "NexysCore: Detected that we are running NexysCore on server side environment."
+        "NexysCore: Detected that we are running NexysCore on non client side environment."
       );
       this.InternalLogger.log(
         "NexysCore: Altough NexysCore is designed to run on client side, it can be used on server side as well but some features will might not work."
@@ -165,16 +176,16 @@ export class NexysCore {
       this.InternalLogger.log("Events: Received error", event);
 
       const extractedError = {
-        message: event.message,
-        errmessage: event.error.message,
-        stack: event.error.stack,
-        type: event.type,
-        colno: event.colno,
-        lineno: event.lineno,
-        filename: event.filename,
-        defaultPrevented: event.defaultPrevented,
-        isTrusted: event.isTrusted,
-        timeStamp: event.timeStamp,
+        message: event?.message,
+        errmessage: event?.error?.message,
+        stack: event?.error?.stack,
+        type: event?.type,
+        colno: event?.colno,
+        lineno: event?.lineno,
+        filename: event?.filename,
+        defaultPrevented: event?.defaultPrevented,
+        isTrusted: event?.isTrusted,
+        timeStamp: event?.timeStamp,
       };
 
       this.LogPool.push({
@@ -192,10 +203,12 @@ export class NexysCore {
       this.InternalLogger.log("Events: Received unhandledRejection: ", event);
 
       const extractedRejection = {
-        reason: event.reason,
-        type: event.type,
-        isTrusted: event.isTrusted,
-        defaultPrevented: event.defaultPrevented,
+        message: event?.reason?.message,
+        stack: event?.reason?.stack,
+        type: event?.type,
+        isTrusted: event?.isTrusted,
+        defaultPrevented: event?.defaultPrevented,
+        timeStamp: event?.timeStamp,
       };
 
       this.LogPool.push({
@@ -287,17 +300,52 @@ export class NexysCore {
     });
   }
 
+  public error(data: logTypes["data"], options?: logTypes["options"]) {
+    this.LogPool.push({
+      data,
+      options: {
+        ...options,
+        type: "ERROR",
+      },
+      ts: new Date().getTime(),
+    });
+  }
+
+  public metric(metric: {
+    id: string;
+    label: string;
+    name: string;
+    startTime: number;
+    value: number;
+  }) {
+    this.LogPool.push({
+      data: metric,
+      options: {
+        type: "METRIC",
+      },
+      ts: new Date().getTime(),
+    });
+  }
+
   /**
    * Configures Nexys instance. All logs sent to Nexys will use these configurations.
    * This method will help you trough identifying your logs where came from like which user or which device.
    *
    * @example
    * ```javascript
-   * // Import types (Optional: If TypeScript is being used)
+   * // Import and initialize the client
+   * import Nexys from "nexys";
+   *
+   * const nexys = new Nexys("API_KEY", { appName: "My_app" });
+   *
+   * // Import types of config (Optional: If TypeScript is being used)
    * import type { configFunctions } from "nexys/dist/src/types";
-   * // Set user
+   *
    * nexys.configure((config: configFunctions) => {
+   *  // Set user
    *  config.setUser("123456789_UNIQUE_ID");
+   *  // Set client version (likely to be your app version)
+   *  config.setClient("1.0.0");
    * });
    * ```
    */
@@ -308,6 +356,10 @@ export class NexysCore {
         setUser: (user: string) => {
           this._config.user = user;
           this.InternalLogger.log("NexysCore: User configured", user);
+        },
+        setClient: (client: string) => {
+          this._config.client = client;
+          this.InternalLogger.log("NexysCore: Client configured", client);
         },
       }))();
   }
@@ -323,5 +375,17 @@ export class NexysCore {
   public clear() {
     this.LogPool.clearLogs();
     this.LogPool.clearRequests();
+  }
+
+  /**
+   * This method will force a request to Nexys.
+   *
+   * @example
+   * ```javascript
+   * nexys.forceRequest();
+   * ```
+   */
+  public forceRequest() {
+    this.LogPool.sendAll();
   }
 }

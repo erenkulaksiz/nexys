@@ -34,7 +34,10 @@ export declare class NexysCore {
     _logPoolSize: number;
     _options: NexysOptions;
     _isClient: boolean;
+    _allowDeviceData: boolean;
     _sendAllOnType: NexysOptions["sendAllOnType"];
+    _ignoreType: NexysOptions["ignoreType"];
+    _ignoreTypeSize: number;
     _config: configTypes;
     constructor(API_KEY: string, options?: NexysOptions);
     /**
@@ -66,17 +69,33 @@ export declare class NexysCore {
      * @public
      */
     log(data: logTypes["data"], options?: logTypes["options"]): void;
+    error(data: logTypes["data"], options?: logTypes["options"]): void;
+    metric(metric: {
+        id: string;
+        label: string;
+        name: string;
+        startTime: number;
+        value: number;
+    }): void;
     /**
      * Configures Nexys instance. All logs sent to Nexys will use these configurations.
      * This method will help you trough identifying your logs where came from like which user or which device.
      *
      * @example
      * ```javascript
-     * // Import types (Optional: If TypeScript is being used)
+     * // Import and initialize the client
+     * import Nexys from "nexys";
+     *
+     * const nexys = new Nexys("API_KEY", { appName: "My_app" });
+     *
+     * // Import types of config (Optional: If TypeScript is being used)
      * import type { configFunctions } from "nexys/dist/src/types";
-     * // Set user
+     *
      * nexys.configure((config: configFunctions) => {
+     *  // Set user
      *  config.setUser("123456789_UNIQUE_ID");
+     *  // Set client version (likely to be your app version)
+     *  config.setClient("1.0.0");
      * });
      * ```
      */
@@ -90,5 +109,14 @@ export declare class NexysCore {
      * ```
      */
     clear(): void;
+    /**
+     * This method will force a request to Nexys.
+     *
+     * @example
+     * ```javascript
+     * nexys.forceRequest();
+     * ```
+     */
+    forceRequest(): void;
 }
 //# sourceMappingURL=index.d.ts.map

@@ -33,8 +33,8 @@ export declare class LogPool {
      */
     process(): void;
     /**
-     * Sends everything to the server.
+     * Sends all data on Nexys to the server.
      */
-    private sendAll;
+    sendAll(): Promise<void>;
 }
 //# sourceMappingURL=index.d.ts.map

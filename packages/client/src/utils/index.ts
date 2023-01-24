@@ -17,8 +17,9 @@
 
 import Package from "../../package.json";
 
-export const server = "https://api.nexys.app";
-export const debugServer = "http://localhost";
+export const server = "https://dash.nexys.app";
+export const debugServer = "http://localhost:3000";
+export const libraryName = Package.name;
 export const version = Package.version;
 export { Base64 } from "./base64";
 export { isClient } from "./isClient";

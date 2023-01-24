@@ -44,6 +44,14 @@ function App() {
       >
         click to clear
       </button>
+
+      <button
+        onClick={async () => {
+          nexys.forceRequest();
+        }}
+      >
+        click to force requst
+      </button>
       {/*
       <button
         onClick={async () => {

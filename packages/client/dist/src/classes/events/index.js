@@ -26,6 +26,7 @@ var Events = /** @class */ (function () {
             logsClear: null,
             requestsClear: null,
             coreInit: null,
+            process: null,
             request: {
                 sending: null,
                 success: null,

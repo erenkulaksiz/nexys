@@ -47,7 +47,11 @@ export class API {
     this._sendingRequest = true;
     this.core.Events.on.request.sending?.(data);
 
-    return fetch(`${this._server}/api/${this._apiKey}/${this._appName}`, {
+    const server = `${this._server}/api/report/${this._apiKey}/${this._appName}`;
+
+    this.core.InternalLogger.log("API: Sending request to server", server);
+
+    return fetch(server, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -56,7 +60,6 @@ export class API {
       body: JSON.stringify(data),
     }).then(async (res: Response) => {
       if (res?.ok) {
-        this.core.InternalLogger.log("API: Request sent successfully.");
         this.requestCompleted();
         const json = await res.json();
         this.core.Events.on.request.success?.({ res, json });
