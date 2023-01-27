@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { isClient } from "../../utils";
 var Events = /** @class */ (function () {
     function Events(core) {
         var _a, _b, _c;
@@ -46,8 +45,8 @@ var Events = /** @class */ (function () {
             this.core.InternalLogger.log("Events: Couldnt bind error event. Already binded.");
             return;
         }
-        if (isClient()) {
-            this.core.InternalLogger.log("Events: Binding error event");
+        if (this.core._isClient) {
+            this.core.InternalLogger.log("Events: Binding error events.");
             try {
                 window.addEventListener("error", function (event) {
                     event.stopImmediatePropagation();

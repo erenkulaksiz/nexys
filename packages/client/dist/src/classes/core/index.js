@@ -31,7 +31,7 @@ import { InternalLogger } from "./../internalLogger";
 import { LocalStorage } from "./../localStorage";
 import { LogPool } from "./../logPool";
 import { Device } from "./../device";
-import { server, debugServer, version, isClient } from "../../utils";
+import { server, version, isClient, guid } from "../../utils";
 var defaultOptions = {
     // NexysOptions
     localStorage: {
@@ -47,7 +47,8 @@ var defaultOptions = {
 var NexysCore = /** @class */ (function () {
     // Core
     function NexysCore(API_KEY, options) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
+        this._env = (_a = process.env.NODE_ENV) !== null && _a !== void 0 ? _a : "production";
         this._version = version;
         this._server = server;
         this._logPoolSize = 5;
@@ -60,16 +61,17 @@ var NexysCore = /** @class */ (function () {
         ];
         this._ignoreType = "METRIC";
         this._ignoreTypeSize = 50;
-        this._config = {
-            user: null,
-            client: null,
-        };
+        this._config = null;
+        this._internalMetrics = [];
+        var _start = null, _end = null;
+        if (this._isClient)
+            _start = performance.now();
         // Options
         this._options = __assign(__assign({}, options), { localStorage: __assign(__assign({}, this._options.localStorage), options === null || options === void 0 ? void 0 : options.localStorage), errors: __assign(__assign({}, this._options.errors), options === null || options === void 0 ? void 0 : options.errors) });
         this._apiKey = API_KEY;
-        this._server = (options === null || options === void 0 ? void 0 : options.debug) ? debugServer : (_a = options === null || options === void 0 ? void 0 : options.server) !== null && _a !== void 0 ? _a : server;
-        this._logPoolSize = (_b = options === null || options === void 0 ? void 0 : options.logPoolSize) !== null && _b !== void 0 ? _b : this._logPoolSize;
-        this._allowDeviceData = (_c = options === null || options === void 0 ? void 0 : options.allowDeviceData) !== null && _c !== void 0 ? _c : this._allowDeviceData;
+        this._server = (_b = options === null || options === void 0 ? void 0 : options.server) !== null && _b !== void 0 ? _b : server;
+        this._logPoolSize = (_c = options === null || options === void 0 ? void 0 : options.logPoolSize) !== null && _c !== void 0 ? _c : this._logPoolSize;
+        this._allowDeviceData = (_d = options === null || options === void 0 ? void 0 : options.allowDeviceData) !== null && _d !== void 0 ? _d : this._allowDeviceData;
         this._sendAllOnType =
             typeof (options === null || options === void 0 ? void 0 : options.sendAllOnType) == "undefined"
                 ? this._sendAllOnType
@@ -88,7 +90,7 @@ var NexysCore = /** @class */ (function () {
             throw new Error("NexysCore: Please specify appName in constructor options");
         // Internal Logger
         this.InternalLogger = new InternalLogger(this, {
-            active: ((_d = this._options) === null || _d === void 0 ? void 0 : _d.debug) || false,
+            active: (_f = (_e = this._options) === null || _e === void 0 ? void 0 : _e.debug) !== null && _f !== void 0 ? _f : false,
         });
         // LogPool
         this.LogPool = new LogPool(this);
@@ -104,10 +106,10 @@ var NexysCore = /** @class */ (function () {
         this.Device = new Device(this);
         // LocalStorage
         this.LocalStorage = new LocalStorage(this, {
-            key: (_f = (_e = this._options.localStorage) === null || _e === void 0 ? void 0 : _e.key) !== null && _f !== void 0 ? _f : (_g = defaultOptions.localStorage) === null || _g === void 0 ? void 0 : _g.key,
-            testKey: (_j = (_h = this._options.localStorage) === null || _h === void 0 ? void 0 : _h.testKey) !== null && _j !== void 0 ? _j : (_k = defaultOptions.localStorage) === null || _k === void 0 ? void 0 : _k.testKey,
-            isEncrypted: (_m = (_l = this._options.localStorage) === null || _l === void 0 ? void 0 : _l.cryption) !== null && _m !== void 0 ? _m : (_o = defaultOptions.localStorage) === null || _o === void 0 ? void 0 : _o.cryption,
-            active: (_q = (_p = this._options.localStorage) === null || _p === void 0 ? void 0 : _p.useLocalStorage) !== null && _q !== void 0 ? _q : (_r = defaultOptions.localStorage) === null || _r === void 0 ? void 0 : _r.useLocalStorage,
+            key: (_h = (_g = this._options.localStorage) === null || _g === void 0 ? void 0 : _g.key) !== null && _h !== void 0 ? _h : (_j = defaultOptions.localStorage) === null || _j === void 0 ? void 0 : _j.key,
+            testKey: (_l = (_k = this._options.localStorage) === null || _k === void 0 ? void 0 : _k.testKey) !== null && _l !== void 0 ? _l : (_m = defaultOptions.localStorage) === null || _m === void 0 ? void 0 : _m.testKey,
+            isEncrypted: (_p = (_o = this._options.localStorage) === null || _o === void 0 ? void 0 : _o.cryption) !== null && _p !== void 0 ? _p : (_q = defaultOptions.localStorage) === null || _q === void 0 ? void 0 : _q.cryption,
+            active: (_s = (_r = this._options.localStorage) === null || _r === void 0 ? void 0 : _r.useLocalStorage) !== null && _s !== void 0 ? _s : (_t = defaultOptions.localStorage) === null || _t === void 0 ? void 0 : _t.useLocalStorage,
         });
         // Initialize others
         this.setupEventHandlers();
@@ -117,9 +119,25 @@ var NexysCore = /** @class */ (function () {
             this.InternalLogger.log("NexysCore: Altough NexysCore is designed to run on client side, it can be used on server side as well but some features will might not work.");
         }
         // Core Init Event
-        (_t = (_s = this.Events.on).coreInit) === null || _t === void 0 ? void 0 : _t.call(_s);
+        (_v = (_u = this.Events.on).coreInit) === null || _v === void 0 ? void 0 : _v.call(_u);
         // Log initialization
         this.InternalLogger.log("NexysCore: Initialized", this._version, this._options);
+        if (this._isClient)
+            _end = performance.now();
+        if (_start && _end) {
+            this.LogPool.push({
+                data: {
+                    type: "CORE:INIT",
+                    diff: _end - _start,
+                },
+                ts: new Date().getTime(),
+                options: {
+                    type: "METRIC",
+                },
+                guid: guid()
+            });
+            this.InternalLogger.log("NexysCore: Initialized in ".concat(_end - _start, "ms"));
+        }
     }
     /**
      * Automatic error handling.
@@ -147,6 +165,7 @@ var NexysCore = /** @class */ (function () {
                 options: {
                     type: "AUTO:ERROR",
                 },
+                guid: guid()
             });
         };
         this.Events.on.unhandledRejection = function (event) {
@@ -166,6 +185,7 @@ var NexysCore = /** @class */ (function () {
                 options: {
                     type: "AUTO:UNHANDLEDREJECTION",
                 },
+                guid: guid()
             });
         };
     };
@@ -226,6 +246,7 @@ var NexysCore = /** @class */ (function () {
             data: data,
             options: options,
             ts: new Date().getTime(),
+            guid: guid()
         });
     };
     NexysCore.prototype.error = function (data, options) {
@@ -233,8 +254,28 @@ var NexysCore = /** @class */ (function () {
             data: data,
             options: __assign(__assign({}, options), { type: "ERROR" }),
             ts: new Date().getTime(),
+            guid: guid()
         });
     };
+    /**
+     * `NextJS only method`
+     *  Collect metric data for NextJS for performance measuring
+     *  The metric data will not affect logPoolSize on default, log types with "METRIC" is ignored by default.
+     *  Data collected from metrics will be sent if any request to dashboard happens. We do not want to send metric data on each page load. This will cause your client to get rate limit blocked.
+     *  We will add metric support for React soon.
+     *
+     * @example
+     * ```javascript
+     * // Initialize the client
+     * const nexys = new Nexys("API_KEY", { appName: "My_app" });
+     * // inside /pages/_app.jsx|tsx
+     * export function reportWebVitals(metric: NextWebVitalsMetric) {
+     *  nexys.metric(metric);
+     * }
+     * ```
+     *
+     *  @param metric Metric data that you get from calling reportWebVitals in NextJS
+     */
     NexysCore.prototype.metric = function (metric) {
         this.LogPool.push({
             data: metric,
@@ -242,6 +283,7 @@ var NexysCore = /** @class */ (function () {
                 type: "METRIC",
             },
             ts: new Date().getTime(),
+            guid: guid()
         });
     };
     /**
@@ -261,8 +303,9 @@ var NexysCore = /** @class */ (function () {
      * nexys.configure((config: configFunctions) => {
      *  // Set user
      *  config.setUser("123456789_UNIQUE_ID");
-     *  // Set client version (likely to be your app version)
-     *  config.setClient("1.0.0");
+     *  // Set application version (likely to be your app version)
+     *  // This config is MUST-to-do because we will analyze each of your versions
+     *  config.setAppVersion("1.0.0");
      * });
      * ```
      */
@@ -272,12 +315,16 @@ var NexysCore = /** @class */ (function () {
             return typeof config == "function" &&
                 config({
                     setUser: function (user) {
-                        _this._config.user = user;
+                        _this._config = __assign(__assign({}, _this._config), { user: user });
                         _this.InternalLogger.log("NexysCore: User configured", user);
                     },
                     setClient: function (client) {
-                        _this._config.client = client;
+                        _this._config = __assign(__assign({}, _this._config), { client: client });
                         _this.InternalLogger.log("NexysCore: Client configured", client);
+                    },
+                    setAppVersion: function (appVersion) {
+                        _this._config = __assign(__assign({}, _this._config), { appVersion: appVersion });
+                        _this.InternalLogger.log("NexysCore: App Version configured", appVersion);
                     },
                 });
         })();

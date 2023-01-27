@@ -14,7 +14,7 @@ export default function App() {
       </button>
       <button
         onClick={() => {
-          Promise.reject(new Error("test"));
+          throw new Error("Exception test");
         }}
       >
         click to cause an error

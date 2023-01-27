@@ -27,5 +27,6 @@ export declare class InternalLogger {
     constructor(core: NexysCore, { active }: InternalLoggerConstructorParams);
     private checkAvailability;
     log(...args: any[]): void;
+    error(...args: any[]): void;
 }
 //# sourceMappingURL=index.d.ts.map

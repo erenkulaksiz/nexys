@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Base64, isClient } from "../../utils";
+import { Base64 } from "../../utils";
 /**
  * @class LocalStorage
  * @description This class is used to handle internal localStorage operations.
@@ -30,7 +30,7 @@ var LocalStorage = /** @class */ (function () {
         this.testKey = "__nexysTest__";
         this.shouldUseLocalStorage = false;
         this.core = core;
-        this._localStorage = isClient() ? window === null || window === void 0 ? void 0 : window.localStorage : null;
+        this._localStorage = this.core._isClient ? window === null || window === void 0 ? void 0 : window.localStorage : null;
         this.key = key;
         this.testKey = testKey;
         this.isEncrypted = isEncrypted;
@@ -41,7 +41,7 @@ var LocalStorage = /** @class */ (function () {
             this.core.InternalLogger.log("LocalStorage: Set to Active");
             // We will not going to use localStorage if library is loaded in server environment.
             this.shouldUseLocalStorage =
-                this.isAvailable && this._localStorage && isClient() ? true : false;
+                this.isAvailable && this._localStorage && this.core._isClient ? true : false;
             if (this.shouldUseLocalStorage) {
                 this.core.InternalLogger.log("LocalStorage: Using localStorage.");
             }
@@ -181,16 +181,16 @@ var LocalStorage = /** @class */ (function () {
         this.set(localValue);
     };
     LocalStorage.prototype.addToLogPool = function (_a) {
-        var data = _a.data, options = _a.options;
+        var data = _a.data, options = _a.options, guid = _a.guid;
         if (!this.shouldUseLocalStorage)
             return;
         var localValue = this.get();
         if (!localValue) {
-            this.core.InternalLogger.log("LocalStorage: Local value is null.");
+            this.core.InternalLogger.log("LocalStorage: Local value is null in addToLogPool.");
             this.resetLocalValue();
             // Resets and pushes first log.
             localValue = {
-                logPool: [{ ts: new Date().getTime(), data: data, options: options }],
+                logPool: [{ ts: new Date().getTime(), data: data, options: options, guid: guid }],
                 requests: [],
                 lastLogUpdate: new Date().getTime(),
             };
@@ -201,6 +201,7 @@ var LocalStorage = /** @class */ (function () {
             ts: new Date().getTime(),
             data: data,
             options: options,
+            guid: guid
         });
         localValue.lastLogUpdate = new Date().getTime();
         this.set(localValue);
@@ -211,7 +212,7 @@ var LocalStorage = /** @class */ (function () {
             return;
         var localValue = this.get();
         if (!localValue) {
-            this.core.InternalLogger.log("LocalStorage: Local value is null.");
+            this.core.InternalLogger.log("LocalStorage: Local value is null in addToRequest.");
             this.resetLocalValue();
             // Resets and pushes first log.
             localValue = {
@@ -230,7 +231,7 @@ var LocalStorage = /** @class */ (function () {
             return null;
         var localValue = this.get();
         if (!localValue) {
-            this.core.InternalLogger.log("LocalStorage: Local value is null.");
+            this.core.InternalLogger.log("LocalStorage: Local value is null in getLocalLogs.");
             return this.resetLocalValue().logPool;
         }
         return localValue === null || localValue === void 0 ? void 0 : localValue.logPool;
@@ -240,13 +241,13 @@ var LocalStorage = /** @class */ (function () {
             return null;
         var localValue = this.get();
         if (!localValue) {
-            this.core.InternalLogger.log("LocalStorage: Local value is null.");
+            this.core.InternalLogger.log("LocalStorage: Local value is null in getLocalRequests.");
             return this.resetLocalValue().requests;
         }
         return localValue === null || localValue === void 0 ? void 0 : localValue.requests;
     };
     LocalStorage.prototype.resetLocalValue = function () {
-        this.core.InternalLogger.log("LocalStorage: Resetting local value.");
+        this.core.InternalLogger.log("LocalStorage: Resetting local value in resetLocalValue.");
         var val = {
             logPool: [],
             requests: [],
@@ -254,6 +255,19 @@ var LocalStorage = /** @class */ (function () {
         };
         this.set(val);
         return val;
+    };
+    LocalStorage.prototype.setAPIValues = function (value) {
+        if (!this.shouldUseLocalStorage)
+            return;
+        var localValue = this.get();
+        if (!localValue) {
+            this.core.InternalLogger.log("LocalStorage: Local value is null in setAPIValue.");
+            this.resetLocalValue();
+            localValue = this.get();
+            return;
+        }
+        localValue.API = value;
+        this.set(localValue);
     };
     return LocalStorage;
 }());

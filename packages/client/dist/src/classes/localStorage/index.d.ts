@@ -39,10 +39,11 @@ export declare class LocalStorage {
     clear(): void;
     clearLogPool(): void;
     clearRequests(): void;
-    addToLogPool({ data, options }: logTypes): void;
+    addToLogPool({ data, options, guid }: logTypes): void;
     addToRequest({ res, status, ts }: requestTypes): void;
     getLocalLogs(): logTypes[] | null;
     getLocalRequests(): requestTypes[] | null;
     resetLocalValue(): LocalStorageTypes;
+    setAPIValues(value: any): void;
 }
 //# sourceMappingURL=index.d.ts.map

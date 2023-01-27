@@ -56,15 +56,16 @@ declare class Nexys extends NexysCore {
      * @param options.debug - `Optional` - `boolean` - Enables debug mode for internal logs - Default is `false`
      * @param options.logPoolSize - `Optional` - `number` - Sets the logPool max log size to send when logPool size exceedes this limit - Default is `5`
      * @param options.sendAllOnType - `Optional` - `logOptionTypes | logOptionTypes[] | false` - Ignores logPoolSize when any log with specified type is recieved sends data to API - Default is `["AUTO:ERROR", "AUTO:UNHANDLEDREJECTION"]`
-     * @param options.ignoreType - `Optional` - `logOptionTypes | logOptionTypes[] | false` - Ignores logs with specified type - Default is `"METRIC"`
+     * @param options.ignoreType - `Optional` - `logOptionTypes | logOptionTypes[] | false` - Ignores logs with specified type (these logs will not count as log and not affect logPool length but will be sent if any request be made) - Default is `"METRIC"`
      * @param options.ignoreTypeSize - `Optional` - `number` - Determine max length of ignored log types could be stored in logPool before sending request - Keeping this number high is preferred - Default is `50`
-     * @param options.server - `Optional` - `string` - Change logging server - Default is `https://api.nexys.dev`
+     * @param options.server - `Optional` - `string` - Change logging server - Default is `https://dash.nexys.app`
      * @param options.allowDeviceData - `Optional` - `boolean` - Should send device data - Disable if you dont want your users to get notified for geolocation - Default is `true`
      * @param options.localStorage - `Optional` - `object` - Object containing options about localStorage
-     * @param options.localStorage.useLocalStorage - `Optional` - `boolean` - Should use localStorage - Default is `true`
+     * @param options.localStorage.useLocalStorage - `Optional` - `boolean` - Should use localStorage - Nexys will try to use localStorage if available if value is true - Default is `true`
      * @param options.localStorage.cryption - `Optional` - `boolean` - Should use cryption on localStorage - Default is `true`
      * @param options.localStorage.key - `Optional` - `string` - Change localStorage key - Default is `__nexysLogPool__`
      * @param options.localStorage.testKey - `Optional` - `string` - Use a different localStorage key for testing localStorage availability - Default is `__nexysTest__`
+     * @param options.errors - `Optional` - `object` - Object containing error related options
      * @param options.errors.allowAutomaticHandling - `Optional` - `boolean` - Set automatic error handling - Default is `true`
      *
      * @returns A Nexys instance

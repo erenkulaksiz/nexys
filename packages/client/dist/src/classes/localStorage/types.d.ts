@@ -25,5 +25,8 @@ export interface LocalStorageTypes {
     logPool: logTypes[];
     lastLogUpdate: number;
     requests: requestTypes[];
+    API?: {
+        [key: string]: string | object;
+    };
 }
 //# sourceMappingURL=types.d.ts.map

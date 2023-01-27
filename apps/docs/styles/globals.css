@@ -24,6 +24,22 @@ div#__next {
   position: relative;
 }
 
+.hljs {
+  @apply w-full;
+  @apply sm:w-1/2;
+}
+
+h1 {
+  font-size: 2em;
+  font-weight: bold;
+}
+
 h2{
-  font-size: 1.2em;
+  font-size: 1.4em;
+  @apply font-semibold;
+}
+
+ul {
+  @apply list-disc;
+  @apply pl-4;
 }

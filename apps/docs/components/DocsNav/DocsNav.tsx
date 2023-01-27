@@ -40,8 +40,8 @@ export function DocsNav({
                       key={doc.filePath + "_link"}
                       className={
                         doc.data.id == id
-                          ? "pr-6 pl-6 transition-all duration-200 ease-in-out w-full dark:bg-neutral-800 bg-neutral-300 hover:bg-neutral-300 hover:dark:bg-neutral-800 rounded-md p-1 flex justify-center"
-                          : "pr-6 pl-6 transition-all duration-200 ease-in-out w-full rounded-md p-1 flex justify-center hover:bg-neutral-300 hover:dark:bg-neutral-800"
+                          ? "pr-6 pl-6 transition-all duration-200 ease-in-out w-full dark:bg-neutral-800 bg-neutral-100 hover:bg-neutral-200 hover:dark:bg-neutral-800 rounded-md p-1 flex justify-center"
+                          : "pr-6 pl-6 transition-all duration-200 ease-in-out w-full rounded-md p-1 flex justify-center hover:bg-neutral-200 hover:dark:bg-neutral-800"
                       }
                     >
                       {doc.data.title}
@@ -58,7 +58,9 @@ export function DocsNav({
   return (
     <div className="hidden sm:flex flex-col gap-2 p-4 sticky top-0 border-r-[1px] border-r-neutral-300 dark:border-r-neutral-800">
       <div className="flex flex-col gap-2">
-        {Object.keys(categoriedDocs).map((category) => (
+        {Object.keys(categoriedDocs).sort((a: any,b: any) => {
+          return categoriedDocs[a][0].data.order - categoriedDocs[b][0].data.order
+        }).map((category) => (
           <div className="flex flex-col gap-2" key={category}>
             <div className="text-xs font-bold uppercase text-neutral-500">
               {category}
@@ -74,8 +76,8 @@ export function DocsNav({
                       key={doc.filePath + "_2link"}
                       className={
                         doc.data.id == id
-                          ? "pr-10 pl-10 transition-all duration-200 ease-in-out w-full dark:bg-neutral-800 bg-neutral-300 hover:bg-neutral-300 hover:dark:bg-neutral-800 rounded-md p-1 flex justify-center"
-                          : "pr-10 pl-10 transition-all duration-200 ease-in-out w-full rounded-md p-1 flex justify-center hover:bg-neutral-300 hover:dark:bg-neutral-800"
+                        ? "pr-6 pl-6 transition-all duration-200 ease-in-out w-full dark:bg-neutral-800 bg-neutral-100 hover:bg-neutral-200 hover:dark:bg-neutral-800 rounded-md p-1 flex justify-center"
+                        : "pr-6 pl-6 transition-all duration-200 ease-in-out w-full rounded-md p-1 flex justify-center hover:bg-neutral-200 hover:dark:bg-neutral-800"
                       }
                     >
                       {doc.data.title}

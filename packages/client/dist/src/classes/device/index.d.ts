@@ -31,8 +31,7 @@ export declare class Device {
     getUserAgent(): string | null;
     getConnection(): Promise<NetworkInformation>;
     getScreen(): {
-        height: number;
-        width: number;
+        [key: string]: number;
     } | null;
     getDeviceData(): Promise<getDeviceDataReturnTypes>;
 }

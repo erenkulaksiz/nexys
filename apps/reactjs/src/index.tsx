@@ -7,7 +7,8 @@ import { nexys } from "./utils";
 import { configFunctions } from "nexys/dist/src/types";
 
 nexys.configure((config: configFunctions) => {
-  config.setUser("selamKISMET");
+  config.setUser("@erenk");
+  config.setAppVersion("2.1.44");
 });
 
 const root = ReactDOM.createRoot(

@@ -94,22 +94,34 @@ var API = /** @class */ (function () {
                         headers: __assign({ "Content-Type": "application/json" }, headers),
                         body: JSON.stringify(data),
                     }).then(function (res) { return __awaiter(_this, void 0, void 0, function () {
-                        var json;
-                        var _a, _b;
-                        return __generator(this, function (_c) {
-                            switch (_c.label) {
+                        var json, err_1;
+                        var _a, _b, _c, _d;
+                        return __generator(this, function (_e) {
+                            switch (_e.label) {
                                 case 0:
-                                    if (!(res === null || res === void 0 ? void 0 : res.ok)) return [3 /*break*/, 2];
-                                    this.requestCompleted();
-                                    return [4 /*yield*/, res.json()];
+                                    json = null;
+                                    _e.label = 1;
                                 case 1:
-                                    json = _c.sent();
-                                    (_b = (_a = this.core.Events.on.request).success) === null || _b === void 0 ? void 0 : _b.call(_a, { res: res, json: json });
-                                    return [2 /*return*/, {
-                                            res: res,
-                                            json: json,
-                                        }];
-                                case 2: throw new Error("API:FAILED:".concat(res.status));
+                                    _e.trys.push([1, 3, , 4]);
+                                    return [4 /*yield*/, res.json()];
+                                case 2:
+                                    json = _e.sent();
+                                    return [3 /*break*/, 4];
+                                case 3:
+                                    err_1 = _e.sent();
+                                    json = null;
+                                    throw new Error("API:FAILED:JSON_PARSE_ERROR");
+                                case 4:
+                                    if (res === null || res === void 0 ? void 0 : res.ok) {
+                                        this.requestCompleted();
+                                        (_b = (_a = this.core.Events.on.request).success) === null || _b === void 0 ? void 0 : _b.call(_a, { res: res, json: json });
+                                        return [2 /*return*/, {
+                                                res: res,
+                                                json: json,
+                                            }];
+                                    }
+                                    (_d = (_c = this.core.Events.on.request).error) === null || _d === void 0 ? void 0 : _d.call(_c, { error: json });
+                                    throw new Error("API:FAILED:".concat(res.status, ":").concat(json === null || json === void 0 ? void 0 : json.error));
                             }
                         });
                     }); })];

@@ -55,8 +55,8 @@ export class Events {
       );
       return;
     }
-    if (isClient()) {
-      this.core.InternalLogger.log("Events: Binding error event");
+    if (this.core._isClient) {
+      this.core.InternalLogger.log("Events: Binding error events.");
       try {
         window.addEventListener("error", (event: ErrorEvent) => {
           event.stopImmediatePropagation();

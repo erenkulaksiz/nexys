@@ -29,7 +29,7 @@ export class Device {
 
   constructor(core: NexysCore) {
     this.core = core;
-    this._isAvailable = isClient() && this.checkAvailability();
+    this._isAvailable = this.core._isClient && this.checkAvailability();
   }
 
   private checkAvailability(): boolean {
@@ -80,11 +80,11 @@ export class Device {
         reject(null);
         return;
       }
-      if (!navigator?.geolocation?.getCurrentPosition) {
-        reject(null);
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(resolve, reject);
         return;
       }
-      navigator.geolocation.getCurrentPosition(resolve, reject);
+      reject(null);
     });
   }
 
@@ -125,11 +125,15 @@ export class Device {
     });
   }
 
-  public getScreen(): { height: number; width: number } | null {
+  public getScreen(): { [key: string]: number } | null {
     if (!this._isAvailable) return null;
     return {
-      height: window.screen.height,
-      width: window.screen.width,
+      height: window.screen?.height,
+      width: window.screen?.width,
+      colorDepth: window.screen?.colorDepth,
+      availHeight: window.screen?.availHeight,
+      availWidth: window.screen?.availWidth,
+      pixelDepth: window.screen?.pixelDepth,
     };
   }
 
@@ -153,6 +157,7 @@ export class Device {
       deviceMemory: this.getDeviceMemory(),
       hardwareConcurrency: this.getHardwareConcurrency(),
       userAgent: this.getUserAgent(),
+      screen: this.getScreen(),
       battery: {
         charging: battery?.charging,
         chargingTime: battery?.chargingTime,

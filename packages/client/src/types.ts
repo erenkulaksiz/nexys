@@ -62,6 +62,7 @@ export interface logTypes {
   data: any;
   options?: logOptions;
   ts: number;
+  guid: string;
 }
 
 export interface requestTypes {
@@ -73,9 +74,11 @@ export interface requestTypes {
 export interface configTypes {
   user?: string | null;
   client?: string | null;
+  appVersion?: string | null;
 }
 
 export interface configFunctions {
   setUser: (user: string) => void;
   setClient: (client: string) => void;
+  setAppVersion: (version: string) => void;
 }

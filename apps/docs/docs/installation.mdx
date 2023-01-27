@@ -1,57 +1,56 @@
 ---
 title: Installation
-id: install
+id: installation
 category: installation
-order: 0
+order: 1
 ---
 
 ## Install Nexys with npm
+
 ```bash
 npm install nexys
 ```
 
 ## Import Nexys to your project
+
 ```javascript
 import Nexys from "nexys";
 ```
 
 ## Then initialize Nexys
+
 ```javascript
-const nexys = new Nexys("API_KEY");
-nexys.log("Then start logging!");
+const nexys = new Nexys("API_KEY", { appName: "APP_NAME" });
 ```
 
 ## Start logging!
+
 ```javascript
 nexys.log("Hello World!");
 ```
 
-## Or with tags
+## Or give an syntetic error
+
 ```javascript
-nexys.log("Hello, with tags!", "INFO");
+nexys.error("Probably some failure");
 ```
 
-## Or tags with categories
+## What about real error?
+
 ```javascript
-nexys.log("USER 1 LOGIN", "General/Info/UserLogin");
+throw new Error("My excellent error");
 ```
 
-## Or send custom data
+- Errors will be caught and will be sent to dashboard by Nexys automatically if specified in options.
+
+## Or complex objects
+
 ```javascript
-nexys.log(
-    { // custom data, need to send as an object
-        message: "USER 1 LOGIN", // this is important, you need to send message with a log message
-        data: { // you can send any data you want, inside data object after message
-            user: {
-                id: 1,
-                name: "John Doe",
-            },
-            timestamp: Date.now()
-        },
-    }, 
-    "General/Info/UserLogin" // Tag with category
-);
+nexys.log({
+  test: true,
+  myBigObject: {
+    okay: false,
+    iUseNexys: true
+  }
+});
 ```
-
-More examples and documentation will be available soon.
-

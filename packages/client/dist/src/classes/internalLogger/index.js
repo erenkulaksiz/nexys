@@ -58,6 +58,15 @@ var InternalLogger = /** @class */ (function () {
             return;
         console.log.apply(console, __spreadArray(["[NEXYS-DEBUG]: "], args, false));
     };
+    InternalLogger.prototype.error = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        if (!this._active || !this.isAvailable)
+            return;
+        console.error.apply(console, __spreadArray(["[NEXYS-ERROR]: "], args, false));
+    };
     return InternalLogger;
 }());
 export { InternalLogger };

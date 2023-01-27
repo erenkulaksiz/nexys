@@ -16,33 +16,15 @@ export default function App({
   source: any;
   frontMatter: any;
 }) {
-  return <DocPage source={source} frontMatter={frontMatter} docs={docs} />;
+  return <></>
 }
 
-export async function getStaticProps() {
-  const docs = docsFilePaths.map((filePath) => {
-    const source = fs.readFileSync(path.join(DOCS_PATH, filePath));
-    const { content, data } = matter(source);
-
-    return {
-      content,
-      data,
-      filePath,
-    };
-  });
-
-  const LANDING_PATH = path.join(process.cwd(), "components/landing.mdx");
-  const source = fs.readFileSync(LANDING_PATH);
-
-  const { content, data } = matter(source);
-
-  const mdxSource = await serialize(content, {
-    mdxOptions: {
-      remarkPlugins: [],
-      rehypePlugins: [rehypeHighlight],
+export const getServerSideProps = () => {
+  return {
+    redirect: {
+      permanent: false,
+      destination: "/page/home",
     },
-    scope: data,
-  });
-
-  return { props: { docs, source: mdxSource, frontMatter: data } };
+    props:{},
+  };
 }

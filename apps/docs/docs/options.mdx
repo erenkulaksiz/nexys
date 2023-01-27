@@ -1,0 +1,89 @@
+---
+title: Options
+id: options
+category: options
+order: 2
+---
+
+You might need to configure Nexys Client Library for best results.
+
+```javascript
+import Nexys from "nexys";
+
+const nexys = new Nexys("API_KEY", { appName: "APP_NAME" });
+```
+
+While declaring a new Nexys instance, you can enter few options inside second parameter of constructor.
+
+Example:
+
+```javascript
+export const nexys: Nexys = new Nexys("API_KEY", {
+  appName: "APP_NAME",
+  debug: true,
+  server: "http://localhost:3000",
+  localStorage: {
+    cryption: false
+  }
+});
+```
+
+# appName
+
+- `Required` - `string` - Name of your application
+
+# debug
+
+- `Optional` - `boolean` - Enables debug mode for internal logs - Default is `false`
+
+# logPoolSize
+
+- `Optional` - `number` - Sets the logPool max log size to send when logPool size exceedes this limit - Default is `5`
+
+# sendAllOnType
+
+- `Optional` - `logOptionTypes | logOptionTypes[] | false` - Ignores logPoolSize when any log with specified type is recieved sends data to API - Default is `["AUTO:ERROR", "AUTO:UNHANDLEDREJECTION"]`
+
+# ignoreType
+
+- `Optional` - `logOptionTypes | logOptionTypes[] | false` - Ignores logs with specified type (these logs will not count as log and not affect logPool length but will be sent if any request be made) - Default is `"METRIC"`
+
+# ignoreTypeSize
+
+- `Optional` - `number` - Determine max length of ignored log types could be stored in logPool before sending request - Keeping this number high is preferred - Default is `50`
+
+# server
+
+- `Optional` - `string` - Change logging server - Default is `https://dash.nexys.app`
+
+# allowDeviceData
+
+- `Optional` - `boolean` - Should send device data - Disable if you dont want your users to get notified for geolocation - Default is `true`
+
+# localStorage
+
+- `Optional` - `object` - Object containing options about localStorage
+
+## localStorage.useLocalStorage
+
+- `Optional` - `boolean` - Should use localStorage - Nexys will try to use localStorage if available if value is true - Default is `true`
+
+## localStorage.cryption
+
+- `Optional` - `boolean` - Should use cryption on localStorage - Default is `true`
+
+## localStorage.key
+
+- `Optional` - `string` - Change localStorage key - Default is `__nexysLogPool__`
+
+## localStorage.testKey
+
+- `Optional` - `string` - Use a different localStorage key for testing localStorage availability - Default is `__nexysTest__`
+
+# errors
+
+- `Optional` - `object` - Object containing error related options
+
+## errors.allowAutomaticHandling
+
+- `Optional` - `boolean` - Set automatic error handling - Default is `true`

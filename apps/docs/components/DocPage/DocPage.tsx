@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Head from "next/head";
 import { useState } from "react";
 import { MDXRemote } from "next-mdx-remote";
@@ -45,9 +46,10 @@ export function DocPage({
                 </p>
               )}
             </div>
-            <div className="p-4 pt-0 flex flex-col">
+            <div className="p-4 pt-0 flex flex-col gap-4">
               <MDXRemote {...source} components={{}} />
             </div>
+            <Link className="px-4 py-2 text-sm dark:text-neutral-400 text-neutral-400" target="_blank" href={`https://github.com/erenkulaksiz/nexys/blob/master/apps/docs/docs/${frontMatter.id}.mdx`}>edit this page </Link>
           </div>
         )}
       </DocsContainer>

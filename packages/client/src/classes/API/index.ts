@@ -59,16 +59,26 @@ export class API {
       },
       body: JSON.stringify(data),
     }).then(async (res: Response) => {
+      let json = null;
+
+      try {
+        json = await res.json();
+      } catch (err) {
+        json = null;
+        throw new Error(`API:FAILED:JSON_PARSE_ERROR`);
+      }
+
       if (res?.ok) {
         this.requestCompleted();
-        const json = await res.json();
         this.core.Events.on.request.success?.({ res, json });
         return {
           res,
           json,
         };
       }
-      throw new Error(`API:FAILED:${res.status}`);
+
+      this.core.Events.on.request.error?.({ error: json });
+      throw new Error(`API:FAILED:${res.status}:${json?.error}`);
     });
   }
 

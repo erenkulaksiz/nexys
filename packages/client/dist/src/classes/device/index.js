@@ -50,12 +50,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { isClient } from "../../utils";
 var Device = /** @class */ (function () {
     function Device(core) {
         this._isAvailable = false;
         this.core = core;
-        this._isAvailable = isClient() && this.checkAvailability();
+        this._isAvailable = this.core._isClient && this.checkAvailability();
     }
     Device.prototype.checkAvailability = function () {
         if (typeof navigator !== "undefined") {
@@ -101,16 +100,15 @@ var Device = /** @class */ (function () {
     Device.prototype.getGeolocation = function () {
         var _this = this;
         return new Promise(function (resolve, reject) {
-            var _a;
             if (!_this._isAvailable) {
                 reject(null);
                 return;
             }
-            if (!((_a = navigator === null || navigator === void 0 ? void 0 : navigator.geolocation) === null || _a === void 0 ? void 0 : _a.getCurrentPosition)) {
-                reject(null);
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(resolve, reject);
                 return;
             }
-            navigator.geolocation.getCurrentPosition(resolve, reject);
+            reject(null);
         });
     };
     Device.prototype.getBattery = function () {
@@ -155,11 +153,16 @@ var Device = /** @class */ (function () {
         });
     };
     Device.prototype.getScreen = function () {
+        var _a, _b, _c, _d, _e, _f;
         if (!this._isAvailable)
             return null;
         return {
-            height: window.screen.height,
-            width: window.screen.width,
+            height: (_a = window.screen) === null || _a === void 0 ? void 0 : _a.height,
+            width: (_b = window.screen) === null || _b === void 0 ? void 0 : _b.width,
+            colorDepth: (_c = window.screen) === null || _c === void 0 ? void 0 : _c.colorDepth,
+            availHeight: (_d = window.screen) === null || _d === void 0 ? void 0 : _d.availHeight,
+            availWidth: (_e = window.screen) === null || _e === void 0 ? void 0 : _e.availWidth,
+            pixelDepth: (_f = window.screen) === null || _f === void 0 ? void 0 : _f.pixelDepth,
         };
     };
     Device.prototype.getDeviceData = function () {
@@ -191,6 +194,7 @@ var Device = /** @class */ (function () {
                                 deviceMemory: this.getDeviceMemory(),
                                 hardwareConcurrency: this.getHardwareConcurrency(),
                                 userAgent: this.getUserAgent(),
+                                screen: this.getScreen(),
                                 battery: {
                                     charging: battery === null || battery === void 0 ? void 0 : battery.charging,
                                     chargingTime: battery === null || battery === void 0 ? void 0 : battery.chargingTime,

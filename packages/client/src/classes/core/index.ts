@@ -21,13 +21,12 @@ import { InternalLogger } from "./../internalLogger";
 import { LocalStorage } from "./../localStorage";
 import { LogPool } from "./../logPool";
 import { Device } from "./../device";
-import { server, debugServer, version, isClient } from "../../utils";
+import { server, version, isClient, guid } from "../../utils";
 import type {
   NexysOptions,
   logTypes,
   configTypes,
   configFunctions,
-  logOptionTypes,
 } from "../../types";
 
 const defaultOptions = {
@@ -51,6 +50,7 @@ export class NexysCore {
   Device: Device;
   LocalStorage: LocalStorage;
 
+  _env: string = process.env.NODE_ENV ?? "production";
   _apiKey: string;
   _version: string = version;
   _server: string = server;
@@ -64,13 +64,14 @@ export class NexysCore {
   ];
   _ignoreType: NexysOptions["ignoreType"] = "METRIC";
   _ignoreTypeSize: number = 50;
-  _config: configTypes = {
-    user: null,
-    client: null,
-  };
+  _config: configTypes | null = null;
+  _internalMetrics: any = [];
 
   // Core
   constructor(API_KEY: string, options?: NexysOptions) {
+    let _start: number | null = null,
+      _end: number | null = null;
+    if (this._isClient) _start = performance.now();
     // Options
     this._options = {
       ...options,
@@ -84,7 +85,7 @@ export class NexysCore {
       },
     };
     this._apiKey = API_KEY;
-    this._server = options?.debug ? debugServer : options?.server ?? server;
+    this._server = options?.server ?? server;
     this._logPoolSize = options?.logPoolSize ?? this._logPoolSize;
     this._allowDeviceData = options?.allowDeviceData ?? this._allowDeviceData;
 
@@ -111,7 +112,7 @@ export class NexysCore {
 
     // Internal Logger
     this.InternalLogger = new InternalLogger(this, {
-      active: this._options?.debug || false,
+      active: this._options?.debug ?? false,
     });
 
     // LogPool
@@ -166,6 +167,22 @@ export class NexysCore {
       this._version,
       this._options
     );
+
+    if (this._isClient) _end = performance.now();
+    if (_start && _end) {
+      this.LogPool.push({
+        data: {
+          type: "CORE:INIT",
+          diff: _end - _start,
+        },
+        ts: new Date().getTime(),
+        options: {
+          type: "METRIC",
+        },
+        guid: guid()
+      });
+      this.InternalLogger.log(`NexysCore: Initialized in ${_end - _start}ms`);
+    }
   }
 
   /**
@@ -196,6 +213,7 @@ export class NexysCore {
         options: {
           type: "AUTO:ERROR",
         },
+        guid: guid()
       });
     };
 
@@ -219,6 +237,7 @@ export class NexysCore {
         options: {
           type: "AUTO:UNHANDLEDREJECTION",
         },
+        guid: guid()
       });
     };
   }
@@ -297,6 +316,7 @@ export class NexysCore {
       data,
       options,
       ts: new Date().getTime(),
+      guid: guid()
     });
   }
 
@@ -308,9 +328,29 @@ export class NexysCore {
         type: "ERROR",
       },
       ts: new Date().getTime(),
+      guid: guid()
     });
   }
 
+  /**
+   * `NextJS only method`
+   *  Collect metric data for NextJS for performance measuring
+   *  The metric data will not affect logPoolSize on default, log types with "METRIC" is ignored by default.
+   *  Data collected from metrics will be sent if any request to dashboard happens. We do not want to send metric data on each page load. This will cause your client to get rate limit blocked.
+   *  We will add metric support for React soon.
+   *
+   * @example
+   * ```javascript
+   * // Initialize the client
+   * const nexys = new Nexys("API_KEY", { appName: "My_app" });
+   * // inside /pages/_app.jsx|tsx
+   * export function reportWebVitals(metric: NextWebVitalsMetric) {
+   *  nexys.metric(metric);
+   * }
+   * ```
+   *
+   *  @param metric Metric data that you get from calling reportWebVitals in NextJS
+   */
   public metric(metric: {
     id: string;
     label: string;
@@ -324,6 +364,7 @@ export class NexysCore {
         type: "METRIC",
       },
       ts: new Date().getTime(),
+      guid: guid()
     });
   }
 
@@ -344,8 +385,9 @@ export class NexysCore {
    * nexys.configure((config: configFunctions) => {
    *  // Set user
    *  config.setUser("123456789_UNIQUE_ID");
-   *  // Set client version (likely to be your app version)
-   *  config.setClient("1.0.0");
+   *  // Set application version (likely to be your app version)
+   *  // This config is MUST-to-do because we will analyze each of your versions
+   *  config.setAppVersion("1.0.0");
    * });
    * ```
    */
@@ -354,12 +396,28 @@ export class NexysCore {
       typeof config == "function" &&
       config({
         setUser: (user: string) => {
-          this._config.user = user;
+          this._config = {
+            ...this._config,
+            user,
+          };
           this.InternalLogger.log("NexysCore: User configured", user);
         },
         setClient: (client: string) => {
-          this._config.client = client;
+          this._config = {
+            ...this._config,
+            client,
+          };
           this.InternalLogger.log("NexysCore: Client configured", client);
+        },
+        setAppVersion: (appVersion: string) => {
+          this._config = {
+            ...this._config,
+            appVersion,
+          };
+          this.InternalLogger.log(
+            "NexysCore: App Version configured",
+            appVersion
+          );
         },
       }))();
   }

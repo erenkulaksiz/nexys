@@ -28,6 +28,7 @@ export declare class NexysCore {
     API: API;
     Device: Device;
     LocalStorage: LocalStorage;
+    _env: string;
     _apiKey: string;
     _version: string;
     _server: string;
@@ -38,7 +39,8 @@ export declare class NexysCore {
     _sendAllOnType: NexysOptions["sendAllOnType"];
     _ignoreType: NexysOptions["ignoreType"];
     _ignoreTypeSize: number;
-    _config: configTypes;
+    _config: configTypes | null;
+    _internalMetrics: any;
     constructor(API_KEY: string, options?: NexysOptions);
     /**
      * Automatic error handling.
@@ -70,6 +72,25 @@ export declare class NexysCore {
      */
     log(data: logTypes["data"], options?: logTypes["options"]): void;
     error(data: logTypes["data"], options?: logTypes["options"]): void;
+    /**
+     * `NextJS only method`
+     *  Collect metric data for NextJS for performance measuring
+     *  The metric data will not affect logPoolSize on default, log types with "METRIC" is ignored by default.
+     *  Data collected from metrics will be sent if any request to dashboard happens. We do not want to send metric data on each page load. This will cause your client to get rate limit blocked.
+     *  We will add metric support for React soon.
+     *
+     * @example
+     * ```javascript
+     * // Initialize the client
+     * const nexys = new Nexys("API_KEY", { appName: "My_app" });
+     * // inside /pages/_app.jsx|tsx
+     * export function reportWebVitals(metric: NextWebVitalsMetric) {
+     *  nexys.metric(metric);
+     * }
+     * ```
+     *
+     *  @param metric Metric data that you get from calling reportWebVitals in NextJS
+     */
     metric(metric: {
         id: string;
         label: string;
@@ -94,8 +115,9 @@ export declare class NexysCore {
      * nexys.configure((config: configFunctions) => {
      *  // Set user
      *  config.setUser("123456789_UNIQUE_ID");
-     *  // Set client version (likely to be your app version)
-     *  config.setClient("1.0.0");
+     *  // Set application version (likely to be your app version)
+     *  // This config is MUST-to-do because we will analyze each of your versions
+     *  config.setAppVersion("1.0.0");
      * });
      * ```
      */

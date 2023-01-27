@@ -49,4 +49,9 @@ export class InternalLogger {
     if (!this._active || !this.isAvailable) return;
     console.log("[NEXYS-DEBUG]: ", ...args);
   }
+
+  public error(...args: any[]): void {
+    if (!this._active || !this.isAvailable) return;
+    console.error("[NEXYS-ERROR]: ", ...args);
+  }
 }

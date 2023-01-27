@@ -1,19 +1,3 @@
-/**
- * @license
- * Copyright 2023 Eren Kulaksiz
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -61,7 +45,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { version, libraryName } from "../../utils";
+import { version, libraryName, collectNextJSData, collectVercelEnv, guid, } from "../../utils";
 var LogPool = /** @class */ (function () {
     function LogPool(core) {
         // All logs stored here.
@@ -100,15 +84,16 @@ var LogPool = /** @class */ (function () {
     };
     LogPool.prototype.push = function (_a) {
         var _b, _c;
-        var data = _a.data, options = _a.options, ts = _a.ts;
+        var data = _a.data, options = _a.options, ts = _a.ts, guid = _a.guid;
         this.logs.push({
             data: data,
             ts: ts,
             options: options,
+            guid: guid
         });
         this.process();
-        (_c = (_b = this.core.Events.on).logAdd) === null || _c === void 0 ? void 0 : _c.call(_b, { data: data, options: options, ts: ts });
-        this.core.LocalStorage.addToLogPool({ data: data, options: options, ts: ts });
+        (_c = (_b = this.core.Events.on).logAdd) === null || _c === void 0 ? void 0 : _c.call(_b, { data: data, options: options, ts: ts, guid: guid });
+        this.core.LocalStorage.addToLogPool({ data: data, options: options, ts: ts, guid: guid });
     };
     LogPool.prototype.pushRequest = function (_a) {
         var _b, _c;
@@ -219,11 +204,14 @@ var LogPool = /** @class */ (function () {
     LogPool.prototype.sendAll = function () {
         var _a;
         return __awaiter(this, void 0, void 0, function () {
-            var deviceData, config;
+            var _start, _end, deviceData, config, data, nextJSData, vercelEnv;
             var _this = this;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
+                        _start = null, _end = null;
+                        if (this.core._isClient)
+                            _start = performance.now();
                         this.core.InternalLogger.log("LogPool: sendAll() called.");
                         deviceData = "disabled";
                         if (!this.core._allowDeviceData) return [3 /*break*/, 2];
@@ -241,31 +229,66 @@ var LogPool = /** @class */ (function () {
                             this.core.InternalLogger.log("LogPool: No logs or requests to send.");
                             return [2 /*return*/];
                         }
-                        this.core.API.sendRequest({
-                            data: {
-                                logs: this.logs,
-                                requests: this.requests,
-                                deviceData: deviceData,
-                                config: config,
-                                package: {
-                                    libraryName: libraryName,
-                                    version: version,
-                                },
-                                options: __assign(__assign({}, this.core._options), { logPoolSize: this.core._logPoolSize, allowDeviceData: this.core._allowDeviceData, sendAllOnType: this.core._sendAllOnType, ignoreType: this.core._ignoreType, ignoreTypeSize: this.core._ignoreTypeSize }),
+                        data = {
+                            logs: this.logs,
+                            requests: this.requests,
+                            deviceData: deviceData,
+                            package: {
+                                libraryName: libraryName,
+                                version: version,
                             },
+                            options: __assign(__assign({}, this.core._options), { logPoolSize: this.core._logPoolSize, allowDeviceData: this.core._allowDeviceData, sendAllOnType: this.core._sendAllOnType, ignoreType: this.core._ignoreType, ignoreTypeSize: this.core._ignoreTypeSize }),
+                            env: {
+                                type: this.core._env,
+                            },
+                        };
+                        if (config) {
+                            data = __assign(__assign({}, data), { config: config });
+                        }
+                        nextJSData = collectNextJSData();
+                        if (nextJSData) {
+                            data = __assign(__assign({}, data), { env: __assign(__assign({}, data.env), nextJSData) });
+                        }
+                        vercelEnv = collectVercelEnv();
+                        if (vercelEnv) {
+                            data = __assign(__assign({}, data), { env: __assign(__assign({}, data.env), vercelEnv) });
+                        }
+                        this.core.API.sendRequest({
+                            data: data,
                         })
                             .then(function (res) {
                             var _a, _b;
+                            var data = res.json.data;
+                            _this.core.LocalStorage.setAPIValues(data);
                             _this.core.InternalLogger.log("API: Successful request", res);
                             (_b = (_a = _this.core.Events.on.request).success) === null || _b === void 0 ? void 0 : _b.call(_a, res);
                             _this.clearRequests();
                             _this.clearLogs();
+                            if (_this.core._isClient)
+                                _end = performance.now();
+                            if (_start && _end) {
+                                _this.core.LogPool.push({
+                                    data: {
+                                        type: "LOGPOOL:SENDALL",
+                                        diff: _end - _start,
+                                    },
+                                    ts: new Date().getTime(),
+                                    options: {
+                                        type: "METRIC",
+                                    },
+                                    guid: guid()
+                                });
+                                _this.core.InternalLogger.log("API: Request took ".concat(_end - _start, "ms."));
+                            }
                         })
                             .catch(function (err) {
                             var _a, _b;
-                            _this.core.InternalLogger.log("API: Request failed.", err);
+                            _this.core.InternalLogger.error("API: Request failed.", err);
                             (_b = (_a = _this.core.Events.on.request).error) === null || _b === void 0 ? void 0 : _b.call(_a, err);
-                            if (err.message !== "API:ALREADY_SENDING") {
+                            if ((err === null || err === void 0 ? void 0 : err.message) == "API:FAILED:400:api-key") {
+                                _this.core.InternalLogger.error("API: Your API key is not found. Please make sure you entered correct credentials.");
+                            }
+                            if ((err === null || err === void 0 ? void 0 : err.message) !== "API:ALREADY_SENDING") {
                                 _this.core.API.requestCompleted();
                                 _this.pushRequest({
                                     res: {
