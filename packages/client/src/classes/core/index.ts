@@ -54,7 +54,7 @@ export class NexysCore {
   _apiKey: string;
   _version: string = version;
   _server: string = server;
-  _logPoolSize: number = 5;
+  _logPoolSize: number = 10;
   _options: NexysOptions = defaultOptions;
   _isClient: boolean = isClient();
   _allowDeviceData: boolean = true;

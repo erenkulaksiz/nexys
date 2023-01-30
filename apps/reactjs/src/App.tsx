@@ -6,7 +6,13 @@ function App() {
       <h1>Web</h1>
       <button
         onClick={async () => {
-          const log = nexys.log("test.");
+          const log = nexys.log({
+            halo: true,
+            selamlar: false,
+            complex: {
+              test: "test",
+            },
+          });
           //console.log("Client return:", log);
         }}
       >
@@ -14,7 +20,7 @@ function App() {
       </button>
       <button
         onClick={() => {
-          throw new Error("test error");
+          throw new Error("DACIA");
         }}
       >
         click to cause an error

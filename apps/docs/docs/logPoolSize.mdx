@@ -1,0 +1,22 @@
+---
+title: Log Pool Size
+id: logPoolSize
+category: options
+order: 3
+---
+
+All logs inside Nexys is stored inside a pool. This pool is limited to a certain size. This size can be configured using the `logPoolSize` option.
+
+The default value is `10`.
+
+## Example
+
+```javascript
+import Nexys from "nexys";
+
+// This will set logPoolSize to 2. If theres more or 2 logs, every data in Nexys will be sent to Dashboard.
+const nexys = new Nexys("API_KEY", { appName: "APP_NAME", logPoolSize: 2 });
+
+nexys.log("test1");
+nexys.log("test2");
+```
