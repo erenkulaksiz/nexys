@@ -312,12 +312,22 @@ export class NexysCore {
    * @public
    */
   public log(data: logTypes["data"], options?: logTypes["options"]) {
-    this.LogPool.push({
+    let pushData: logTypes = {
       data,
       options,
       ts: new Date().getTime(),
       guid: guid()
-    });
+    } 
+    // get page path if available
+    if (this._isClient) {
+      const pagePath = window.location.pathname; 
+      pushData = {
+        ...pushData,
+        path: pagePath
+      }
+    }
+
+    this.LogPool.push(pushData);
   }
 
   public error(data: logTypes["data"], options?: logTypes["options"]) {

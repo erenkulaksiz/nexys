@@ -84,16 +84,17 @@ var LogPool = /** @class */ (function () {
     };
     LogPool.prototype.push = function (_a) {
         var _b, _c;
-        var data = _a.data, options = _a.options, ts = _a.ts, guid = _a.guid;
+        var data = _a.data, options = _a.options, ts = _a.ts, guid = _a.guid, path = _a.path;
         this.logs.push({
             data: data,
             ts: ts,
             options: options,
-            guid: guid
+            guid: guid,
+            path: path
         });
         this.process();
-        (_c = (_b = this.core.Events.on).logAdd) === null || _c === void 0 ? void 0 : _c.call(_b, { data: data, options: options, ts: ts, guid: guid });
-        this.core.LocalStorage.addToLogPool({ data: data, options: options, ts: ts, guid: guid });
+        (_c = (_b = this.core.Events.on).logAdd) === null || _c === void 0 ? void 0 : _c.call(_b, { data: data, options: options, ts: ts, guid: guid, path: path });
+        this.core.LocalStorage.addToLogPool({ data: data, options: options, ts: ts, guid: guid, path: path });
     };
     LogPool.prototype.pushRequest = function (_a) {
         var _b, _c;
@@ -240,6 +241,7 @@ var LogPool = /** @class */ (function () {
                             options: __assign(__assign({}, this.core._options), { logPoolSize: this.core._logPoolSize, allowDeviceData: this.core._allowDeviceData, sendAllOnType: this.core._sendAllOnType, ignoreType: this.core._ignoreType, ignoreTypeSize: this.core._ignoreTypeSize }),
                             env: {
                                 type: this.core._env,
+                                isClient: this.core._isClient,
                             },
                         };
                         if (config) {

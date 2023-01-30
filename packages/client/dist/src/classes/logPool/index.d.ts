@@ -24,7 +24,7 @@ export declare class LogPool {
     constructor(core: NexysCore);
     setLogs(logs: logTypes[]): void;
     setRequests(requests: requestTypes[]): void;
-    push({ data, options, ts, guid }: logTypes): void;
+    push({ data, options, ts, guid, path }: logTypes): void;
     private pushRequest;
     clearLogs(): void;
     clearRequests(): void;

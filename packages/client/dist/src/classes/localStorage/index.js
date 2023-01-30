@@ -181,7 +181,7 @@ var LocalStorage = /** @class */ (function () {
         this.set(localValue);
     };
     LocalStorage.prototype.addToLogPool = function (_a) {
-        var data = _a.data, options = _a.options, guid = _a.guid;
+        var data = _a.data, options = _a.options, guid = _a.guid, path = _a.path;
         if (!this.shouldUseLocalStorage)
             return;
         var localValue = this.get();
@@ -190,7 +190,7 @@ var LocalStorage = /** @class */ (function () {
             this.resetLocalValue();
             // Resets and pushes first log.
             localValue = {
-                logPool: [{ ts: new Date().getTime(), data: data, options: options, guid: guid }],
+                logPool: [{ ts: new Date().getTime(), data: data, options: options, guid: guid, path: path }],
                 requests: [],
                 lastLogUpdate: new Date().getTime(),
             };
@@ -201,7 +201,8 @@ var LocalStorage = /** @class */ (function () {
             ts: new Date().getTime(),
             data: data,
             options: options,
-            guid: guid
+            guid: guid,
+            path: path
         });
         localValue.lastLogUpdate = new Date().getTime();
         this.set(localValue);

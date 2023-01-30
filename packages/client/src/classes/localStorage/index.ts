@@ -196,7 +196,7 @@ export class LocalStorage {
     this.set(localValue);
   }
 
-  public addToLogPool({ data, options, guid }: logTypes): void {
+  public addToLogPool({ data, options, guid, path }: logTypes): void {
     if (!this.shouldUseLocalStorage) return;
     let localValue = this.get();
     if (!localValue) {
@@ -206,7 +206,7 @@ export class LocalStorage {
       this.resetLocalValue();
       // Resets and pushes first log.
       localValue = {
-        logPool: [{ ts: new Date().getTime(), data, options, guid }],
+        logPool: [{ ts: new Date().getTime(), data, options, guid, path }],
         requests: [],
         lastLogUpdate: new Date().getTime(),
       };
@@ -217,7 +217,8 @@ export class LocalStorage {
       ts: new Date().getTime(),
       data,
       options,
-      guid
+      guid,
+      path
     });
     localValue.lastLogUpdate = new Date().getTime();
     this.set(localValue);

@@ -51,7 +51,7 @@ var NexysCore = /** @class */ (function () {
         this._env = (_a = process.env.NODE_ENV) !== null && _a !== void 0 ? _a : "production";
         this._version = version;
         this._server = server;
-        this._logPoolSize = 5;
+        this._logPoolSize = 10;
         this._options = defaultOptions;
         this._isClient = isClient();
         this._allowDeviceData = true;
@@ -242,12 +242,18 @@ var NexysCore = /** @class */ (function () {
      * @public
      */
     NexysCore.prototype.log = function (data, options) {
-        this.LogPool.push({
+        var pushData = {
             data: data,
             options: options,
             ts: new Date().getTime(),
             guid: guid()
-        });
+        };
+        // get page path if available
+        if (this._isClient) {
+            var pagePath = window.location.pathname;
+            pushData = __assign(__assign({}, pushData), { path: pagePath });
+        }
+        this.LogPool.push(pushData);
     };
     NexysCore.prototype.error = function (data, options) {
         this.LogPool.push({

@@ -70,16 +70,17 @@ export class LogPool {
     this.process();
   }
 
-  public push({ data, options, ts, guid }: logTypes): void {
+  public push({ data, options, ts, guid, path }: logTypes): void {
     this.logs.push({
       data,
       ts,
       options,
-      guid
+      guid,
+      path
     });
     this.process();
-    this.core.Events.on.logAdd?.({ data, options, ts, guid });
-    this.core.LocalStorage.addToLogPool({ data, options, ts, guid });
+    this.core.Events.on.logAdd?.({ data, options, ts, guid, path });
+    this.core.LocalStorage.addToLogPool({ data, options, ts, guid, path });
   }
 
   private pushRequest({ res, status, ts }: requestTypes): void {
@@ -243,6 +244,7 @@ export class LogPool {
       };
       env: {
         type: string;
+        isClient: boolean;
       };
       config?: configTypes;
     }
@@ -265,6 +267,7 @@ export class LogPool {
       },
       env: {
         type: this.core._env,
+        isClient: this.core._isClient,
       },
     };
 
