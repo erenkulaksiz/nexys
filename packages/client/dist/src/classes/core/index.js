@@ -134,7 +134,8 @@ var NexysCore = /** @class */ (function () {
                 options: {
                     type: "METRIC",
                 },
-                guid: guid()
+                guid: guid(),
+                path: this.getPagePath()
             });
             this.InternalLogger.log("NexysCore: Initialized in ".concat(_end - _start, "ms"));
         }
@@ -165,7 +166,8 @@ var NexysCore = /** @class */ (function () {
                 options: {
                     type: "AUTO:ERROR",
                 },
-                guid: guid()
+                guid: guid(),
+                path: _this.getPagePath()
             });
         };
         this.Events.on.unhandledRejection = function (event) {
@@ -185,9 +187,19 @@ var NexysCore = /** @class */ (function () {
                 options: {
                     type: "AUTO:UNHANDLEDREJECTION",
                 },
-                guid: guid()
+                guid: guid(),
+                path: _this.getPagePath()
             });
         };
+    };
+    NexysCore.prototype.getPagePath = function () {
+        if (this._isClient) {
+            if (window === null || window === void 0 ? void 0 : window.location) {
+                return window.location.pathname;
+            }
+            return null;
+        }
+        return null;
     };
     NexysCore.prototype.loadFromLocalStorage = function () {
         var _a, _b, _c, _d;
@@ -242,25 +254,21 @@ var NexysCore = /** @class */ (function () {
      * @public
      */
     NexysCore.prototype.log = function (data, options) {
-        var pushData = {
+        this.LogPool.push({
             data: data,
             options: options,
             ts: new Date().getTime(),
-            guid: guid()
-        };
-        // get page path if available
-        if (this._isClient) {
-            var pagePath = window.location.pathname;
-            pushData = __assign(__assign({}, pushData), { path: pagePath });
-        }
-        this.LogPool.push(pushData);
+            guid: guid(),
+            path: this.getPagePath()
+        });
     };
     NexysCore.prototype.error = function (data, options) {
         this.LogPool.push({
             data: data,
             options: __assign(__assign({}, options), { type: "ERROR" }),
             ts: new Date().getTime(),
-            guid: guid()
+            guid: guid(),
+            path: this.getPagePath()
         });
     };
     /**
@@ -289,7 +297,8 @@ var NexysCore = /** @class */ (function () {
                 type: "METRIC",
             },
             ts: new Date().getTime(),
-            guid: guid()
+            guid: guid(),
+            path: this.getPagePath()
         });
     };
     /**

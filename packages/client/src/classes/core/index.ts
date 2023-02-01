@@ -179,7 +179,8 @@ export class NexysCore {
         options: {
           type: "METRIC",
         },
-        guid: guid()
+        guid: guid(),
+        path: this.getPagePath()
       });
       this.InternalLogger.log(`NexysCore: Initialized in ${_end - _start}ms`);
     }
@@ -213,7 +214,8 @@ export class NexysCore {
         options: {
           type: "AUTO:ERROR",
         },
-        guid: guid()
+        guid: guid(),
+        path: this.getPagePath()
       });
     };
 
@@ -237,9 +239,20 @@ export class NexysCore {
         options: {
           type: "AUTO:UNHANDLEDREJECTION",
         },
-        guid: guid()
+        guid: guid(),
+        path: this.getPagePath()
       });
     };
+  }
+
+  private getPagePath(): string | null {
+    if(this._isClient){
+      if(window?.location){
+        return window.location.pathname;
+      }
+      return null;
+    }
+    return null;
   }
 
   private loadFromLocalStorage() {
@@ -312,22 +325,13 @@ export class NexysCore {
    * @public
    */
   public log(data: logTypes["data"], options?: logTypes["options"]) {
-    let pushData: logTypes = {
+    this.LogPool.push({
       data,
       options,
       ts: new Date().getTime(),
-      guid: guid()
-    } 
-    // get page path if available
-    if (this._isClient) {
-      const pagePath = window.location.pathname; 
-      pushData = {
-        ...pushData,
-        path: pagePath
-      }
-    }
-
-    this.LogPool.push(pushData);
+      guid: guid(),
+      path: this.getPagePath()
+    });
   }
 
   public error(data: logTypes["data"], options?: logTypes["options"]) {
@@ -338,7 +342,8 @@ export class NexysCore {
         type: "ERROR",
       },
       ts: new Date().getTime(),
-      guid: guid()
+      guid: guid(),
+      path: this.getPagePath()
     });
   }
 
@@ -374,7 +379,8 @@ export class NexysCore {
         type: "METRIC",
       },
       ts: new Date().getTime(),
-      guid: guid()
+      guid: guid(),
+      path: this.getPagePath()
     });
   }
 

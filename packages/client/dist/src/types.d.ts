@@ -46,7 +46,7 @@ export interface logOptions {
 export interface logTypes {
     data: any;
     options?: logOptions;
-    path?: string;
+    path?: string | null;
     ts: number;
     guid: string;
 }
