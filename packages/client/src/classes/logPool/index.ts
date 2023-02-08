@@ -227,7 +227,7 @@ export class LogPool {
       return;
     }
 
-    interface data {
+    interface ICollectData {
       logs: logTypes[];
       requests: requestTypes[];
       deviceData: getDeviceDataReturnTypes | "disabled" | "client-disabled";
@@ -249,7 +249,7 @@ export class LogPool {
       config?: configTypes;
     }
 
-    let data: data = {
+    let CollectData: ICollectData = {
       logs: this.logs,
       requests: this.requests,
       deviceData,
@@ -272,18 +272,18 @@ export class LogPool {
     };
 
     if (config) {
-      data = {
-        ...data,
+      CollectData = {
+        ...CollectData,
         config,
       };
     }
 
     const nextJSData = collectNextJSData();
     if (nextJSData) {
-      data = {
-        ...data,
+      CollectData = {
+        ...CollectData,
         env: {
-          ...data.env,
+          ...CollectData.env,
           ...nextJSData,
         },
       };
@@ -291,17 +291,17 @@ export class LogPool {
 
     const vercelEnv = collectVercelEnv();
     if (vercelEnv) {
-      data = {
-        ...data,
+      CollectData = {
+        ...CollectData,
         env: {
-          ...data.env,
+          ...CollectData.env,
           ...vercelEnv,
         },
       };
     }
 
     this.core.API.sendRequest({
-      data,
+      data: CollectData,
     })
       .then((res) => {
         const data = res.json.data;

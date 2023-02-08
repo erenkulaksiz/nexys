@@ -56,6 +56,7 @@ var NexysCore = /** @class */ (function () {
         this._isClient = isClient();
         this._allowDeviceData = true;
         this._sendAllOnType = [
+            "ERROR",
             "AUTO:ERROR",
             "AUTO:UNHANDLEDREJECTION",
         ];
@@ -262,6 +263,29 @@ var NexysCore = /** @class */ (function () {
             path: this.getPagePath()
         });
     };
+    /**
+     * Adds error request to logPool in Nexys instance.
+     *
+     * @example
+     * ```javascript
+     * // Initialize the client and log "Hello World"
+     * const nexys = new Nexys("API_KEY", { appName: "My_app" });
+     * nexys.log("Hello World");
+     * ```
+     *
+     * ```javascript
+     * // Initialize the client and give error
+     * nexys.error("I'm an error");
+     * ```
+     *
+     * @param data - Any data to be logged
+     * @param options - `Optional` - Log options specified below
+     * @param options.type - `Optional` - Log type
+     * @param options.level - `Optional` - Log level
+     * @param options.tags - `Optional` - Log tags
+     *
+     * @public
+     */
     NexysCore.prototype.error = function (data, options) {
         this.LogPool.push({
             data: data,
@@ -288,7 +312,7 @@ var NexysCore = /** @class */ (function () {
      * }
      * ```
      *
-     *  @param metric Metric data that you get from calling reportWebVitals in NextJS
+     * @param metric Metric data that you get from calling reportWebVitals in NextJS
      */
     NexysCore.prototype.metric = function (metric) {
         this.LogPool.push({
@@ -339,7 +363,7 @@ var NexysCore = /** @class */ (function () {
                     },
                     setAppVersion: function (appVersion) {
                         _this._config = __assign(__assign({}, _this._config), { appVersion: appVersion });
-                        _this.InternalLogger.log("NexysCore: App Version configured", appVersion);
+                        _this.InternalLogger.log("NexysCore: App version configured", appVersion);
                     },
                 });
         })();
@@ -358,6 +382,8 @@ var NexysCore = /** @class */ (function () {
     };
     /**
      * This method will force a request to Nexys.
+     * Use this method if you want to send all logs to Nexys immediately.
+     * This method is not recommended to use. It will cause your client to get rate limit blocked if you use it too much.
      *
      * @example
      * ```javascript

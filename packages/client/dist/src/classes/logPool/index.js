@@ -205,7 +205,7 @@ var LogPool = /** @class */ (function () {
     LogPool.prototype.sendAll = function () {
         var _a;
         return __awaiter(this, void 0, void 0, function () {
-            var _start, _end, deviceData, config, data, nextJSData, vercelEnv;
+            var _start, _end, deviceData, config, CollectData, nextJSData, vercelEnv;
             var _this = this;
             return __generator(this, function (_b) {
                 switch (_b.label) {
@@ -230,7 +230,7 @@ var LogPool = /** @class */ (function () {
                             this.core.InternalLogger.log("LogPool: No logs or requests to send.");
                             return [2 /*return*/];
                         }
-                        data = {
+                        CollectData = {
                             logs: this.logs,
                             requests: this.requests,
                             deviceData: deviceData,
@@ -245,18 +245,18 @@ var LogPool = /** @class */ (function () {
                             },
                         };
                         if (config) {
-                            data = __assign(__assign({}, data), { config: config });
+                            CollectData = __assign(__assign({}, CollectData), { config: config });
                         }
                         nextJSData = collectNextJSData();
                         if (nextJSData) {
-                            data = __assign(__assign({}, data), { env: __assign(__assign({}, data.env), nextJSData) });
+                            CollectData = __assign(__assign({}, CollectData), { env: __assign(__assign({}, CollectData.env), nextJSData) });
                         }
                         vercelEnv = collectVercelEnv();
                         if (vercelEnv) {
-                            data = __assign(__assign({}, data), { env: __assign(__assign({}, data.env), vercelEnv) });
+                            CollectData = __assign(__assign({}, CollectData), { env: __assign(__assign({}, CollectData.env), vercelEnv) });
                         }
                         this.core.API.sendRequest({
-                            data: data,
+                            data: CollectData,
                         })
                             .then(function (res) {
                             var _a, _b;

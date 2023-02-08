@@ -57,6 +57,7 @@ throw new Error("I should be able to see this error on dashboard");
 
 # Changelog (client library)
 
+- 1.0.6 - added log type "ERROR" to sendAllOnType - 02.02.2023
 - 1.0.5 - added path to logs to know which log is generated from which path - 30.01.2023
 - 1.0.3 - i forgot what i did but i added alot of new features - 27.01.2023
 - 1.0.2 - connected to dashboard - 25.01.2023

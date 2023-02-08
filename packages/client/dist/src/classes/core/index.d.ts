@@ -72,6 +72,29 @@ export declare class NexysCore {
      * @public
      */
     log(data: logTypes["data"], options?: logTypes["options"]): void;
+    /**
+     * Adds error request to logPool in Nexys instance.
+     *
+     * @example
+     * ```javascript
+     * // Initialize the client and log "Hello World"
+     * const nexys = new Nexys("API_KEY", { appName: "My_app" });
+     * nexys.log("Hello World");
+     * ```
+     *
+     * ```javascript
+     * // Initialize the client and give error
+     * nexys.error("I'm an error");
+     * ```
+     *
+     * @param data - Any data to be logged
+     * @param options - `Optional` - Log options specified below
+     * @param options.type - `Optional` - Log type
+     * @param options.level - `Optional` - Log level
+     * @param options.tags - `Optional` - Log tags
+     *
+     * @public
+     */
     error(data: logTypes["data"], options?: logTypes["options"]): void;
     /**
      * `NextJS only method`
@@ -90,7 +113,7 @@ export declare class NexysCore {
      * }
      * ```
      *
-     *  @param metric Metric data that you get from calling reportWebVitals in NextJS
+     * @param metric Metric data that you get from calling reportWebVitals in NextJS
      */
     metric(metric: {
         id: string;
@@ -134,6 +157,8 @@ export declare class NexysCore {
     clear(): void;
     /**
      * This method will force a request to Nexys.
+     * Use this method if you want to send all logs to Nexys immediately.
+     * This method is not recommended to use. It will cause your client to get rate limit blocked if you use it too much.
      *
      * @example
      * ```javascript
