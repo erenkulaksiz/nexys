@@ -1,4 +1,3 @@
-import { NexysOptions, configTypes } from "./../../types";
 /**
  * @license
  * Copyright 2023 Eren Kulaksiz
@@ -24,9 +23,9 @@ import {
   collectVercelEnv,
   guid,
 } from "../../utils";
-import type { LogPoolConstructorParams } from "./types";
+//import type { LogPoolConstructorParams } from "./types";
 import type { requestTypes } from "../../types";
-import type { logTypes } from "./../../types";
+import type { logTypes, NexysOptions, configTypes } from "./../../types";
 import type { getDeviceDataReturnTypes } from "./../device/types";
 
 export class LogPool {
@@ -321,7 +320,8 @@ export class LogPool {
             options: {
               type: "METRIC",
             },
-            guid: guid()
+            guid: guid(),
+            path: this.core.getPagePath()
           });
           this.core.InternalLogger.log(`API: Request took ${_end - _start}ms.`);
         }

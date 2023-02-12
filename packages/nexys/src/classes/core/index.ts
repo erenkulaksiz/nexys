@@ -246,7 +246,7 @@ export class NexysCore {
     };
   }
 
-  private getPagePath(): string | null {
+  getPagePath(): string | null {
     if(this._isClient){
       if(window?.location){
         return window.location.pathname;

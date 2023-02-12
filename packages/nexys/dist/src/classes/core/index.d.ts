@@ -46,7 +46,7 @@ export declare class NexysCore {
      * Automatic error handling.
      */
     private setupEventHandlers;
-    private getPagePath;
+    getPagePath(): string | null;
     private loadFromLocalStorage;
     /**
      * Adds log request to logPool in Nexys instance.
