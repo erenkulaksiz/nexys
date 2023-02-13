@@ -1,1 +1,1 @@
-packages/nexys/README.md
+./README.md
