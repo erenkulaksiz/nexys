@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import { isClient } from "../../utils";
-import { NexysCore } from "./../core/index";
+import { isClient } from "../../utils/index.js";
+import { Core } from "./../core/index.js";
 import {
   BatteryManager,
   getDeviceDataReturnTypes,
@@ -24,10 +24,10 @@ import {
 } from "./types";
 
 export class Device {
-  private core: NexysCore;
+  private core: Core;
   private _isAvailable: boolean = false;
 
-  constructor(core: NexysCore) {
+  constructor(core: Core) {
     this.core = core;
     this._isAvailable = this.core._isClient && this.checkAvailability();
   }

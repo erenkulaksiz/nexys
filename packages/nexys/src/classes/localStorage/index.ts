@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import { Base64, isClient } from "../../utils";
-import { NexysCore } from "../core";
+import { Base64, isClient } from "../../utils/index.js";
+import { Core } from "../core/index.js";
 import type { logTypes, requestTypes } from "../../types";
 import type { LocalStorageConstructorParams, LocalStorageTypes } from "./types";
 
@@ -25,7 +25,7 @@ import type { LocalStorageConstructorParams, LocalStorageTypes } from "./types";
  * @description This class is used to handle internal localStorage operations.
  */
 export class LocalStorage {
-  private core: NexysCore;
+  private core: Core;
   private _localStorage: Storage | null = null;
   public isActive: boolean = false;
   public isEncrypted: boolean = false;
@@ -36,7 +36,7 @@ export class LocalStorage {
   private shouldUseLocalStorage: boolean = false;
 
   constructor(
-    core: NexysCore,
+    core: Core,
     { key, testKey, isEncrypted, active }: LocalStorageConstructorParams
   ) {
     this.core = core;
@@ -224,7 +224,7 @@ export class LocalStorage {
     this.set(localValue);
   }
 
-  public addToRequest({ res, status, ts }: requestTypes): void {
+  public addToRequest({ res, status, ts, guid }: requestTypes): void {
     if (!this.shouldUseLocalStorage) return;
     let localValue = this.get();
     if (!localValue) {
@@ -235,13 +235,13 @@ export class LocalStorage {
       // Resets and pushes first log.
       localValue = {
         logPool: [],
-        requests: [{ res, status, ts }],
+        requests: [{ res, status, ts, guid }],
         lastLogUpdate: 0,
       };
       this.set(localValue);
       return;
     }
-    localValue.requests.push({ res, status, ts });
+    localValue.requests.push({ res, status, ts, guid });
     this.set(localValue);
   }
 

@@ -21,6 +21,7 @@
     "dev:nextjs": "turbo run dev --filter=nexys --filter=nexys-nextjs",
     "dev:react": "turbo run dev --filter=nexys --filter=nexys-react --no-daemon",
     "dev:docs": "turbo run dev --filter=nexys-docs",
+    "dev:node": "turbo run dev --filter=nexys --filter=nexys-node",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },

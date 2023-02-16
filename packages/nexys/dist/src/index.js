@@ -29,7 +29,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import { NexysCore } from "./classes/core";
+import { Core } from "./classes/core/index.js";
 /**
  * Nexys Client Library
  *
@@ -89,5 +89,5 @@ var Nexys = /** @class */ (function (_super) {
         return _super.call(this, API_KEY, options) || this;
     }
     return Nexys;
-}(NexysCore));
+}(Core));
 export default Nexys;

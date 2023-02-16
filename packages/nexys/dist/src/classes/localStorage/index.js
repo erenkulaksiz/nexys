@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Base64 } from "../../utils";
+import { Base64 } from "../../utils/index.js";
 /**
  * @class LocalStorage
  * @description This class is used to handle internal localStorage operations.
@@ -208,7 +208,7 @@ var LocalStorage = /** @class */ (function () {
         this.set(localValue);
     };
     LocalStorage.prototype.addToRequest = function (_a) {
-        var res = _a.res, status = _a.status, ts = _a.ts;
+        var res = _a.res, status = _a.status, ts = _a.ts, guid = _a.guid;
         if (!this.shouldUseLocalStorage)
             return;
         var localValue = this.get();
@@ -218,13 +218,13 @@ var LocalStorage = /** @class */ (function () {
             // Resets and pushes first log.
             localValue = {
                 logPool: [],
-                requests: [{ res: res, status: status, ts: ts }],
+                requests: [{ res: res, status: status, ts: ts, guid: guid }],
                 lastLogUpdate: 0,
             };
             this.set(localValue);
             return;
         }
-        localValue.requests.push({ res: res, status: status, ts: ts });
+        localValue.requests.push({ res: res, status: status, ts: ts, guid: guid });
         this.set(localValue);
     };
     LocalStorage.prototype.getLocalLogs = function () {

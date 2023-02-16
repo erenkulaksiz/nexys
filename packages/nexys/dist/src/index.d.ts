@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { NexysCore } from "./classes/core";
+import { Core } from "./classes/core/index.js";
 import type { NexysOptions } from "./types";
 /**
  * Nexys Client Library
@@ -38,7 +38,7 @@ import type { NexysOptions } from "./types";
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare class Nexys extends NexysCore {
+export default class Nexys extends Core {
     /**
      * Creates a Nexys instance that can be used anywhere in your application.
      *
@@ -72,5 +72,4 @@ declare class Nexys extends NexysCore {
      */
     constructor(API_KEY: string, options?: NexysOptions);
 }
-export default Nexys;
 //# sourceMappingURL=index.d.ts.map

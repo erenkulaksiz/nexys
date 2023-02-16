@@ -70,6 +70,7 @@ export interface requestTypes {
   res: string | object;
   status: string;
   ts: number;
+  guid: string;
 }
 
 export interface configTypes {

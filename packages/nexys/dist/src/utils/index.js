@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 import Package from "../../package.json";
-import { isClient } from "./isClient";
+import { isClient } from "./isClient.js";
 export var server = "https://dash.nexys.app";
 export var debugServer = "http://localhost:3000";
 export var libraryName = Package.name;
 export var version = Package.version;
-export { Base64 } from "./base64";
-export { isClient } from "./isClient";
-export { guid } from "./guid";
+export { Base64 } from "./base64.js";
+export { isClient } from "./isClient.js";
+export { guid } from "./guid.js";
 export function collectNextJSData(allowElementCount) {
     if (allowElementCount === void 0) { allowElementCount = true; }
     if (isClient()) {

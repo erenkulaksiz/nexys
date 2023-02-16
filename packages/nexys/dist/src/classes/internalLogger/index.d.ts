@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { NexysCore } from "../core";
+import { Core } from "../core/index.js";
 import type { InternalLoggerConstructorParams } from "./types";
 /**
  * @class InternalLogger
@@ -24,7 +24,7 @@ export declare class InternalLogger {
     private core;
     private _active;
     isAvailable: boolean;
-    constructor(core: NexysCore, { active }: InternalLoggerConstructorParams);
+    constructor(core: Core, { active }: InternalLoggerConstructorParams);
     private checkAvailability;
     log(...args: any[]): void;
     error(...args: any[]): void;

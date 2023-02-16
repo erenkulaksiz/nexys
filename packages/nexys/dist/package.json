@@ -1,10 +1,11 @@
 {
     "name": "nexys",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "main": "./dist/src/index.js",
     "types": "./dist/src/index.d.ts",
-    "license": "MIT",
+    "license": "Apache 2.0",
     "private": false,
+    "type": "module",
     "keywords": [
         "nexys",
         "log",

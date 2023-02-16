@@ -36,10 +36,10 @@ var Events = /** @class */ (function () {
         };
         this.core = core;
         if ((_c = (_b = (_a = this.core) === null || _a === void 0 ? void 0 : _a._options) === null || _b === void 0 ? void 0 : _b.errors) === null || _c === void 0 ? void 0 : _c.allowAutomaticHandling) {
-            this.bindErrorEvent();
+            this.bindErrorEvents();
         }
     }
-    Events.prototype.bindErrorEvent = function () {
+    Events.prototype.bindErrorEvents = function () {
         var _this = this;
         if (this._bindedErrorEvent) {
             this.core.InternalLogger.log("Events: Couldnt bind error event. Already binded.");

@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-import { API } from "../API";
-import { Events } from "../events";
-import { InternalLogger } from "./../internalLogger";
-import { LocalStorage } from "./../localStorage";
-import { LogPool } from "./../logPool";
-import { Device } from "./../device";
-import { server, version, isClient, guid } from "../../utils";
+import { API } from "../API/index.js";
+import { Events } from "../events/index.js";
+import { InternalLogger } from "./../internalLogger/index.js";
+import { LocalStorage } from "./../localStorage/index.js";
+import { LogPool } from "./../logPool/index.js";
+import { Device } from "./../device/index.js";
+import { server, version, isClient, guid } from "../../utils/index.js";
 import type {
   NexysOptions,
   logTypes,
@@ -42,7 +42,7 @@ const defaultOptions = {
   },
 };
 
-export class NexysCore {
+export class Core {
   InternalLogger: InternalLogger;
   LogPool: LogPool;
   Events: Events;

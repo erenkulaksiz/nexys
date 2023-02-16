@@ -25,13 +25,13 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-import { API } from "../API";
-import { Events } from "../events";
-import { InternalLogger } from "./../internalLogger";
-import { LocalStorage } from "./../localStorage";
-import { LogPool } from "./../logPool";
-import { Device } from "./../device";
-import { server, version, isClient, guid } from "../../utils";
+import { API } from "../API/index.js";
+import { Events } from "../events/index.js";
+import { InternalLogger } from "./../internalLogger/index.js";
+import { LocalStorage } from "./../localStorage/index.js";
+import { LogPool } from "./../logPool/index.js";
+import { Device } from "./../device/index.js";
+import { server, version, isClient, guid } from "../../utils/index.js";
 var defaultOptions = {
     // NexysOptions
     localStorage: {
@@ -44,9 +44,9 @@ var defaultOptions = {
         allowAutomaticHandling: true, // Used for automatic exception handling.
     },
 };
-var NexysCore = /** @class */ (function () {
+var Core = /** @class */ (function () {
     // Core
-    function NexysCore(API_KEY, options) {
+    function Core(API_KEY, options) {
         var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
         this._env = (_a = process.env.NODE_ENV) !== null && _a !== void 0 ? _a : "production";
         this._version = version;
@@ -144,7 +144,7 @@ var NexysCore = /** @class */ (function () {
     /**
      * Automatic error handling.
      */
-    NexysCore.prototype.setupEventHandlers = function () {
+    Core.prototype.setupEventHandlers = function () {
         var _this = this;
         this.Events.on.error = function (event) {
             var _a, _b;
@@ -193,7 +193,7 @@ var NexysCore = /** @class */ (function () {
             });
         };
     };
-    NexysCore.prototype.getPagePath = function () {
+    Core.prototype.getPagePath = function () {
         if (this._isClient) {
             if (window === null || window === void 0 ? void 0 : window.location) {
                 return window.location.pathname;
@@ -202,7 +202,7 @@ var NexysCore = /** @class */ (function () {
         }
         return null;
     };
-    NexysCore.prototype.loadFromLocalStorage = function () {
+    Core.prototype.loadFromLocalStorage = function () {
         var _a, _b, _c, _d;
         // Load logs from localStorage
         var localLogs = this.LocalStorage.getLocalLogs();
@@ -254,7 +254,7 @@ var NexysCore = /** @class */ (function () {
      *
      * @public
      */
-    NexysCore.prototype.log = function (data, options) {
+    Core.prototype.log = function (data, options) {
         this.LogPool.push({
             data: data,
             options: options,
@@ -286,7 +286,7 @@ var NexysCore = /** @class */ (function () {
      *
      * @public
      */
-    NexysCore.prototype.error = function (data, options) {
+    Core.prototype.error = function (data, options) {
         this.LogPool.push({
             data: data,
             options: __assign(__assign({}, options), { type: "ERROR" }),
@@ -314,7 +314,7 @@ var NexysCore = /** @class */ (function () {
      *
      * @param metric Metric data that you get from calling reportWebVitals in NextJS
      */
-    NexysCore.prototype.metric = function (metric) {
+    Core.prototype.metric = function (metric) {
         this.LogPool.push({
             data: metric,
             options: {
@@ -348,7 +348,7 @@ var NexysCore = /** @class */ (function () {
      * });
      * ```
      */
-    NexysCore.prototype.configure = function (config) {
+    Core.prototype.configure = function (config) {
         var _this = this;
         (function () {
             return typeof config == "function" &&
@@ -376,7 +376,7 @@ var NexysCore = /** @class */ (function () {
      * nexys.clear();
      * ```
      */
-    NexysCore.prototype.clear = function () {
+    Core.prototype.clear = function () {
         this.LogPool.clearLogs();
         this.LogPool.clearRequests();
     };
@@ -390,9 +390,9 @@ var NexysCore = /** @class */ (function () {
      * nexys.forceRequest();
      * ```
      */
-    NexysCore.prototype.forceRequest = function () {
+    Core.prototype.forceRequest = function () {
         this.LogPool.sendAll();
     };
-    return NexysCore;
+    return Core;
 }());
-export { NexysCore };
+export { Core };

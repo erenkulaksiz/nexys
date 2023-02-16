@@ -18,9 +18,9 @@ export declare const server = "https://dash.nexys.app";
 export declare const debugServer = "http://localhost:3000";
 export declare const libraryName: string;
 export declare const version: string;
-export { Base64 } from "./base64";
-export { isClient } from "./isClient";
-export { guid } from "./guid";
+export { Base64 } from "./base64.js";
+export { isClient } from "./isClient.js";
+export { guid } from "./guid.js";
 export declare function collectNextJSData(allowElementCount?: boolean): {
     buildId: any;
     nextExport: any;

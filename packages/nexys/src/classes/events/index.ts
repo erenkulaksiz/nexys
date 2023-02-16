@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 
-import { isClient } from "../../utils";
-import { NexysCore } from "../core";
+import { isClient } from "../../utils/index.js";
+import { Core } from "../core/index.js";
 import type { EventTypes } from "./types";
 
 export class Events {
-  private core: NexysCore;
+  private core: Core;
   private _bindedErrorEvent: boolean = false;
 
   public on: EventTypes = {
@@ -40,15 +40,15 @@ export class Events {
     localStorageInit: null,
   };
 
-  constructor(core: NexysCore) {
+  constructor(core: Core) {
     this.core = core;
 
     if (this.core?._options?.errors?.allowAutomaticHandling) {
-      this.bindErrorEvent();
+      this.bindErrorEvents();
     }
   }
 
-  private bindErrorEvent(): void {
+  private bindErrorEvents(): void {
     if (this._bindedErrorEvent) {
       this.core.InternalLogger.log(
         "Events: Couldnt bind error event. Already binded."

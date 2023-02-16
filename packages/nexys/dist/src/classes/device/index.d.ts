@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { NexysCore } from "./../core/index";
+import { Core } from "./../core/index.js";
 import { BatteryManager, getDeviceDataReturnTypes, NetworkInformation } from "./types";
 export declare class Device {
     private core;
     private _isAvailable;
-    constructor(core: NexysCore);
+    constructor(core: Core);
     private checkAvailability;
     getPlatform(): string | null;
     getLanguage(): string | null;

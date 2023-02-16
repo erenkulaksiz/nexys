@@ -15,18 +15,18 @@
  * limitations under the License.
  */
 
-import { NexysCore } from "../core";
+import { Core } from "../core/index.js";
 import type { APIConstructorParams, sendRequestParams } from "./types";
 
 export class API {
-  private core: NexysCore;
+  private core: Core;
   private _server: string = "";
   private _apiKey: string = "";
   private _appName: string = "";
   public _sendingRequest: boolean = false;
 
   constructor(
-    core: NexysCore,
+    core: Core,
     { server, apiKey, appName }: APIConstructorParams
   ) {
     this.core = core;

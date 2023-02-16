@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { NexysCore } from "../core";
+import { Core } from "../core/index.js";
 import type { logTypes, requestTypes } from "../../types";
 import type { LocalStorageConstructorParams, LocalStorageTypes } from "./types";
 /**
@@ -30,7 +30,7 @@ export declare class LocalStorage {
     key: string;
     testKey: string;
     private shouldUseLocalStorage;
-    constructor(core: NexysCore, { key, testKey, isEncrypted, active }: LocalStorageConstructorParams);
+    constructor(core: Core, { key, testKey, isEncrypted, active }: LocalStorageConstructorParams);
     private init;
     private checkAvailability;
     get(): LocalStorageTypes | null;
@@ -40,7 +40,7 @@ export declare class LocalStorage {
     clearLogPool(): void;
     clearRequests(): void;
     addToLogPool({ data, options, guid, path }: logTypes): void;
-    addToRequest({ res, status, ts }: requestTypes): void;
+    addToRequest({ res, status, ts, guid }: requestTypes): void;
     getLocalLogs(): logTypes[] | null;
     getLocalRequests(): requestTypes[] | null;
     resetLocalValue(): LocalStorageTypes;

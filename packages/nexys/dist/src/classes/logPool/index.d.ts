@@ -14,14 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { NexysCore } from "../core";
+import { Core } from "../core/index.js";
 import type { requestTypes } from "../../types";
 import type { logTypes } from "./../../types";
 export declare class LogPool {
     private core;
     logs: logTypes[];
     requests: requestTypes[];
-    constructor(core: NexysCore);
+    constructor(core: Core);
     setLogs(logs: logTypes[]): void;
     setRequests(requests: requestTypes[]): void;
     push({ data, options, ts, guid, path }: logTypes): void;

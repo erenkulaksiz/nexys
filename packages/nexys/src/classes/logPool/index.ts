@@ -15,26 +15,26 @@
  * limitations under the License.
  */
 
-import { NexysCore } from "../core";
+import { Core } from "../core/index.js";
 import {
   version,
   libraryName,
   collectNextJSData,
   collectVercelEnv,
   guid,
-} from "../../utils";
+} from "../../utils/index.js";
 //import type { LogPoolConstructorParams } from "./types";
 import type { requestTypes } from "../../types";
 import type { logTypes, NexysOptions, configTypes } from "./../../types";
 import type { getDeviceDataReturnTypes } from "./../device/types";
 
 export class LogPool {
-  private core: NexysCore;
+  private core: Core;
   // All logs stored here.
   public logs: logTypes[] = [];
   public requests: requestTypes[] = [];
 
-  constructor(core: NexysCore) {
+  constructor(core: Core) {
     this.core = core;
   }
 
@@ -46,6 +46,8 @@ export class LogPool {
       if (!log.ts)
         throw new Error("LogPool: setLogs() expects an array of logs.");
       if (!log.data)
+        throw new Error("LogPool: setLogs() expects an array of logs.");
+      if(!log.guid)
         throw new Error("LogPool: setLogs() expects an array of logs.");
     });
     this.logs = logs;
@@ -62,6 +64,8 @@ export class LogPool {
       if (!request?.status)
         throw new Error("LogPool: setRequests() expects an array of requests.");
       if (!request?.ts)
+        throw new Error("LogPool: setRequests() expects an array of requests.");
+      if (!request?.guid)
         throw new Error("LogPool: setRequests() expects an array of requests.");
     });
     this.requests = requests;
@@ -82,20 +86,22 @@ export class LogPool {
     this.core.LocalStorage.addToLogPool({ data, options, ts, guid, path });
   }
 
-  private pushRequest({ res, status, ts }: requestTypes): void {
+  private pushRequest({ res, status, ts, guid }: requestTypes): void {
     this.core.InternalLogger.log(
       "LogPool: Pushing request to requests array.",
       res,
       status,
-      ts
+      ts,
+      guid
     );
     this.requests.push({
       res,
       status,
       ts,
+      guid,
     });
-    this.core.Events.on.requestAdd?.({ res, status, ts });
-    this.core.LocalStorage.addToRequest({ res, status, ts });
+    this.core.Events.on.requestAdd?.({ res, status, ts, guid });
+    this.core.LocalStorage.addToRequest({ res, status, ts, guid });
   }
 
   public clearLogs(): void {
@@ -343,6 +349,7 @@ export class LogPool {
             },
             status: "failed",
             ts: new Date().getTime(),
+            guid: guid()
           });
         }
       });

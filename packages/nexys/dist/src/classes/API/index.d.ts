@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { NexysCore } from "../core";
+import { Core } from "../core/index.js";
 import type { APIConstructorParams, sendRequestParams } from "./types";
 export declare class API {
     private core;
@@ -22,7 +22,7 @@ export declare class API {
     private _apiKey;
     private _appName;
     _sendingRequest: boolean;
-    constructor(core: NexysCore, { server, apiKey, appName }: APIConstructorParams);
+    constructor(core: Core, { server, apiKey, appName }: APIConstructorParams);
     sendRequest({ headers, data, }: sendRequestParams): Promise<Response | any>;
     requestCompleted(): void;
     private checkAvailability;

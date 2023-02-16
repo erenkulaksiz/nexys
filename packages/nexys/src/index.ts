@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { NexysCore } from "./classes/core";
+import { Core } from "./classes/core/index.js";
 import type { NexysOptions } from "./types";
 
 /**
@@ -41,7 +41,7 @@ import type { NexysOptions } from "./types";
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class Nexys extends NexysCore {
+export default class Nexys extends Core {
   /**
    * Creates a Nexys instance that can be used anywhere in your application.
    *
@@ -77,5 +77,3 @@ class Nexys extends NexysCore {
     super(API_KEY, options);
   }
 }
-
-export default Nexys;

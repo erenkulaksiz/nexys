@@ -61,7 +61,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { version, libraryName, collectNextJSData, collectVercelEnv, guid, } from "../../utils";
+import { version, libraryName, collectNextJSData, collectVercelEnv, guid, } from "../../utils/index.js";
 var LogPool = /** @class */ (function () {
     function LogPool(core) {
         // All logs stored here.
@@ -93,6 +93,8 @@ var LogPool = /** @class */ (function () {
                 throw new Error("LogPool: setRequests() expects an array of requests.");
             if (!(request === null || request === void 0 ? void 0 : request.ts))
                 throw new Error("LogPool: setRequests() expects an array of requests.");
+            if (!(request === null || request === void 0 ? void 0 : request.guid))
+                throw new Error("LogPool: setRequests() expects an array of requests.");
         });
         this.requests = requests;
         // Also process logs.
@@ -114,15 +116,16 @@ var LogPool = /** @class */ (function () {
     };
     LogPool.prototype.pushRequest = function (_a) {
         var _b, _c;
-        var res = _a.res, status = _a.status, ts = _a.ts;
-        this.core.InternalLogger.log("LogPool: Pushing request to requests array.", res, status, ts);
+        var res = _a.res, status = _a.status, ts = _a.ts, guid = _a.guid;
+        this.core.InternalLogger.log("LogPool: Pushing request to requests array.", res, status, ts, guid);
         this.requests.push({
             res: res,
             status: status,
             ts: ts,
+            guid: guid,
         });
-        (_c = (_b = this.core.Events.on).requestAdd) === null || _c === void 0 ? void 0 : _c.call(_b, { res: res, status: status, ts: ts });
-        this.core.LocalStorage.addToRequest({ res: res, status: status, ts: ts });
+        (_c = (_b = this.core.Events.on).requestAdd) === null || _c === void 0 ? void 0 : _c.call(_b, { res: res, status: status, ts: ts, guid: guid });
+        this.core.LocalStorage.addToRequest({ res: res, status: status, ts: ts, guid: guid });
     };
     LogPool.prototype.clearLogs = function () {
         var _a, _b;
@@ -316,6 +319,7 @@ var LogPool = /** @class */ (function () {
                                     },
                                     status: "failed",
                                     ts: new Date().getTime(),
+                                    guid: guid()
                                 });
                             }
                         });
