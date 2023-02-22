@@ -21,33 +21,5 @@ export declare const version: string;
 export { Base64 } from "./base64.js";
 export { isClient } from "./isClient.js";
 export { guid } from "./guid.js";
-export declare function collectNextJSData(allowElementCount?: boolean): {
-    buildId: any;
-    nextExport: any;
-    page: any;
-    query: any;
-    ver: any;
-    el: number | undefined;
-} | {
-    buildId: any;
-    nextExport: any;
-    page: any;
-    query: any;
-    ver: any;
-    el?: undefined;
-} | null;
-export declare function collectVercelEnv(): {
-    env: string;
-    url: string | undefined;
-    git: string | undefined;
-    gitCommitSha: string | undefined;
-    gitProvider: string | undefined;
-    gitRepoId: string | undefined;
-    gitRepoOwner: string | undefined;
-    gitRepoSlug: string | undefined;
-    gitCommitMessage: string | undefined;
-    gitCommitAuthorName: string | undefined;
-    gitCommitAuthorLogin: string | undefined;
-    gitPullRequestId: string | undefined;
-} | null;
+export { collectNextJSData, collectVercelEnv } from "./collect.js";
 //# sourceMappingURL=index.d.ts.map

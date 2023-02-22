@@ -78,6 +78,8 @@ var LogPool = /** @class */ (function () {
                 throw new Error("LogPool: setLogs() expects an array of logs.");
             if (!log.data)
                 throw new Error("LogPool: setLogs() expects an array of logs.");
+            if (!log.guid)
+                throw new Error("LogPool: setLogs() expects an array of logs.");
         });
         this.logs = logs;
         this.process();
