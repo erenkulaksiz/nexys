@@ -7,15 +7,12 @@ export function collectNextJSData(allowElementCount) {
         if (__NEXT_DATA__) {
             var buildId = __NEXT_DATA__.buildId, nextExport = __NEXT_DATA__.nextExport, page = __NEXT_DATA__.page, query = __NEXT_DATA__.query;
             if (document && "getElementById" in document && allowElementCount) {
-                var root = document.getElementById("__next");
-                var allElements = root === null || root === void 0 ? void 0 : root.querySelectorAll("*").length;
                 return {
                     buildId: buildId,
                     nextExport: nextExport,
                     page: page,
                     query: query,
                     ver: next === null || next === void 0 ? void 0 : next.version,
-                    el: allElements,
                 };
             }
             else {
@@ -52,6 +49,16 @@ export function collectVercelEnv() {
             };
         }
         return null;
+    }
+    return null;
+}
+export function collectDOMData() {
+    if (isClient()) {
+        var root = document.getElementsByTagName("body")[0];
+        var allElements = root === null || root === void 0 ? void 0 : root.querySelectorAll("*").length;
+        return {
+            el: allElements,
+        };
     }
     return null;
 }

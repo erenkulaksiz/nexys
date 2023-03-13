@@ -21,6 +21,7 @@ import {
   libraryName,
   collectNextJSData,
   collectVercelEnv,
+  collectDOMData,
   guid,
 } from "../../utils/index.js";
 //import type { LogPoolConstructorParams } from "./types";
@@ -47,7 +48,7 @@ export class LogPool {
         throw new Error("LogPool: setLogs() expects an array of logs.");
       if (!log.data)
         throw new Error("LogPool: setLogs() expects an array of logs.");
-      if(!log.guid)
+      if (!log.guid)
         throw new Error("LogPool: setLogs() expects an array of logs.");
     });
     this.logs = logs;
@@ -79,7 +80,7 @@ export class LogPool {
       ts,
       options,
       guid,
-      path
+      path,
     });
     this.process();
     this.core.Events.on.logAdd?.({ data, options, ts, guid, path });
@@ -305,6 +306,17 @@ export class LogPool {
       };
     }
 
+    const DOMData = collectDOMData();
+    if (DOMData) {
+      CollectData = {
+        ...CollectData,
+        env: {
+          ...CollectData.env,
+          ...DOMData,
+        },
+      };
+    }
+
     this.core.API.sendRequest({
       data: CollectData,
     })
@@ -327,7 +339,7 @@ export class LogPool {
               type: "METRIC",
             },
             guid: guid(),
-            path: this.core.getPagePath()
+            path: this.core.getPagePath(),
           });
           this.core.InternalLogger.log(`API: Request took ${_end - _start}ms.`);
         }
@@ -349,7 +361,7 @@ export class LogPool {
             },
             status: "failed",
             ts: new Date().getTime(),
-            guid: guid()
+            guid: guid(),
           });
         }
       });

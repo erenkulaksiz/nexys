@@ -4,14 +4,6 @@ export declare function collectNextJSData(allowElementCount?: boolean): {
     page: any;
     query: any;
     ver: any;
-    el: number | undefined;
-} | {
-    buildId: any;
-    nextExport: any;
-    page: any;
-    query: any;
-    ver: any;
-    el?: undefined;
 } | null;
 export declare function collectVercelEnv(): {
     env: string;
@@ -26,5 +18,8 @@ export declare function collectVercelEnv(): {
     gitCommitAuthorName: string | undefined;
     gitCommitAuthorLogin: string | undefined;
     gitPullRequestId: string | undefined;
+} | null;
+export declare function collectDOMData(): {
+    el: number;
 } | null;
 //# sourceMappingURL=collect.d.ts.map

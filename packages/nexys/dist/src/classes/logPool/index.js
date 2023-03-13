@@ -61,7 +61,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { version, libraryName, collectNextJSData, collectVercelEnv, guid, } from "../../utils/index.js";
+import { version, libraryName, collectNextJSData, collectVercelEnv, collectDOMData, guid, } from "../../utils/index.js";
 var LogPool = /** @class */ (function () {
     function LogPool(core) {
         // All logs stored here.
@@ -110,7 +110,7 @@ var LogPool = /** @class */ (function () {
             ts: ts,
             options: options,
             guid: guid,
-            path: path
+            path: path,
         });
         this.process();
         (_c = (_b = this.core.Events.on).logAdd) === null || _c === void 0 ? void 0 : _c.call(_b, { data: data, options: options, ts: ts, guid: guid, path: path });
@@ -226,7 +226,7 @@ var LogPool = /** @class */ (function () {
     LogPool.prototype.sendAll = function () {
         var _a;
         return __awaiter(this, void 0, void 0, function () {
-            var _start, _end, deviceData, config, CollectData, nextJSData, vercelEnv;
+            var _start, _end, deviceData, config, CollectData, nextJSData, vercelEnv, DOMData;
             var _this = this;
             return __generator(this, function (_b) {
                 switch (_b.label) {
@@ -276,6 +276,10 @@ var LogPool = /** @class */ (function () {
                         if (vercelEnv) {
                             CollectData = __assign(__assign({}, CollectData), { env: __assign(__assign({}, CollectData.env), vercelEnv) });
                         }
+                        DOMData = collectDOMData();
+                        if (DOMData) {
+                            CollectData = __assign(__assign({}, CollectData), { env: __assign(__assign({}, CollectData.env), DOMData) });
+                        }
                         this.core.API.sendRequest({
                             data: CollectData,
                         })
@@ -300,7 +304,7 @@ var LogPool = /** @class */ (function () {
                                         type: "METRIC",
                                     },
                                     guid: guid(),
-                                    path: _this.core.getPagePath()
+                                    path: _this.core.getPagePath(),
                                 });
                                 _this.core.InternalLogger.log("API: Request took ".concat(_end - _start, "ms."));
                             }
@@ -321,7 +325,7 @@ var LogPool = /** @class */ (function () {
                                     },
                                     status: "failed",
                                     ts: new Date().getTime(),
-                                    guid: guid()
+                                    guid: guid(),
                                 });
                             }
                         });

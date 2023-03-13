@@ -22,4 +22,4 @@ export var version = Package.version;
 export { Base64 } from "./base64.js";
 export { isClient } from "./isClient.js";
 export { guid } from "./guid.js";
-export { collectNextJSData, collectVercelEnv } from "./collect.js";
+export { collectNextJSData, collectVercelEnv, collectDOMData, } from "./collect.js";
