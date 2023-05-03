@@ -14,6 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -167,7 +178,7 @@ var Device = /** @class */ (function () {
     };
     Device.prototype.getDeviceData = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var battery, connection, geo;
+            var battery, connection, deviceData, geo;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -184,26 +195,24 @@ var Device = /** @class */ (function () {
                         return [4 /*yield*/, this.getConnection().catch(function (err) { return null; })];
                     case 2:
                         connection = _a.sent();
+                        deviceData = {
+                            platform: this.getPlatform(),
+                            language: this.getLanguage(),
+                            vendor: this.getVendor(),
+                            deviceMemory: this.getDeviceMemory(),
+                            hardwareConcurrency: this.getHardwareConcurrency(),
+                            userAgent: this.getUserAgent(),
+                            screen: this.getScreen(),
+                            battery: battery,
+                            connection: connection,
+                        };
+                        if (!this.core._allowGeoLocation) return [3 /*break*/, 4];
                         return [4 /*yield*/, this.getGeolocation().catch(function (err) { return null; })];
                     case 3:
                         geo = _a.sent();
-                        return [2 /*return*/, Promise.resolve({
-                                platform: this.getPlatform(),
-                                language: this.getLanguage(),
-                                vendor: this.getVendor(),
-                                deviceMemory: this.getDeviceMemory(),
-                                hardwareConcurrency: this.getHardwareConcurrency(),
-                                userAgent: this.getUserAgent(),
-                                screen: this.getScreen(),
-                                battery: {
-                                    charging: battery === null || battery === void 0 ? void 0 : battery.charging,
-                                    chargingTime: battery === null || battery === void 0 ? void 0 : battery.chargingTime,
-                                    dischargingTime: battery === null || battery === void 0 ? void 0 : battery.dischargingTime,
-                                    level: battery === null || battery === void 0 ? void 0 : battery.level,
-                                },
-                                connection: connection,
-                                geo: geo,
-                            })];
+                        deviceData = __assign(__assign({}, deviceData), { geo: geo });
+                        _a.label = 4;
+                    case 4: return [2 /*return*/, Promise.resolve(deviceData)];
                 }
             });
         });

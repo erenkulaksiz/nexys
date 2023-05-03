@@ -95,20 +95,20 @@ var API = /** @class */ (function () {
                         body: JSON.stringify(data),
                     }).then(function (res) { return __awaiter(_this, void 0, void 0, function () {
                         var json, err_1;
-                        var _a, _b, _c, _d;
-                        return __generator(this, function (_e) {
-                            switch (_e.label) {
+                        var _a, _b;
+                        return __generator(this, function (_c) {
+                            switch (_c.label) {
                                 case 0:
                                     json = null;
-                                    _e.label = 1;
+                                    _c.label = 1;
                                 case 1:
-                                    _e.trys.push([1, 3, , 4]);
+                                    _c.trys.push([1, 3, , 4]);
                                     return [4 /*yield*/, res.json()];
                                 case 2:
-                                    json = _e.sent();
+                                    json = _c.sent();
                                     return [3 /*break*/, 4];
                                 case 3:
-                                    err_1 = _e.sent();
+                                    err_1 = _c.sent();
                                     json = null;
                                     throw new Error("API:FAILED:JSON_PARSE_ERROR");
                                 case 4:
@@ -120,7 +120,6 @@ var API = /** @class */ (function () {
                                                 json: json,
                                             }];
                                     }
-                                    (_d = (_c = this.core.Events.on.request).error) === null || _d === void 0 ? void 0 : _d.call(_c, { error: json });
                                     throw new Error("API:FAILED:".concat(res.status, ":").concat(json === null || json === void 0 ? void 0 : json.error));
                             }
                         });

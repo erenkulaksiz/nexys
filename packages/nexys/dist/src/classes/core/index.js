@@ -47,7 +47,7 @@ var defaultOptions = {
 var Core = /** @class */ (function () {
     // Core
     function Core(API_KEY, options) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
         this._env = (_a = process.env.NODE_ENV) !== null && _a !== void 0 ? _a : "production";
         this._version = version;
         this._server = server;
@@ -55,6 +55,7 @@ var Core = /** @class */ (function () {
         this._options = defaultOptions;
         this._isClient = isClient();
         this._allowDeviceData = true;
+        this._allowGeoLocation = true;
         this._sendAllOnType = [
             "ERROR",
             "AUTO:ERROR",
@@ -73,6 +74,8 @@ var Core = /** @class */ (function () {
         this._server = (_b = options === null || options === void 0 ? void 0 : options.server) !== null && _b !== void 0 ? _b : server;
         this._logPoolSize = (_c = options === null || options === void 0 ? void 0 : options.logPoolSize) !== null && _c !== void 0 ? _c : this._logPoolSize;
         this._allowDeviceData = (_d = options === null || options === void 0 ? void 0 : options.allowDeviceData) !== null && _d !== void 0 ? _d : this._allowDeviceData;
+        this._allowGeoLocation =
+            (_e = options === null || options === void 0 ? void 0 : options.allowGeoLocation) !== null && _e !== void 0 ? _e : this._allowGeoLocation;
         this._sendAllOnType =
             typeof (options === null || options === void 0 ? void 0 : options.sendAllOnType) == "undefined"
                 ? this._sendAllOnType
@@ -90,8 +93,8 @@ var Core = /** @class */ (function () {
         if (!this._options.appName)
             throw new Error("NexysCore: Please specify appName in constructor options");
         // Internal Logger
-        this.InternalLogger = new InternalLogger(this, {
-            active: (_f = (_e = this._options) === null || _e === void 0 ? void 0 : _e.debug) !== null && _f !== void 0 ? _f : false,
+        this.InternalLogger = new InternalLogger({
+            active: (_g = (_f = this._options) === null || _f === void 0 ? void 0 : _f.debug) !== null && _g !== void 0 ? _g : false,
         });
         // LogPool
         this.LogPool = new LogPool(this);
@@ -107,10 +110,10 @@ var Core = /** @class */ (function () {
         this.Device = new Device(this);
         // LocalStorage
         this.LocalStorage = new LocalStorage(this, {
-            key: (_h = (_g = this._options.localStorage) === null || _g === void 0 ? void 0 : _g.key) !== null && _h !== void 0 ? _h : (_j = defaultOptions.localStorage) === null || _j === void 0 ? void 0 : _j.key,
-            testKey: (_l = (_k = this._options.localStorage) === null || _k === void 0 ? void 0 : _k.testKey) !== null && _l !== void 0 ? _l : (_m = defaultOptions.localStorage) === null || _m === void 0 ? void 0 : _m.testKey,
-            isEncrypted: (_p = (_o = this._options.localStorage) === null || _o === void 0 ? void 0 : _o.cryption) !== null && _p !== void 0 ? _p : (_q = defaultOptions.localStorage) === null || _q === void 0 ? void 0 : _q.cryption,
-            active: (_s = (_r = this._options.localStorage) === null || _r === void 0 ? void 0 : _r.useLocalStorage) !== null && _s !== void 0 ? _s : (_t = defaultOptions.localStorage) === null || _t === void 0 ? void 0 : _t.useLocalStorage,
+            key: (_j = (_h = this._options.localStorage) === null || _h === void 0 ? void 0 : _h.key) !== null && _j !== void 0 ? _j : (_k = defaultOptions.localStorage) === null || _k === void 0 ? void 0 : _k.key,
+            testKey: (_m = (_l = this._options.localStorage) === null || _l === void 0 ? void 0 : _l.testKey) !== null && _m !== void 0 ? _m : (_o = defaultOptions.localStorage) === null || _o === void 0 ? void 0 : _o.testKey,
+            isEncrypted: (_q = (_p = this._options.localStorage) === null || _p === void 0 ? void 0 : _p.cryption) !== null && _q !== void 0 ? _q : (_r = defaultOptions.localStorage) === null || _r === void 0 ? void 0 : _r.cryption,
+            active: (_t = (_s = this._options.localStorage) === null || _s === void 0 ? void 0 : _s.useLocalStorage) !== null && _t !== void 0 ? _t : (_u = defaultOptions.localStorage) === null || _u === void 0 ? void 0 : _u.useLocalStorage,
         });
         // Initialize others
         this.setupEventHandlers();
@@ -120,7 +123,7 @@ var Core = /** @class */ (function () {
             this.InternalLogger.log("NexysCore: Altough NexysCore is designed to run on client side, it can be used on server side as well but some features will might not work.");
         }
         // Core Init Event
-        (_v = (_u = this.Events.on).coreInit) === null || _v === void 0 ? void 0 : _v.call(_u);
+        (_w = (_v = this.Events.on).coreInit) === null || _w === void 0 ? void 0 : _w.call(_v);
         // Log initialization
         this.InternalLogger.log("NexysCore: Initialized", this._version, this._options);
         if (this._isClient)
@@ -136,7 +139,7 @@ var Core = /** @class */ (function () {
                     type: "METRIC",
                 },
                 guid: guid(),
-                path: this.getPagePath()
+                path: this.getPagePath(),
             });
             this.InternalLogger.log("NexysCore: Initialized in ".concat(_end - _start, "ms"));
         }
@@ -168,7 +171,7 @@ var Core = /** @class */ (function () {
                     type: "AUTO:ERROR",
                 },
                 guid: guid(),
-                path: _this.getPagePath()
+                path: _this.getPagePath(),
             });
         };
         this.Events.on.unhandledRejection = function (event) {
@@ -189,8 +192,27 @@ var Core = /** @class */ (function () {
                     type: "AUTO:UNHANDLEDREJECTION",
                 },
                 guid: guid(),
-                path: _this.getPagePath()
+                path: _this.getPagePath(),
             });
+        };
+        this.Events.on.request.success = function (event) {
+            _this.InternalLogger.log("Events: Received request success: ", event);
+        };
+        this.Events.on.request.error = function (event) {
+            var messages = {
+                "API:FAILED:400:app-name": "NexysCore: Your configured app name and the app name you entered on your project is mismatching. Please check your configuration. Erasing localStorage.",
+                "API:FAILED:400:not-verified": "NexysCore: Your project is not verified. Erasing localStorage.",
+                "API:FAILED:400:domain": "NexysCore: This domain is not allowed. Enable localhost access on your project if you are testing. Erasing localStorage.",
+            };
+            var message = messages[event.message];
+            if (message) {
+                _this.InternalLogger.log(message);
+                _this.LocalStorage.clear();
+                _this.LogPool.clearLogs();
+                _this.LogPool.clearRequests();
+                return;
+            }
+            _this.InternalLogger.log("Events: Received request error: ", event);
         };
     };
     Core.prototype.getPagePath = function () {
@@ -260,7 +282,7 @@ var Core = /** @class */ (function () {
             options: options,
             ts: new Date().getTime(),
             guid: guid(),
-            path: this.getPagePath()
+            path: this.getPagePath(),
         });
     };
     /**
@@ -292,7 +314,7 @@ var Core = /** @class */ (function () {
             options: __assign(__assign({}, options), { type: "ERROR" }),
             ts: new Date().getTime(),
             guid: guid(),
-            path: this.getPagePath()
+            path: this.getPagePath(),
         });
     };
     /**
@@ -322,7 +344,7 @@ var Core = /** @class */ (function () {
             },
             ts: new Date().getTime(),
             guid: guid(),
-            path: this.getPagePath()
+            path: this.getPagePath(),
         });
     };
     /**

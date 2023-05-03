@@ -14,17 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Core } from "../core/index.js";
 import type { InternalLoggerConstructorParams } from "./types";
 /**
  * @class InternalLogger
  * @description This class is used to log internal errors or debug related logs to the console.
  */
 export declare class InternalLogger {
-    private core;
     private _active;
     isAvailable: boolean;
-    constructor(core: Core, { active }: InternalLoggerConstructorParams);
+    constructor({ active }: InternalLoggerConstructorParams);
     private checkAvailability;
     log(...args: any[]): void;
     error(...args: any[]): void;

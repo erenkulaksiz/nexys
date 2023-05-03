@@ -21,6 +21,7 @@ export interface NexysOptions {
     sendAllOnType?: false | logOptionTypes | logOptionTypes[];
     server?: string;
     allowDeviceData?: boolean;
+    allowGeoLocation?: boolean;
     ignoreType?: false | logOptionTypes | logOptionTypes[];
     ignoreTypeSize?: number;
     errors?: {

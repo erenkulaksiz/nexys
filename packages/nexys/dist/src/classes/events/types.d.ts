@@ -13,9 +13,7 @@ export interface EventTypes {
             res?: Response;
             json: any;
         }) => void) | null;
-        error: ((error: Error | {
-            error?: string;
-        }) => void) | null;
+        error: ((error: Error) => void) | null;
     };
     localStorageInit: ((localItem: any) => void) | null;
     requestAdd: (({ res, status, ts }: requestTypes) => void) | null;

@@ -7,13 +7,14 @@ import { nexys } from "./utils";
 import { configFunctions } from "nexys/dist/src/types";
 
 nexys.configure((config: configFunctions) => {
-  config.setUser("@erenk");
-  config.setAppVersion("2.1.44");
+  config.setUser("@yusuf");
+  config.setAppVersion("v0.2");
 });
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
+
 root.render(
   <React.StrictMode>
     <App />

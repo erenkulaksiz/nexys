@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import { Core } from "../core/index.js";
 import type { InternalLoggerConstructorParams } from "./types";
 
 /**
@@ -23,12 +22,10 @@ import type { InternalLoggerConstructorParams } from "./types";
  * @description This class is used to log internal errors or debug related logs to the console.
  */
 export class InternalLogger {
-  private core: Core;
   private _active: boolean = false;
   public isAvailable: boolean = false;
 
-  constructor(core: Core, { active }: InternalLoggerConstructorParams) {
-    this.core = core;
+  constructor({ active }: InternalLoggerConstructorParams) {
     this._active = active;
     this.isAvailable = this.checkAvailability();
     if (this.isAvailable && this._active) this.log("InternalLogger: Active");
@@ -47,11 +44,11 @@ export class InternalLogger {
 
   public log(...args: any[]): void {
     if (!this._active || !this.isAvailable) return;
-    console.log("[NEXYS-DEBUG]: ", ...args);
+    console.log("📘 [NEXYS-DEBUG]: ", ...args);
   }
 
   public error(...args: any[]): void {
     if (!this._active || !this.isAvailable) return;
-    console.error("[NEXYS-ERROR]: ", ...args);
+    console.error("📕 [NEXYS-ERROR]: ", ...args);
   }
 }

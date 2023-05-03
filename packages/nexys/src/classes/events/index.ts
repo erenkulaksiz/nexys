@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import { isClient } from "../../utils/index.js";
 import { Core } from "../core/index.js";
 import type { EventTypes } from "./types";
 

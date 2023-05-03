@@ -28,11 +28,10 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
  * @description This class is used to log internal errors or debug related logs to the console.
  */
 var InternalLogger = /** @class */ (function () {
-    function InternalLogger(core, _a) {
+    function InternalLogger(_a) {
         var active = _a.active;
         this._active = false;
         this.isAvailable = false;
-        this.core = core;
         this._active = active;
         this.isAvailable = this.checkAvailability();
         if (this.isAvailable && this._active)
@@ -56,7 +55,7 @@ var InternalLogger = /** @class */ (function () {
         }
         if (!this._active || !this.isAvailable)
             return;
-        console.log.apply(console, __spreadArray(["[NEXYS-DEBUG]: "], args, false));
+        console.log.apply(console, __spreadArray(["📘 [NEXYS-DEBUG]: "], args, false));
     };
     InternalLogger.prototype.error = function () {
         var args = [];
@@ -65,7 +64,7 @@ var InternalLogger = /** @class */ (function () {
         }
         if (!this._active || !this.isAvailable)
             return;
-        console.error.apply(console, __spreadArray(["[NEXYS-ERROR]: "], args, false));
+        console.error.apply(console, __spreadArray(["📕 [NEXYS-ERROR]: "], args, false));
     };
     return InternalLogger;
 }());

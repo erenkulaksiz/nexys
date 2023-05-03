@@ -349,7 +349,7 @@ export class LogPool {
         this.core.Events.on.request.error?.(err);
         if (err?.message == "API:FAILED:400:api-key") {
           this.core.InternalLogger.error(
-            "API: Your API key is not found. Please make sure you entered correct credentials."
+            "API: Your API key is not valid. Please make sure you entered correct credentials."
           );
         }
         if (err?.message !== "API:ALREADY_SENDING") {

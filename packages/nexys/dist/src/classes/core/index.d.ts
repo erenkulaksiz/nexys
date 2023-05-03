@@ -36,6 +36,7 @@ export declare class Core {
     _options: NexysOptions;
     _isClient: boolean;
     _allowDeviceData: boolean;
+    _allowGeoLocation: boolean;
     _sendAllOnType: NexysOptions["sendAllOnType"];
     _ignoreType: NexysOptions["ignoreType"];
     _ignoreTypeSize: number;

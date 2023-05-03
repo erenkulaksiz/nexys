@@ -57,6 +57,7 @@ throw new Error("I should be able to see this error on dashboard");
 
 # Changelog (client library)
 
+- 1.0.10 - added verify method to verify api key & added option to disable location service - 25.04.2023 - 03.05.2023
 - 1.0.9 - added dom data to track dom details - 13.03.2023
 - 1.0.8 - added guid to requests and other fixes - 16.02.2023
 - 1.0.7 - changed client name to nexys inside packages - 12.02.2023

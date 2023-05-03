@@ -149,8 +149,7 @@ export class Device {
     }
     const battery = await this.getBattery().catch((err) => null);
     const connection = await this.getConnection().catch((err) => null);
-    const geo = await this.getGeolocation().catch((err) => null);
-    return Promise.resolve({
+    let deviceData = {
       platform: this.getPlatform(),
       language: this.getLanguage(),
       vendor: this.getVendor(),
@@ -158,14 +157,24 @@ export class Device {
       hardwareConcurrency: this.getHardwareConcurrency(),
       userAgent: this.getUserAgent(),
       screen: this.getScreen(),
-      battery: {
-        charging: battery?.charging,
-        chargingTime: battery?.chargingTime,
-        dischargingTime: battery?.dischargingTime,
-        level: battery?.level,
-      },
+      battery,
       connection,
-      geo,
-    });
+    } as {
+      platform: string | null;
+      language: string | null;
+      vendor: string | null;
+      deviceMemory: number | null;
+      hardwareConcurrency: number | null;
+      userAgent: string | null;
+      screen: { [key: string]: number } | null;
+      geo?: GeolocationPosition | null;
+      battery?: BatteryManager | null;
+      connection?: NetworkInformation | null;
+    };
+    if (this.core._allowGeoLocation) {
+      const geo = await this.getGeolocation().catch((err) => null);
+      deviceData = { ...deviceData, geo };
+    }
+    return Promise.resolve(deviceData);
   }
 }

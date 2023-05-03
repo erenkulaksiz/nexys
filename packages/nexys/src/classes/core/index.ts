@@ -58,6 +58,7 @@ export class Core {
   _options: NexysOptions = defaultOptions;
   _isClient: boolean = isClient();
   _allowDeviceData: boolean = true;
+  _allowGeoLocation: boolean = true;
   _sendAllOnType: NexysOptions["sendAllOnType"] = [
     "ERROR",
     "AUTO:ERROR",
@@ -89,6 +90,8 @@ export class Core {
     this._server = options?.server ?? server;
     this._logPoolSize = options?.logPoolSize ?? this._logPoolSize;
     this._allowDeviceData = options?.allowDeviceData ?? this._allowDeviceData;
+    this._allowGeoLocation =
+      options?.allowGeoLocation ?? this._allowGeoLocation;
 
     this._sendAllOnType =
       typeof options?.sendAllOnType == "undefined"
@@ -112,7 +115,7 @@ export class Core {
       );
 
     // Internal Logger
-    this.InternalLogger = new InternalLogger(this, {
+    this.InternalLogger = new InternalLogger({
       active: this._options?.debug ?? false,
     });
 
@@ -181,7 +184,7 @@ export class Core {
           type: "METRIC",
         },
         guid: guid(),
-        path: this.getPagePath()
+        path: this.getPagePath(),
       });
       this.InternalLogger.log(`NexysCore: Initialized in ${_end - _start}ms`);
     }
@@ -216,7 +219,7 @@ export class Core {
           type: "AUTO:ERROR",
         },
         guid: guid(),
-        path: this.getPagePath()
+        path: this.getPagePath(),
       });
     };
 
@@ -241,14 +244,36 @@ export class Core {
           type: "AUTO:UNHANDLEDREJECTION",
         },
         guid: guid(),
-        path: this.getPagePath()
+        path: this.getPagePath(),
       });
+    };
+
+    this.Events.on.request.success = (event) => {
+      this.InternalLogger.log("Events: Received request success: ", event);
+    };
+    this.Events.on.request.error = (event) => {
+      const messages: {
+        [key: string]: string;
+      } = {
+        "API:FAILED:400:app-name": `NexysCore: Your configured app name and the app name you entered on your project is mismatching. Please check your configuration. Erasing localStorage.`,
+        "API:FAILED:400:not-verified": `NexysCore: Your project is not verified. Erasing localStorage.`,
+        "API:FAILED:400:domain": `NexysCore: This domain is not allowed. Enable localhost access on your project if you are testing. Erasing localStorage.`,
+      };
+      const message = messages[event.message];
+      if (message) {
+        this.InternalLogger.log(message);
+        this.LocalStorage.clear();
+        this.LogPool.clearLogs();
+        this.LogPool.clearRequests();
+        return;
+      }
+      this.InternalLogger.log("Events: Received request error: ", event);
     };
   }
 
   getPagePath(): string | null {
-    if(this._isClient){
-      if(window?.location){
+    if (this._isClient) {
+      if (window?.location) {
         return window.location.pathname;
       }
       return null;
@@ -331,13 +356,13 @@ export class Core {
       options,
       ts: new Date().getTime(),
       guid: guid(),
-      path: this.getPagePath()
+      path: this.getPagePath(),
     });
   }
 
   /**
    * Adds error request to logPool in Nexys instance.
-   * 
+   *
    * @example
    * ```javascript
    * // Initialize the client and log "Hello World"
@@ -349,7 +374,7 @@ export class Core {
    * // Initialize the client and give error
    * nexys.error("I'm an error");
    * ```
-   * 
+   *
    * @param data - Any data to be logged
    * @param options - `Optional` - Log options specified below
    * @param options.type - `Optional` - Log type
@@ -367,7 +392,7 @@ export class Core {
       },
       ts: new Date().getTime(),
       guid: guid(),
-      path: this.getPagePath()
+      path: this.getPagePath(),
     });
   }
 
@@ -404,7 +429,7 @@ export class Core {
       },
       ts: new Date().getTime(),
       guid: guid(),
-      path: this.getPagePath()
+      path: this.getPagePath(),
     });
   }
 

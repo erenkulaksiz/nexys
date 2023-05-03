@@ -314,7 +314,7 @@ var LogPool = /** @class */ (function () {
                             _this.core.InternalLogger.error("API: Request failed.", err);
                             (_b = (_a = _this.core.Events.on.request).error) === null || _b === void 0 ? void 0 : _b.call(_a, err);
                             if ((err === null || err === void 0 ? void 0 : err.message) == "API:FAILED:400:api-key") {
-                                _this.core.InternalLogger.error("API: Your API key is not found. Please make sure you entered correct credentials.");
+                                _this.core.InternalLogger.error("API: Your API key is not valid. Please make sure you entered correct credentials.");
                             }
                             if ((err === null || err === void 0 ? void 0 : err.message) !== "API:ALREADY_SENDING") {
                                 _this.core.API.requestCompleted();

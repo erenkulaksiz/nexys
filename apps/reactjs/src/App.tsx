@@ -7,11 +7,7 @@ function App() {
       <button
         onClick={async () => {
           const log = nexys.log({
-            halo: true,
-            selamlar: false,
-            complex: {
-              test: "test",
-            },
+            eren: true,
           });
           //console.log("Client return:", log);
         }}

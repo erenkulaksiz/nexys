@@ -25,10 +25,7 @@ export class API {
   private _appName: string = "";
   public _sendingRequest: boolean = false;
 
-  constructor(
-    core: Core,
-    { server, apiKey, appName }: APIConstructorParams
-  ) {
+  constructor(core: Core, { server, apiKey, appName }: APIConstructorParams) {
     this.core = core;
     this._server = server;
     this._apiKey = apiKey;
@@ -77,7 +74,6 @@ export class API {
         };
       }
 
-      this.core.Events.on.request.error?.({ error: json });
       throw new Error(`API:FAILED:${res.status}:${json?.error}`);
     });
   }
