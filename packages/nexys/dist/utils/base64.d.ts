@@ -14,15 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export const server = "https://dash.nexys.app";
-export const debugServer = "http://localhost:3000";
-export const libraryName = "Nexys";
-export const version = "1.0.12";
-export { Base64 } from "./base64.js";
-export { isClient } from "./isClient.js";
-export { guid } from "./guid.js";
-export {
-  collectNextJSData,
-  collectVercelEnv,
-  collectDOMData,
-} from "./collect.js";
+/**
+ * Helper functions to encode/decode localStorage logs into Base64.
+ */
+export declare const Base64: {
+    _keyStr: string;
+    encode: (input: string) => string;
+    decode: (input: string) => string;
+    _utf8_encode: (string: string) => string;
+    _utf8_decode: (utftext: string) => string;
+};
+//# sourceMappingURL=base64.d.ts.map

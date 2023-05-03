@@ -14,15 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export const server = "https://dash.nexys.app";
-export const debugServer = "http://localhost:3000";
-export const libraryName = "Nexys";
-export const version = "1.0.12";
-export { Base64 } from "./base64.js";
-export { isClient } from "./isClient.js";
-export { guid } from "./guid.js";
-export {
-  collectNextJSData,
-  collectVercelEnv,
-  collectDOMData,
-} from "./collect.js";
+import type { InternalLoggerConstructorParams } from "./types";
+/**
+ * @class InternalLogger
+ * @description This class is used to log internal errors or debug related logs to the console.
+ */
+export declare class InternalLogger {
+    private _active;
+    isAvailable: boolean;
+    constructor({ active }: InternalLoggerConstructorParams);
+    private checkAvailability;
+    log(...args: any[]): void;
+    error(...args: any[]): void;
+}
+//# sourceMappingURL=index.d.ts.map

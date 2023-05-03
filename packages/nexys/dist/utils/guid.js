@@ -14,15 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export const server = "https://dash.nexys.app";
-export const debugServer = "http://localhost:3000";
-export const libraryName = "Nexys";
-export const version = "1.0.12";
-export { Base64 } from "./base64.js";
-export { isClient } from "./isClient.js";
-export { guid } from "./guid.js";
-export {
-  collectNextJSData,
-  collectVercelEnv,
-  collectDOMData,
-} from "./collect.js";
+export function guid() {
+    function _p8(s) {
+        var p = (Math.random().toString(16) + "000000000").substr(2, 8);
+        return s ? "-" + p.substr(0, 4) + "-" + p.substr(4, 4) : p;
+    }
+    return _p8() + _p8(true) + _p8(true) + _p8();
+}
