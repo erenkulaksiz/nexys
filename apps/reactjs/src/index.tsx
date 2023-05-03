@@ -4,7 +4,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
 import { nexys } from "./utils";
-import { configFunctions } from "nexys/dist/src/types";
+import { configFunctions } from "nexys/src/types";
 
 nexys.configure((config: configFunctions) => {
   config.setUser("@yusuf");
