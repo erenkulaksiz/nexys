@@ -7,7 +7,7 @@ export default function App() {
       <button
         onClick={async () => {
           const log = nexys.log("test.");
-          //console.log("Client return:", log);
+          console.log("Client return:", log);
         }}
       >
         click to log
