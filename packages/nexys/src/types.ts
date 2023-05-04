@@ -42,6 +42,7 @@ export interface NexysOptions {
   _i_EXTREMELY_SECRET_DO_NOT_USE_PLEASE?: boolean;
 }
 
+export type logActionTypes = string;
 export type logOptionTypes =
   | "DEBUG"
   | "INFO"
@@ -57,6 +58,7 @@ export interface logOptions {
   type?: logOptionTypes; // Log type
   level?: logOptionLevels; // Log level
   tags?: string[];
+  action?: logActionTypes;
 }
 
 export interface logTypes {

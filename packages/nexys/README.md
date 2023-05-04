@@ -57,6 +57,7 @@ throw new Error("I should be able to see this error on dashboard");
 
 # Changelog (client library)
 
+- 1.0.16 - fix issue where default setting for allowGeoLocation was true instead of false, added log action - 05.05.2023
 - 1.0.14 - fixed issue where importing nexys causes error - 04.05.2023
 - 1.0.10 - added verify method to verify api key & added option to disable location service - 25.04.2023 - 03.05.2023
 - 1.0.9 - added dom data to track dom details - 13.03.2023

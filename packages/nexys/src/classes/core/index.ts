@@ -58,7 +58,7 @@ export class Core {
   _options: NexysOptions = defaultOptions;
   _isClient: boolean = isClient();
   _allowDeviceData: boolean = true;
-  _allowGeoLocation: boolean = true;
+  _allowGeoLocation: boolean = false;
   _sendAllOnType: NexysOptions["sendAllOnType"] = [
     "ERROR",
     "AUTO:ERROR",
@@ -347,6 +347,7 @@ export class Core {
    * @param options.type - `Optional` - Log type
    * @param options.level - `Optional` - Log level
    * @param options.tags - `Optional` - Log tags
+   * @param options.action - `Optional` - Log action
    *
    * @public
    */

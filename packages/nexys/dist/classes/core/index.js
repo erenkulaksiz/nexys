@@ -55,7 +55,7 @@ var Core = /** @class */ (function () {
         this._options = defaultOptions;
         this._isClient = isClient();
         this._allowDeviceData = true;
-        this._allowGeoLocation = true;
+        this._allowGeoLocation = false;
         this._sendAllOnType = [
             "ERROR",
             "AUTO:ERROR",
@@ -273,6 +273,7 @@ var Core = /** @class */ (function () {
      * @param options.type - `Optional` - Log type
      * @param options.level - `Optional` - Log level
      * @param options.tags - `Optional` - Log tags
+     * @param options.action - `Optional` - Log action
      *
      * @public
      */
