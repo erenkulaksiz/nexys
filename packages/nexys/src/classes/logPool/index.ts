@@ -24,6 +24,7 @@ import {
   collectDOMData,
   guid,
 } from "../../utils/index.js";
+import getPagePath from "../../utils/getPagePath.js";
 //import type { LogPoolConstructorParams } from "./types";
 import type { requestTypes } from "../../types";
 import type { logTypes, NexysOptions, configTypes } from "./../../types";
@@ -339,7 +340,7 @@ export class LogPool {
               type: "METRIC",
             },
             guid: guid(),
-            path: this.core.getPagePath(),
+            path: getPagePath(this.core),
           });
           this.core.InternalLogger.log(`API: Request took ${_end - _start}ms.`);
         }

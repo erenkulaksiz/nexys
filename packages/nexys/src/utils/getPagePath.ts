@@ -14,4 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export {};
+
+import { Core } from "../classes/core";
+
+export default function getPagePath(core: Core): string | null {
+  if (core._isClient) {
+    if (window?.location) {
+      return window.location.pathname;
+    }
+    return null;
+  }
+  return null;
+}

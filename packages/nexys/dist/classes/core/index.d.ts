@@ -44,12 +44,6 @@ export declare class Core {
     _internalMetrics: any;
     constructor(API_KEY: string, options?: NexysOptions);
     /**
-     * Automatic error handling.
-     */
-    private setupEventHandlers;
-    getPagePath(): string | null;
-    private loadFromLocalStorage;
-    /**
      * Adds log request to logPool in Nexys instance.
      *
      * @example

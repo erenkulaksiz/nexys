@@ -14,4 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export {};
+import { Core } from ".";
+export default function loadFromLocalStorage(core: Core): void;
+//# sourceMappingURL=loadFromLocalStorage.d.ts.map

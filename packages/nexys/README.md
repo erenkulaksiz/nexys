@@ -8,7 +8,9 @@
     <img src="https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" />
     <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" />
     <img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" />
-    <img src="https://nodei.co/npm/nexys.png?downloads=true" align="center" />
+    <a href="https://www.npmjs.com/package/nexys">
+      <img src="https://nodei.co/npm/nexys.png?downloads=true" align="center" />
+    </a>
   </span>
 </p>
 
@@ -57,6 +59,7 @@ throw new Error("I should be able to see this error on dashboard");
 
 # Changelog (client library)
 
+- 1.0.18
 - 1.0.16 - fix issue where default setting for allowGeoLocation was true instead of false, added log action - 05.05.2023
 - 1.0.14 - fixed issue where importing nexys causes error - 04.05.2023
 - 1.0.10 - added verify method to verify api key & added option to disable location service - 25.04.2023 - 03.05.2023

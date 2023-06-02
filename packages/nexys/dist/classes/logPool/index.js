@@ -62,6 +62,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 import { version, libraryName, collectNextJSData, collectVercelEnv, collectDOMData, guid, } from "../../utils/index.js";
+import getPagePath from "../../utils/getPagePath.js";
 var LogPool = /** @class */ (function () {
     function LogPool(core) {
         // All logs stored here.
@@ -304,7 +305,7 @@ var LogPool = /** @class */ (function () {
                                         type: "METRIC",
                                     },
                                     guid: guid(),
-                                    path: _this.core.getPagePath(),
+                                    path: getPagePath(_this.core),
                                 });
                                 _this.core.InternalLogger.log("API: Request took ".concat(_end - _start, "ms."));
                             }

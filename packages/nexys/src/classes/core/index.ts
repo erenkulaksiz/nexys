@@ -28,6 +28,9 @@ import type {
   configTypes,
   configFunctions,
 } from "../../types";
+import setupEventHandlers from "./setupEventHandlers.js";
+import loadFromLocalStorage from "./loadFromLocalStorage.js";
+import getPagePath from "../../utils/getPagePath.js";
 
 const defaultOptions = {
   // NexysOptions
@@ -150,8 +153,8 @@ export class Core {
     });
 
     // Initialize others
-    this.setupEventHandlers();
-    this.loadFromLocalStorage();
+    setupEventHandlers(this);
+    loadFromLocalStorage(this);
 
     if (!this._isClient) {
       this.InternalLogger.log(
@@ -184,146 +187,9 @@ export class Core {
           type: "METRIC",
         },
         guid: guid(),
-        path: this.getPagePath(),
+        path: getPagePath(this),
       });
       this.InternalLogger.log(`NexysCore: Initialized in ${_end - _start}ms`);
-    }
-  }
-
-  /**
-   * Automatic error handling.
-   */
-  private setupEventHandlers() {
-    this.Events.on.error = (event: ErrorEvent) => {
-      this.InternalLogger.log("Events: Received error", event);
-
-      const extractedError = {
-        message: event?.message,
-        errmessage: event?.error?.message,
-        stack: event?.error?.stack,
-        type: event?.type,
-        colno: event?.colno,
-        lineno: event?.lineno,
-        filename: event?.filename,
-        defaultPrevented: event?.defaultPrevented,
-        isTrusted: event?.isTrusted,
-        timeStamp: event?.timeStamp,
-      };
-
-      this.LogPool.push({
-        data: {
-          ...extractedError,
-        },
-        ts: new Date().getTime(),
-        options: {
-          type: "AUTO:ERROR",
-        },
-        guid: guid(),
-        path: this.getPagePath(),
-      });
-    };
-
-    this.Events.on.unhandledRejection = (event: PromiseRejectionEvent) => {
-      this.InternalLogger.log("Events: Received unhandledRejection: ", event);
-
-      const extractedRejection = {
-        message: event?.reason?.message,
-        stack: event?.reason?.stack,
-        type: event?.type,
-        isTrusted: event?.isTrusted,
-        defaultPrevented: event?.defaultPrevented,
-        timeStamp: event?.timeStamp,
-      };
-
-      this.LogPool.push({
-        data: {
-          ...extractedRejection,
-        },
-        ts: new Date().getTime(),
-        options: {
-          type: "AUTO:UNHANDLEDREJECTION",
-        },
-        guid: guid(),
-        path: this.getPagePath(),
-      });
-    };
-
-    this.Events.on.request.success = (event) => {
-      this.InternalLogger.log("Events: Received request success: ", event);
-    };
-    this.Events.on.request.error = (event) => {
-      const messages: {
-        [key: string]: string;
-      } = {
-        "API:FAILED:400:app-name": `NexysCore: Your configured app name and the app name you entered on your project is mismatching. Please check your configuration. Erasing localStorage.`,
-        "API:FAILED:400:not-verified": `NexysCore: Your project is not verified. Erasing localStorage.`,
-        "API:FAILED:400:domain": `NexysCore: This domain is not allowed. Enable localhost access on your project if you are testing. Erasing localStorage.`,
-      };
-      const message = messages[event.message];
-      if (message) {
-        this.InternalLogger.log(message);
-        this.LocalStorage.clear();
-        this.LogPool.clearLogs();
-        this.LogPool.clearRequests();
-        return;
-      }
-      this.InternalLogger.log("Events: Received request error: ", event);
-    };
-  }
-
-  getPagePath(): string | null {
-    if (this._isClient) {
-      if (window?.location) {
-        return window.location.pathname;
-      }
-      return null;
-    }
-    return null;
-  }
-
-  private loadFromLocalStorage() {
-    // Load logs from localStorage
-    const localLogs = this.LocalStorage.getLocalLogs();
-    if (
-      Array.isArray(localLogs) &&
-      localLogs.length > 0 &&
-      this._options.localStorage?.useLocalStorage
-    ) {
-      this.LogPool.setLogs(localLogs);
-      this.InternalLogger.log(
-        "NexysCore: Set logs from localStorage.",
-        localLogs
-      );
-    } else if (
-      Array.isArray(localLogs) &&
-      localLogs.length == 0 &&
-      this._options.localStorage?.useLocalStorage
-    ) {
-      this.InternalLogger.log(
-        "NexysCore: LocalStorage is empty, no logs found."
-      );
-    }
-
-    // Load requests from localStorage
-    const localRequests = this.LocalStorage.getLocalRequests();
-    if (
-      Array.isArray(localRequests) &&
-      localRequests.length > 0 &&
-      this._options.localStorage?.useLocalStorage
-    ) {
-      this.LogPool.setRequests(localRequests);
-      this.InternalLogger.log(
-        "NexysCore: Set requests from localStorage.",
-        localRequests
-      );
-    } else if (
-      Array.isArray(localRequests) &&
-      localRequests.length == 0 &&
-      this._options.localStorage?.useLocalStorage
-    ) {
-      this.InternalLogger.log(
-        "NexysCore: LocalStorage is empty, no requests found."
-      );
     }
   }
 
@@ -357,7 +223,7 @@ export class Core {
       options,
       ts: new Date().getTime(),
       guid: guid(),
-      path: this.getPagePath(),
+      path: getPagePath(this),
     });
   }
 
@@ -393,7 +259,7 @@ export class Core {
       },
       ts: new Date().getTime(),
       guid: guid(),
-      path: this.getPagePath(),
+      path: getPagePath(this),
     });
   }
 
@@ -430,7 +296,7 @@ export class Core {
       },
       ts: new Date().getTime(),
       guid: guid(),
-      path: this.getPagePath(),
+      path: getPagePath(this),
     });
   }
 

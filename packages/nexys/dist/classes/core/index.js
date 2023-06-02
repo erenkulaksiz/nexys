@@ -32,6 +32,9 @@ import { LocalStorage } from "./../localStorage/index.js";
 import { LogPool } from "./../logPool/index.js";
 import { Device } from "./../device/index.js";
 import { server, version, isClient, guid } from "../../utils/index.js";
+import setupEventHandlers from "./setupEventHandlers.js";
+import loadFromLocalStorage from "./loadFromLocalStorage.js";
+import getPagePath from "../../utils/getPagePath.js";
 var defaultOptions = {
     // NexysOptions
     localStorage: {
@@ -116,8 +119,8 @@ var Core = /** @class */ (function () {
             active: (_t = (_s = this._options.localStorage) === null || _s === void 0 ? void 0 : _s.useLocalStorage) !== null && _t !== void 0 ? _t : (_u = defaultOptions.localStorage) === null || _u === void 0 ? void 0 : _u.useLocalStorage,
         });
         // Initialize others
-        this.setupEventHandlers();
-        this.loadFromLocalStorage();
+        setupEventHandlers(this);
+        loadFromLocalStorage(this);
         if (!this._isClient) {
             this.InternalLogger.log("NexysCore: Detected that we are running NexysCore on non client side environment.");
             this.InternalLogger.log("NexysCore: Altough NexysCore is designed to run on client side, it can be used on server side as well but some features will might not work.");
@@ -139,120 +142,11 @@ var Core = /** @class */ (function () {
                     type: "METRIC",
                 },
                 guid: guid(),
-                path: this.getPagePath(),
+                path: getPagePath(this),
             });
             this.InternalLogger.log("NexysCore: Initialized in ".concat(_end - _start, "ms"));
         }
     }
-    /**
-     * Automatic error handling.
-     */
-    Core.prototype.setupEventHandlers = function () {
-        var _this = this;
-        this.Events.on.error = function (event) {
-            var _a, _b;
-            _this.InternalLogger.log("Events: Received error", event);
-            var extractedError = {
-                message: event === null || event === void 0 ? void 0 : event.message,
-                errmessage: (_a = event === null || event === void 0 ? void 0 : event.error) === null || _a === void 0 ? void 0 : _a.message,
-                stack: (_b = event === null || event === void 0 ? void 0 : event.error) === null || _b === void 0 ? void 0 : _b.stack,
-                type: event === null || event === void 0 ? void 0 : event.type,
-                colno: event === null || event === void 0 ? void 0 : event.colno,
-                lineno: event === null || event === void 0 ? void 0 : event.lineno,
-                filename: event === null || event === void 0 ? void 0 : event.filename,
-                defaultPrevented: event === null || event === void 0 ? void 0 : event.defaultPrevented,
-                isTrusted: event === null || event === void 0 ? void 0 : event.isTrusted,
-                timeStamp: event === null || event === void 0 ? void 0 : event.timeStamp,
-            };
-            _this.LogPool.push({
-                data: __assign({}, extractedError),
-                ts: new Date().getTime(),
-                options: {
-                    type: "AUTO:ERROR",
-                },
-                guid: guid(),
-                path: _this.getPagePath(),
-            });
-        };
-        this.Events.on.unhandledRejection = function (event) {
-            var _a, _b;
-            _this.InternalLogger.log("Events: Received unhandledRejection: ", event);
-            var extractedRejection = {
-                message: (_a = event === null || event === void 0 ? void 0 : event.reason) === null || _a === void 0 ? void 0 : _a.message,
-                stack: (_b = event === null || event === void 0 ? void 0 : event.reason) === null || _b === void 0 ? void 0 : _b.stack,
-                type: event === null || event === void 0 ? void 0 : event.type,
-                isTrusted: event === null || event === void 0 ? void 0 : event.isTrusted,
-                defaultPrevented: event === null || event === void 0 ? void 0 : event.defaultPrevented,
-                timeStamp: event === null || event === void 0 ? void 0 : event.timeStamp,
-            };
-            _this.LogPool.push({
-                data: __assign({}, extractedRejection),
-                ts: new Date().getTime(),
-                options: {
-                    type: "AUTO:UNHANDLEDREJECTION",
-                },
-                guid: guid(),
-                path: _this.getPagePath(),
-            });
-        };
-        this.Events.on.request.success = function (event) {
-            _this.InternalLogger.log("Events: Received request success: ", event);
-        };
-        this.Events.on.request.error = function (event) {
-            var messages = {
-                "API:FAILED:400:app-name": "NexysCore: Your configured app name and the app name you entered on your project is mismatching. Please check your configuration. Erasing localStorage.",
-                "API:FAILED:400:not-verified": "NexysCore: Your project is not verified. Erasing localStorage.",
-                "API:FAILED:400:domain": "NexysCore: This domain is not allowed. Enable localhost access on your project if you are testing. Erasing localStorage.",
-            };
-            var message = messages[event.message];
-            if (message) {
-                _this.InternalLogger.log(message);
-                _this.LocalStorage.clear();
-                _this.LogPool.clearLogs();
-                _this.LogPool.clearRequests();
-                return;
-            }
-            _this.InternalLogger.log("Events: Received request error: ", event);
-        };
-    };
-    Core.prototype.getPagePath = function () {
-        if (this._isClient) {
-            if (window === null || window === void 0 ? void 0 : window.location) {
-                return window.location.pathname;
-            }
-            return null;
-        }
-        return null;
-    };
-    Core.prototype.loadFromLocalStorage = function () {
-        var _a, _b, _c, _d;
-        // Load logs from localStorage
-        var localLogs = this.LocalStorage.getLocalLogs();
-        if (Array.isArray(localLogs) &&
-            localLogs.length > 0 &&
-            ((_a = this._options.localStorage) === null || _a === void 0 ? void 0 : _a.useLocalStorage)) {
-            this.LogPool.setLogs(localLogs);
-            this.InternalLogger.log("NexysCore: Set logs from localStorage.", localLogs);
-        }
-        else if (Array.isArray(localLogs) &&
-            localLogs.length == 0 &&
-            ((_b = this._options.localStorage) === null || _b === void 0 ? void 0 : _b.useLocalStorage)) {
-            this.InternalLogger.log("NexysCore: LocalStorage is empty, no logs found.");
-        }
-        // Load requests from localStorage
-        var localRequests = this.LocalStorage.getLocalRequests();
-        if (Array.isArray(localRequests) &&
-            localRequests.length > 0 &&
-            ((_c = this._options.localStorage) === null || _c === void 0 ? void 0 : _c.useLocalStorage)) {
-            this.LogPool.setRequests(localRequests);
-            this.InternalLogger.log("NexysCore: Set requests from localStorage.", localRequests);
-        }
-        else if (Array.isArray(localRequests) &&
-            localRequests.length == 0 &&
-            ((_d = this._options.localStorage) === null || _d === void 0 ? void 0 : _d.useLocalStorage)) {
-            this.InternalLogger.log("NexysCore: LocalStorage is empty, no requests found.");
-        }
-    };
     /**
      * Adds log request to logPool in Nexys instance.
      *
@@ -283,7 +177,7 @@ var Core = /** @class */ (function () {
             options: options,
             ts: new Date().getTime(),
             guid: guid(),
-            path: this.getPagePath(),
+            path: getPagePath(this),
         });
     };
     /**
@@ -315,7 +209,7 @@ var Core = /** @class */ (function () {
             options: __assign(__assign({}, options), { type: "ERROR" }),
             ts: new Date().getTime(),
             guid: guid(),
-            path: this.getPagePath(),
+            path: getPagePath(this),
         });
     };
     /**
@@ -345,7 +239,7 @@ var Core = /** @class */ (function () {
             },
             ts: new Date().getTime(),
             guid: guid(),
-            path: this.getPagePath(),
+            path: getPagePath(this),
         });
     };
     /**

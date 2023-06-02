@@ -14,4 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export {};
+import { Core } from ".";
+export default function setupEventHandlers(core: Core): void;
+//# sourceMappingURL=setupEventHandlers.d.ts.map
