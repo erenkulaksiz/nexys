@@ -6,6 +6,14 @@ function App() {
       <h1>Web</h1>
       <button
         onClick={async () => {
+          nexys.error("test.");
+          //console.log("Client return:", log);
+        }}
+      >
+        click to err
+      </button>
+      <button
+        onClick={async () => {
           const log = nexys.log({
             eren: true,
           });

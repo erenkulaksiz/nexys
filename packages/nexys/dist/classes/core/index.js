@@ -172,9 +172,11 @@ var Core = /** @class */ (function () {
      * @public
      */
     Core.prototype.log = function (data, options) {
+        var e = new Error();
         this.LogPool.push({
             data: data,
             options: options,
+            stack: e.stack,
             ts: new Date().getTime(),
             guid: guid(),
             path: getPagePath(this),
@@ -204,9 +206,11 @@ var Core = /** @class */ (function () {
      * @public
      */
     Core.prototype.error = function (data, options) {
+        var e = new Error();
         this.LogPool.push({
-            data: data,
+            data: { message: data, stack: e.stack },
             options: __assign(__assign({}, options), { type: "ERROR" }),
+            stack: e.stack,
             ts: new Date().getTime(),
             guid: guid(),
             path: getPagePath(this),

@@ -16,19 +16,18 @@
 
 <h1 align="center">Nexys</h1>
 
-🚧 This project is under development 🚧
-I dont recommend you to use it in production yet.
+🚧 This project is under development 🚧\
 
 Nexys is a logging service that will enable to review your errors, metrics and much more in production applications.\
 Nexys will gather all device data automatically (screen size, user agent, device memory, language, connection type and geolocation if permitted)\
 Also, Nexys will gather all errors on your production application, reports them to dashboard automatically.\
-You can examine each error and log's stack trace, which file it occurred and many more details.
+You can examine each error and log's stack trace, which file/page the error occurred and many more details.
 
-We currently support NextJS and React platforms. We will support NodeJS and React Native soon.
+Nexys supports NextJS, ReactJS, NodeJS and more frameworks will be supported soon.
 
 # Let's get you started!
 
-### Install Nexys Client Library with npm
+### Install Nexys client library with npm
 
 ```bash
 npm install nexys
@@ -53,12 +52,19 @@ nexys.log("and start logging!");
 throw new Error("I should be able to see this error on dashboard");
 ```
 
+### Want to debug? Use debug parameter on initialization
+
+```javascript
+const nexys = new Nexys("API_KEY", { appName: "APP_NAME", debug: true });
+```
+
 # Documentation
 
 [View Nexys documentation here](https://docs.nexys.app)
 
 # Changelog (client library)
 
+- 1.0.19 - add stack trace to logs
 - 1.0.18
 - 1.0.16 - fix issue where default setting for allowGeoLocation was true instead of false, added log action - 05.05.2023
 - 1.0.14 - fixed issue where importing nexys causes error - 04.05.2023

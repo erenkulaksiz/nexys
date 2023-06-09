@@ -39,7 +39,7 @@ export declare class LocalStorage {
     clear(): void;
     clearLogPool(): void;
     clearRequests(): void;
-    addToLogPool({ data, options, guid, path }: logTypes): void;
+    addToLogPool({ data, options, guid, path, stack }: logTypes): void;
     addToRequest({ res, status, ts, guid }: requestTypes): void;
     getLocalLogs(): logTypes[] | null;
     getLocalRequests(): requestTypes[] | null;

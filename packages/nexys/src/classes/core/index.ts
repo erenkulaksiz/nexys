@@ -218,9 +218,11 @@ export class Core {
    * @public
    */
   public log(data: logTypes["data"], options?: logTypes["options"]) {
+    const e = new Error();
     this.LogPool.push({
       data,
       options,
+      stack: e.stack,
       ts: new Date().getTime(),
       guid: guid(),
       path: getPagePath(this),
@@ -251,12 +253,14 @@ export class Core {
    * @public
    */
   public error(data: logTypes["data"], options?: logTypes["options"]) {
+    const e = new Error();
     this.LogPool.push({
-      data,
+      data: { message: data, stack: e.stack },
       options: {
         ...options,
         type: "ERROR",
       },
+      stack: e.stack,
       ts: new Date().getTime(),
       guid: guid(),
       path: getPagePath(this),

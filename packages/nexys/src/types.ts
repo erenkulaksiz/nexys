@@ -67,6 +67,7 @@ export interface logTypes {
   path?: string | null;
   ts: number;
   guid: string;
+  stack?: string;
 }
 
 export interface requestTypes {

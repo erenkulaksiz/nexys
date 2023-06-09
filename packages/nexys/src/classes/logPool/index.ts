@@ -75,17 +75,25 @@ export class LogPool {
     this.process();
   }
 
-  public push({ data, options, ts, guid, path }: logTypes): void {
+  public push({ data, options, ts, guid, path, stack }: logTypes): void {
     this.logs.push({
       data,
       ts,
       options,
       guid,
       path,
+      stack,
     });
     this.process();
-    this.core.Events.on.logAdd?.({ data, options, ts, guid, path });
-    this.core.LocalStorage.addToLogPool({ data, options, ts, guid, path });
+    this.core.Events.on.logAdd?.({ data, options, ts, guid, path, stack });
+    this.core.LocalStorage.addToLogPool({
+      data,
+      options,
+      ts,
+      guid,
+      path,
+      stack,
+    });
   }
 
   private pushRequest({ res, status, ts, guid }: requestTypes): void {

@@ -105,17 +105,25 @@ var LogPool = /** @class */ (function () {
     };
     LogPool.prototype.push = function (_a) {
         var _b, _c;
-        var data = _a.data, options = _a.options, ts = _a.ts, guid = _a.guid, path = _a.path;
+        var data = _a.data, options = _a.options, ts = _a.ts, guid = _a.guid, path = _a.path, stack = _a.stack;
         this.logs.push({
             data: data,
             ts: ts,
             options: options,
             guid: guid,
             path: path,
+            stack: stack,
         });
         this.process();
-        (_c = (_b = this.core.Events.on).logAdd) === null || _c === void 0 ? void 0 : _c.call(_b, { data: data, options: options, ts: ts, guid: guid, path: path });
-        this.core.LocalStorage.addToLogPool({ data: data, options: options, ts: ts, guid: guid, path: path });
+        (_c = (_b = this.core.Events.on).logAdd) === null || _c === void 0 ? void 0 : _c.call(_b, { data: data, options: options, ts: ts, guid: guid, path: path, stack: stack });
+        this.core.LocalStorage.addToLogPool({
+            data: data,
+            options: options,
+            ts: ts,
+            guid: guid,
+            path: path,
+            stack: stack,
+        });
     };
     LogPool.prototype.pushRequest = function (_a) {
         var _b, _c;

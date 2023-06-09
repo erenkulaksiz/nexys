@@ -41,7 +41,9 @@ var LocalStorage = /** @class */ (function () {
             this.core.InternalLogger.log("LocalStorage: Set to Active");
             // We will not going to use localStorage if library is loaded in server environment.
             this.shouldUseLocalStorage =
-                this.isAvailable && this._localStorage && this.core._isClient ? true : false;
+                this.isAvailable && this._localStorage && this.core._isClient
+                    ? true
+                    : false;
             if (this.shouldUseLocalStorage) {
                 this.core.InternalLogger.log("LocalStorage: Using localStorage.");
             }
@@ -181,7 +183,7 @@ var LocalStorage = /** @class */ (function () {
         this.set(localValue);
     };
     LocalStorage.prototype.addToLogPool = function (_a) {
-        var data = _a.data, options = _a.options, guid = _a.guid, path = _a.path;
+        var data = _a.data, options = _a.options, guid = _a.guid, path = _a.path, stack = _a.stack;
         if (!this.shouldUseLocalStorage)
             return;
         var localValue = this.get();
@@ -190,7 +192,9 @@ var LocalStorage = /** @class */ (function () {
             this.resetLocalValue();
             // Resets and pushes first log.
             localValue = {
-                logPool: [{ ts: new Date().getTime(), data: data, options: options, guid: guid, path: path }],
+                logPool: [
+                    { ts: new Date().getTime(), data: data, options: options, guid: guid, path: path, stack: stack },
+                ],
                 requests: [],
                 lastLogUpdate: new Date().getTime(),
             };
@@ -202,7 +206,8 @@ var LocalStorage = /** @class */ (function () {
             data: data,
             options: options,
             guid: guid,
-            path: path
+            path: path,
+            stack: stack,
         });
         localValue.lastLogUpdate = new Date().getTime();
         this.set(localValue);

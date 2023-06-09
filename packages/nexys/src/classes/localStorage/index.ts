@@ -53,7 +53,9 @@ export class LocalStorage {
       this.core.InternalLogger.log("LocalStorage: Set to Active");
       // We will not going to use localStorage if library is loaded in server environment.
       this.shouldUseLocalStorage =
-        this.isAvailable && this._localStorage && this.core._isClient ? true : false;
+        this.isAvailable && this._localStorage && this.core._isClient
+          ? true
+          : false;
       if (this.shouldUseLocalStorage) {
         this.core.InternalLogger.log("LocalStorage: Using localStorage.");
       } else {
@@ -196,7 +198,7 @@ export class LocalStorage {
     this.set(localValue);
   }
 
-  public addToLogPool({ data, options, guid, path }: logTypes): void {
+  public addToLogPool({ data, options, guid, path, stack }: logTypes): void {
     if (!this.shouldUseLocalStorage) return;
     let localValue = this.get();
     if (!localValue) {
@@ -206,7 +208,9 @@ export class LocalStorage {
       this.resetLocalValue();
       // Resets and pushes first log.
       localValue = {
-        logPool: [{ ts: new Date().getTime(), data, options, guid, path }],
+        logPool: [
+          { ts: new Date().getTime(), data, options, guid, path, stack },
+        ],
         requests: [],
         lastLogUpdate: new Date().getTime(),
       };
@@ -218,7 +222,8 @@ export class LocalStorage {
       data,
       options,
       guid,
-      path
+      path,
+      stack,
     });
     localValue.lastLogUpdate = new Date().getTime();
     this.set(localValue);
