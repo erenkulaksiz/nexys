@@ -16,7 +16,7 @@
 
 <h1 align="center">Nexys</h1>
 
-🚧 This project is under development 🚧\
+🚧 This project is under development 🚧
 
 Nexys is a logging service that will enable to review your errors, metrics and much more in production applications.\
 Nexys will gather all device data automatically (screen size, user agent, device memory, language, connection type and geolocation if permitted)\
