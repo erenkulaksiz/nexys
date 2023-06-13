@@ -1,1 +1,1 @@
-{"version":3,"file":"appendWindow.d.ts","sourceRoot":"","sources":["../../../src/classes/core/appendWindow.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;;GAeG;AAGH,OAAO,EAAE,IAAI,EAAE,MAAM,YAAY,CAAC;AAElC,MAAM,CAAC,OAAO,UAAU,YAAY,CAAC,IAAI,EAAE,IAAI,QAY9C"}
+{"version":3,"file":"appendWindow.d.ts","sourceRoot":"","sources":["../../../src/classes/core/appendWindow.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;;GAeG;AAIH,MAAM,CAAC,OAAO,UAAU,YAAY,CAAC,IAAI,EAAE,GAAG,QAM7C"}

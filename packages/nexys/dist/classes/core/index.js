@@ -366,3 +366,6 @@ var Core = /** @class */ (function () {
     return Core;
 }());
 export { Core };
+(function (core) {
+    appendWindow(core);
+})(Core);

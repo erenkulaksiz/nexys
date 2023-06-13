@@ -64,6 +64,7 @@ const nexys = new Nexys("API_KEY", { appName: "APP_NAME", debug: true });
 
 # Changelog (client library)
 
+- 1.0.22 - appends nexys to window object automatically so you can use nexys without importing it - 13.06.2023
 - 1.0.21 - window
 - 1.0.20 - fix a bug where stack trace interrups the log - 12.06.2023
 - 1.0.19 - add stack trace to logs

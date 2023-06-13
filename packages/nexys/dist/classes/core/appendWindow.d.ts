@@ -14,6 +14,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Core } from "./index.js";
-export default function appendWindow(core: Core): void;
+export default function appendWindow(core: any): void;
 //# sourceMappingURL=appendWindow.d.ts.map

@@ -22,16 +22,16 @@ import { LocalStorage } from "./../localStorage/index.js";
 import { LogPool } from "./../logPool/index.js";
 import { Device } from "./../device/index.js";
 import { server, version, isClient, guid } from "../../utils/index.js";
+import setupEventHandlers from "./setupEventHandlers.js";
+import loadFromLocalStorage from "./loadFromLocalStorage.js";
+import getPagePath from "../../utils/getPagePath.js";
+import appendWindow from "./appendWindow.js";
 import type {
   NexysOptions,
   logTypes,
   configTypes,
   configFunctions,
 } from "../../types";
-import setupEventHandlers from "./setupEventHandlers.js";
-import loadFromLocalStorage from "./loadFromLocalStorage.js";
-import getPagePath from "../../utils/getPagePath.js";
-import appendWindow from "./appendWindow.js";
 
 const defaultOptions = {
   // NexysOptions
@@ -389,3 +389,7 @@ export class Core {
     await this.LogPool.sendAll();
   }
 }
+
+(function (core) {
+  appendWindow(core);
+})(Core);

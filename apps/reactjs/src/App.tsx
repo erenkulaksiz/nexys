@@ -5,6 +5,17 @@ function App() {
     <div>
       <h1>Web</h1>
       <button
+        onClick={() => {
+          console.log(window["nexys"]);
+          const Nexys = window["nexys"];
+          const nexys_ = new Nexys("TEST", { debug: true, appName: "test" });
+
+          console.log(nexys_);
+        }}
+      >
+        window test
+      </button>
+      <button
         onClick={async () => {
           nexys.error("test.");
           //console.log("Client return:", log);

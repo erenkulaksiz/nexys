@@ -16,18 +16,11 @@
  */
 
 import { isClient } from "../../utils/isClient.js";
-import { Core } from "./index.js";
 
-export default function appendWindow(core: Core) {
-  core.InternalLogger.log("NexysCore: appendWindow called");
-  if (isClient()) {
-    if (!window["nexys"] && !window?.nexys) {
-      window["nexys"] = core;
-      core.InternalLogger.log("NexysCore: appendWindow appended core.");
-    } else {
-      core.InternalLogger.log("NexysCore: appendWindow core already appended.");
-    }
-  } else {
-    core.InternalLogger.log("NexysCore: appendWindow not in client.");
+export default function appendWindow(core: any) {
+  //core.InternalLogger.log("NexysCore: appendWindow called");
+  if (!isClient()) return;
+  if (!window["nexys"] && !window?.nexys) {
+    window["nexys"] = core;
   }
 }
