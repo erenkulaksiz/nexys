@@ -64,6 +64,8 @@ const nexys = new Nexys("API_KEY", { appName: "APP_NAME", debug: true });
 
 # Changelog (client library)
 
+- 1.0.21 - window
+- 1.0.20 - fix a bug where stack trace interrups the log - 12.06.2023
 - 1.0.19 - add stack trace to logs
 - 1.0.18
 - 1.0.16 - fix issue where default setting for allowGeoLocation was true instead of false, added log action - 05.05.2023

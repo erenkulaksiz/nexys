@@ -70,4 +70,9 @@ export interface configFunctions {
     setClient: (client: string) => void;
     setAppVersion: (version: string) => void;
 }
+declare global {
+    interface Window {
+        nexys: any;
+    }
+}
 //# sourceMappingURL=types.d.ts.map

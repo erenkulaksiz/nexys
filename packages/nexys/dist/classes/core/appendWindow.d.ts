@@ -14,12 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export declare const server = "https://dash.nexys.app";
-export declare const debugServer = "http://localhost:3000";
-export declare const libraryName = "Nexys";
-export declare const version = "1.0.21";
-export { Base64 } from "./base64.js";
-export { isClient } from "./isClient.js";
-export { guid } from "./guid.js";
-export { collectNextJSData, collectVercelEnv, collectDOMData, } from "./collect.js";
-//# sourceMappingURL=index.d.ts.map
+import { Core } from "./index.js";
+export default function appendWindow(core: Core): void;
+//# sourceMappingURL=appendWindow.d.ts.map

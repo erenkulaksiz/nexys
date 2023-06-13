@@ -31,6 +31,7 @@ import type {
 import setupEventHandlers from "./setupEventHandlers.js";
 import loadFromLocalStorage from "./loadFromLocalStorage.js";
 import getPagePath from "../../utils/getPagePath.js";
+import appendWindow from "./appendWindow.js";
 
 const defaultOptions = {
   // NexysOptions
@@ -155,6 +156,7 @@ export class Core {
     // Initialize others
     setupEventHandlers(this);
     loadFromLocalStorage(this);
+    appendWindow(this);
 
     if (!this._isClient) {
       this.InternalLogger.log(
@@ -255,7 +257,7 @@ export class Core {
   public error(data: logTypes["data"], options?: logTypes["options"]) {
     const e = new Error();
     this.LogPool.push({
-      data: { message: data, stack: e.stack },
+      data,
       options: {
         ...options,
         type: "ERROR",
@@ -293,6 +295,7 @@ export class Core {
     startTime: number;
     value: number;
   }) {
+    const e = new Error();
     this.LogPool.push({
       data: metric,
       options: {
@@ -300,6 +303,7 @@ export class Core {
       },
       ts: new Date().getTime(),
       guid: guid(),
+      stack: e.stack,
       path: getPagePath(this),
     });
   }
@@ -381,7 +385,7 @@ export class Core {
    * nexys.forceRequest();
    * ```
    */
-  public forceRequest() {
-    this.LogPool.sendAll();
+  public async forceRequest() {
+    await this.LogPool.sendAll();
   }
 }

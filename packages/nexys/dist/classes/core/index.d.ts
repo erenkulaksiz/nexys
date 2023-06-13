@@ -161,6 +161,6 @@ export declare class Core {
      * nexys.forceRequest();
      * ```
      */
-    forceRequest(): void;
+    forceRequest(): Promise<void>;
 }
 //# sourceMappingURL=index.d.ts.map

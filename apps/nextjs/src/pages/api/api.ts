@@ -1,11 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import Nexys from "nexys";
-
-const nexys = new Nexys("API_KEY", {
-  appName: "TESTT",
-  debug: true,
-  logPoolSize: 1,
-});
+import { nexys } from "../../utils";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   nexys.log("LOOOOG");
