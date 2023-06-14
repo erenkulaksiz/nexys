@@ -49,22 +49,22 @@ export function collectNextJSData(allowElementCount: boolean = true) {
 export function collectVercelEnv() {
   if (isClient()) {
     /* @ts-ignore next-line */
-    if (process.env.NEXT_PUBLIC_VERCEL_ENV) {
+    if (process?.env?.NEXT_PUBLIC_VERCEL_ENV) {
       return {
-        env: process.env.NEXT_PUBLIC_VERCEL_ENV,
-        url: process.env.NEXT_PUBLIC_VERCEL_URL,
-        git: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF,
-        gitCommitSha: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA,
-        gitProvider: process.env.NEXT_PUBLIC_VERCEL_GIT_PROVIDER,
-        gitRepoId: process.env.NEXT_PUBLIC_VERCEL_GIT_REPO_ID,
-        gitRepoOwner: process.env.NEXT_PUBLIC_VERCEL_GIT_REPO_OWNER,
-        gitRepoSlug: process.env.NEXT_PUBLIC_VERCEL_GIT_REPO_SLUG,
-        gitCommitMessage: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_MESSAGE,
+        env: process?.env?.NEXT_PUBLIC_VERCEL_ENV,
+        url: process?.env?.NEXT_PUBLIC_VERCEL_URL,
+        git: process?.env?.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF,
+        gitCommitSha: process?.env?.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA,
+        gitProvider: process?.env?.NEXT_PUBLIC_VERCEL_GIT_PROVIDER,
+        gitRepoId: process?.env?.NEXT_PUBLIC_VERCEL_GIT_REPO_ID,
+        gitRepoOwner: process?.env?.NEXT_PUBLIC_VERCEL_GIT_REPO_OWNER,
+        gitRepoSlug: process?.env?.NEXT_PUBLIC_VERCEL_GIT_REPO_SLUG,
+        gitCommitMessage: process?.env?.NEXT_PUBLIC_VERCEL_GIT_COMMIT_MESSAGE,
         gitCommitAuthorName:
-          process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_AUTHOR_NAME,
+          process?.env?.NEXT_PUBLIC_VERCEL_GIT_COMMIT_AUTHOR_NAME,
         gitCommitAuthorLogin:
-          process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_AUTHOR_LOGIN,
-        gitPullRequestId: process.env.NEXT_PUBLIC_VERCEL_GIT_PULL_REQUEST_ID,
+          process?.env?.NEXT_PUBLIC_VERCEL_GIT_COMMIT_AUTHOR_LOGIN,
+        gitPullRequestId: process?.env?.NEXT_PUBLIC_VERCEL_GIT_PULL_REQUEST_ID,
       };
     }
     return null;

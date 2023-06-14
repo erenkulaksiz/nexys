@@ -54,7 +54,7 @@ export class Core {
   Device: Device;
   LocalStorage: LocalStorage;
 
-  _env: string = process.env.NODE_ENV ?? "production";
+  _env: string = process?.env?.NODE_ENV ?? "production";
   _apiKey: string;
   _version: string = version;
   _server: string = server;
@@ -389,7 +389,3 @@ export class Core {
     await this.LogPool.sendAll();
   }
 }
-
-(function (core) {
-  appendWindow(core);
-})(Core);
