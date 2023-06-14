@@ -64,6 +64,7 @@ const nexys = new Nexys("API_KEY", { appName: "APP_NAME", debug: true });
 
 # Changelog (client library)
 
+- 1.0.26 - fix issue where nexys version wrongly sended to dashboard - 14.06.2023
 - 1.0.25 - fix process.env issue where clientside wont have process.env - 14.06.2023
 - 1.0.23 - move append function to index instead of inside the core
 - 1.0.22 - appends nexys to window object automatically so you can use nexys without importing it - 13.06.2023
