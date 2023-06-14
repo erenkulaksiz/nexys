@@ -25,7 +25,6 @@ import { server, version, isClient, guid } from "../../utils/index.js";
 import setupEventHandlers from "./setupEventHandlers.js";
 import loadFromLocalStorage from "./loadFromLocalStorage.js";
 import getPagePath from "../../utils/getPagePath.js";
-import appendWindow from "./appendWindow.js";
 import type {
   NexysOptions,
   logTypes,
@@ -54,7 +53,7 @@ export class Core {
   Device: Device;
   LocalStorage: LocalStorage;
 
-  _env: string = process?.env?.NODE_ENV ?? "production";
+  _processAvailable: boolean = typeof process != "undefined";
   _apiKey: string;
   _version: string = version;
   _server: string = server;
@@ -63,6 +62,9 @@ export class Core {
   _isClient: boolean = isClient();
   _allowDeviceData: boolean = true;
   _allowGeoLocation: boolean = false;
+  _env: string = this._processAvailable
+    ? process?.env?.NODE_ENV ?? "production"
+    : "production";
   _sendAllOnType: NexysOptions["sendAllOnType"] = [
     "ERROR",
     "AUTO:ERROR",
@@ -156,7 +158,6 @@ export class Core {
     // Initialize others
     setupEventHandlers(this);
     loadFromLocalStorage(this);
-    appendWindow(this);
 
     if (!this._isClient) {
       this.InternalLogger.log(

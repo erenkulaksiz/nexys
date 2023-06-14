@@ -28,7 +28,7 @@ export declare class Core {
     API: API;
     Device: Device;
     LocalStorage: LocalStorage;
-    _env: string;
+    _processAvailable: boolean;
     _apiKey: string;
     _version: string;
     _server: string;
@@ -37,6 +37,7 @@ export declare class Core {
     _isClient: boolean;
     _allowDeviceData: boolean;
     _allowGeoLocation: boolean;
+    _env: string;
     _sendAllOnType: NexysOptions["sendAllOnType"];
     _ignoreType: NexysOptions["ignoreType"];
     _ignoreTypeSize: number;

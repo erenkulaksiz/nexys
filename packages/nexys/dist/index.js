@@ -30,7 +30,6 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 import { Core } from "./classes/core/index.js";
-import appendWindow from "./classes/core/appendWindow.js";
 /**
  * Nexys Client Library
  *
@@ -93,6 +92,3 @@ var Nexys = /** @class */ (function (_super) {
     return Nexys;
 }(Core));
 export default Nexys;
-(function (core) {
-    appendWindow(core);
-})(Nexys);

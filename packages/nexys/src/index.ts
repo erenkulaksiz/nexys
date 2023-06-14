@@ -16,7 +16,6 @@
  */
 
 import { Core } from "./classes/core/index.js";
-import appendWindow from "./classes/core/appendWindow.js";
 import type { NexysOptions } from "./types";
 
 /**
@@ -79,7 +78,3 @@ export default class Nexys extends Core {
     super(API_KEY, options);
   }
 }
-
-(function (core) {
-  appendWindow(core);
-})(Nexys);

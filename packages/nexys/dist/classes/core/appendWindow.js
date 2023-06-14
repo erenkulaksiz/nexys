@@ -21,5 +21,7 @@ export default function appendWindow(core) {
         return;
     if (!window["nexys"] && !(window === null || window === void 0 ? void 0 : window.nexys)) {
         window["nexys"] = core;
+        // @ts-ignore
+        globalThis["nexys"] = core;
     }
 }

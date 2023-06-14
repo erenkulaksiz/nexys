@@ -71,7 +71,6 @@ import { server, version, isClient, guid } from "../../utils/index.js";
 import setupEventHandlers from "./setupEventHandlers.js";
 import loadFromLocalStorage from "./loadFromLocalStorage.js";
 import getPagePath from "../../utils/getPagePath.js";
-import appendWindow from "./appendWindow.js";
 var defaultOptions = {
     // NexysOptions
     localStorage: {
@@ -87,8 +86,8 @@ var defaultOptions = {
 var Core = /** @class */ (function () {
     // Core
     function Core(API_KEY, options) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
-        this._env = (_a = process.env.NODE_ENV) !== null && _a !== void 0 ? _a : "production";
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x;
+        this._processAvailable = typeof process != "undefined";
         this._version = version;
         this._server = server;
         this._logPoolSize = 10;
@@ -96,6 +95,9 @@ var Core = /** @class */ (function () {
         this._isClient = isClient();
         this._allowDeviceData = true;
         this._allowGeoLocation = false;
+        this._env = this._processAvailable
+            ? (_b = (_a = process === null || process === void 0 ? void 0 : process.env) === null || _a === void 0 ? void 0 : _a.NODE_ENV) !== null && _b !== void 0 ? _b : "production"
+            : "production";
         this._sendAllOnType = [
             "ERROR",
             "AUTO:ERROR",
@@ -111,11 +113,11 @@ var Core = /** @class */ (function () {
         // Options
         this._options = __assign(__assign({}, options), { localStorage: __assign(__assign({}, this._options.localStorage), options === null || options === void 0 ? void 0 : options.localStorage), errors: __assign(__assign({}, this._options.errors), options === null || options === void 0 ? void 0 : options.errors) });
         this._apiKey = API_KEY;
-        this._server = (_b = options === null || options === void 0 ? void 0 : options.server) !== null && _b !== void 0 ? _b : server;
-        this._logPoolSize = (_c = options === null || options === void 0 ? void 0 : options.logPoolSize) !== null && _c !== void 0 ? _c : this._logPoolSize;
-        this._allowDeviceData = (_d = options === null || options === void 0 ? void 0 : options.allowDeviceData) !== null && _d !== void 0 ? _d : this._allowDeviceData;
+        this._server = (_c = options === null || options === void 0 ? void 0 : options.server) !== null && _c !== void 0 ? _c : server;
+        this._logPoolSize = (_d = options === null || options === void 0 ? void 0 : options.logPoolSize) !== null && _d !== void 0 ? _d : this._logPoolSize;
+        this._allowDeviceData = (_e = options === null || options === void 0 ? void 0 : options.allowDeviceData) !== null && _e !== void 0 ? _e : this._allowDeviceData;
         this._allowGeoLocation =
-            (_e = options === null || options === void 0 ? void 0 : options.allowGeoLocation) !== null && _e !== void 0 ? _e : this._allowGeoLocation;
+            (_f = options === null || options === void 0 ? void 0 : options.allowGeoLocation) !== null && _f !== void 0 ? _f : this._allowGeoLocation;
         this._sendAllOnType =
             typeof (options === null || options === void 0 ? void 0 : options.sendAllOnType) == "undefined"
                 ? this._sendAllOnType
@@ -134,7 +136,7 @@ var Core = /** @class */ (function () {
             throw new Error("NexysCore: Please specify appName in constructor options");
         // Internal Logger
         this.InternalLogger = new InternalLogger({
-            active: (_g = (_f = this._options) === null || _f === void 0 ? void 0 : _f.debug) !== null && _g !== void 0 ? _g : false,
+            active: (_h = (_g = this._options) === null || _g === void 0 ? void 0 : _g.debug) !== null && _h !== void 0 ? _h : false,
         });
         // LogPool
         this.LogPool = new LogPool(this);
@@ -150,21 +152,20 @@ var Core = /** @class */ (function () {
         this.Device = new Device(this);
         // LocalStorage
         this.LocalStorage = new LocalStorage(this, {
-            key: (_j = (_h = this._options.localStorage) === null || _h === void 0 ? void 0 : _h.key) !== null && _j !== void 0 ? _j : (_k = defaultOptions.localStorage) === null || _k === void 0 ? void 0 : _k.key,
-            testKey: (_m = (_l = this._options.localStorage) === null || _l === void 0 ? void 0 : _l.testKey) !== null && _m !== void 0 ? _m : (_o = defaultOptions.localStorage) === null || _o === void 0 ? void 0 : _o.testKey,
-            isEncrypted: (_q = (_p = this._options.localStorage) === null || _p === void 0 ? void 0 : _p.cryption) !== null && _q !== void 0 ? _q : (_r = defaultOptions.localStorage) === null || _r === void 0 ? void 0 : _r.cryption,
-            active: (_t = (_s = this._options.localStorage) === null || _s === void 0 ? void 0 : _s.useLocalStorage) !== null && _t !== void 0 ? _t : (_u = defaultOptions.localStorage) === null || _u === void 0 ? void 0 : _u.useLocalStorage,
+            key: (_k = (_j = this._options.localStorage) === null || _j === void 0 ? void 0 : _j.key) !== null && _k !== void 0 ? _k : (_l = defaultOptions.localStorage) === null || _l === void 0 ? void 0 : _l.key,
+            testKey: (_o = (_m = this._options.localStorage) === null || _m === void 0 ? void 0 : _m.testKey) !== null && _o !== void 0 ? _o : (_p = defaultOptions.localStorage) === null || _p === void 0 ? void 0 : _p.testKey,
+            isEncrypted: (_r = (_q = this._options.localStorage) === null || _q === void 0 ? void 0 : _q.cryption) !== null && _r !== void 0 ? _r : (_s = defaultOptions.localStorage) === null || _s === void 0 ? void 0 : _s.cryption,
+            active: (_u = (_t = this._options.localStorage) === null || _t === void 0 ? void 0 : _t.useLocalStorage) !== null && _u !== void 0 ? _u : (_v = defaultOptions.localStorage) === null || _v === void 0 ? void 0 : _v.useLocalStorage,
         });
         // Initialize others
         setupEventHandlers(this);
         loadFromLocalStorage(this);
-        appendWindow(this);
         if (!this._isClient) {
             this.InternalLogger.log("NexysCore: Detected that we are running NexysCore on non client side environment.");
             this.InternalLogger.log("NexysCore: Altough NexysCore is designed to run on client side, it can be used on server side as well but some features will might not work.");
         }
         // Core Init Event
-        (_w = (_v = this.Events.on).coreInit) === null || _w === void 0 ? void 0 : _w.call(_v);
+        (_x = (_w = this.Events.on).coreInit) === null || _x === void 0 ? void 0 : _x.call(_w);
         // Log initialization
         this.InternalLogger.log("NexysCore: Initialized", this._version, this._options);
         if (this._isClient)

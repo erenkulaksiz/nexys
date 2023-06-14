@@ -49,6 +49,7 @@ export function collectNextJSData(allowElementCount: boolean = true) {
 export function collectVercelEnv() {
   if (isClient()) {
     /* @ts-ignore next-line */
+    if (typeof process == "undefined") return null;
     if (process?.env?.NEXT_PUBLIC_VERCEL_ENV) {
       return {
         env: process?.env?.NEXT_PUBLIC_VERCEL_ENV,

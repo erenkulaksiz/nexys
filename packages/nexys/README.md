@@ -18,6 +18,11 @@
 
 🚧 This project is under development 🚧
 
+- 0 dependency 
+- Consistent
+- Customizable & Flexible
+- Clientside & Serverside
+
 Nexys is a logging service that will enable to review your errors, metrics and much more in production applications.\
 Nexys will gather all device data automatically (screen size, user agent, device memory, language, connection type and geolocation if permitted)\
 Also, Nexys will gather all errors on your production application, reports them to dashboard automatically.\
@@ -61,26 +66,3 @@ const nexys = new Nexys("API_KEY", { appName: "APP_NAME", debug: true });
 # Documentation
 
 [View Nexys documentation here](https://docs.nexys.app)
-
-# Changelog (client library)
-
-- 1.0.26 - fix issue where nexys version wrongly sended to dashboard - 14.06.2023
-- 1.0.25 - fix process.env issue where clientside wont have process.env - 14.06.2023
-- 1.0.23 - move append function to index instead of inside the core
-- 1.0.22 - appends nexys to window object automatically so you can use nexys without importing it - 13.06.2023
-- 1.0.21 - window
-- 1.0.20 - fix a bug where stack trace interrups the log - 12.06.2023
-- 1.0.19 - add stack trace to logs
-- 1.0.18
-- 1.0.16 - fix issue where default setting for allowGeoLocation was true instead of false, added log action - 05.05.2023
-- 1.0.14 - fixed issue where importing nexys causes error - 04.05.2023
-- 1.0.10 - added verify method to verify api key & added option to disable location service - 25.04.2023 - 03.05.2023
-- 1.0.9 - added dom data to track dom details - 13.03.2023
-- 1.0.8 - added guid to requests and other fixes - 16.02.2023
-- 1.0.7 - changed client name to nexys inside packages - 12.02.2023
-- 1.0.6 - added log type "ERROR" to sendAllOnType - 02.02.2023
-- 1.0.5 - added path to logs to know which log is generated from which path - 30.01.2023
-- 1.0.3 - i forgot what i did but i added alot of new features - 27.01.2023
-- 1.0.2 - connected to dashboard - 25.01.2023
-- 1.0.1 - some fixes and features - 14.01.2023
-- 1.0.0 - initial release - 13.01.2023
