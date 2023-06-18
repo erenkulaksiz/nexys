@@ -30,6 +30,7 @@ import type {
   logTypes,
   configTypes,
   configFunctions,
+  errorLogTypes,
 } from "../../types";
 
 const defaultOptions = {
@@ -255,7 +256,7 @@ export class Core {
    *
    * @public
    */
-  public error(data: logTypes["data"], options?: logTypes["options"]) {
+  public error(data: errorLogTypes["data"], options?: logTypes["options"]) {
     const e = new Error();
     this.LogPool.push({
       data,

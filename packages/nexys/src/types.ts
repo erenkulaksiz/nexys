@@ -70,6 +70,26 @@ export interface logTypes {
   stack?: string;
 }
 
+export interface errorLogTypes {
+  data: {
+    message: string;
+    errmessage?: string;
+    stack?: string;
+    type?: string;
+    colno?: string;
+    lineno?: string;
+    filename?: string;
+    defaultPrevented?: boolean;
+    isTrusted?: boolean;
+    timeStamp?: number;
+  };
+  options?: logOptions;
+  path?: string | null;
+  ts: number;
+  guid: string;
+  stack?: string;
+}
+
 export interface requestTypes {
   res: string | object;
   status: string;
