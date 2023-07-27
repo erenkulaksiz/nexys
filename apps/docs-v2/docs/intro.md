@@ -39,11 +39,11 @@ We currently support **NextJS**, **React** and **NodeJS** platforms.
 
 ## Focus on your product
 
-We know that you want to focus on your product and not on analytics. That's why we made Nexys as simple as possible. You can integrate Nexys with your product in less than 5 minutes. You can use our [Javascript SDK](/docs/installation).
+We know that you want to focus on your product and not on analytics. That's why we made **Nexys** as simple as possible. You can integrate **Nexys** with your product in less than 5 minutes. You can use our [Javascript SDK](/docs/installation).
 
 ## Logpool
 
-While building Nexys, we also thinked about performance of your application, removing unneccesary requests to our servers. That's why we created **Logpool**. Logpool is a local storage for your logs. It will store your logs in your user's browser and send them to our servers in batches. You can also disable Logpool if you want to send your logs to our servers immediately.
+While building **Nexys**, we also thinked about performance of your application, removing unneccesary requests to our servers. That's why we created **Logpool**. Logpool is a local storage for your logs. It will store your logs in your user's browser and send them to our servers in batches. You can also disable Logpool if you want to send your logs to our servers immediately.
 
 ### Example:
 
@@ -73,7 +73,7 @@ const nexys = new Nexys("API_KEY", {
     appName: "APP_NAME", 
     localStorage: {
       useLocalStorage: false
-    } 
+    }
 });
 ```
 

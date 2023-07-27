@@ -38,6 +38,7 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
+          editUrl: 'https://github.com/erenkulaksiz/nexys/tree/master/apps/docs-v2/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -57,7 +58,7 @@ const config = {
         textColor: '#091E42',
         isCloseable: true,
       },
-      image: 'img/docusaurus-social-card.jpg',
+      image: 'img/nexys.png',
       navbar: {
         logo: {
           alt: 'Nexys Logo',

@@ -27,15 +27,11 @@ function HomepageHeader() {
 }
 
 export default function Home() {
-  const { siteConfig } = useDocusaurusContext();
   return (
     <Layout
-      title={`Intro`}
+      title="Intro"
       description="Nexys is a simple tool to track your application's errors and more.">
       <HomepageHeader />
-      {/*<main>
-        <HomepageFeatures />
-  </main>*/}
     </Layout>
   );
 }

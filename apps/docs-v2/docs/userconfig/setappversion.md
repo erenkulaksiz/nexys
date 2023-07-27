@@ -11,6 +11,7 @@ You can set the client version of your application with this method. This method
 
 ```ts title="pages/_app.tsx"
 ...
+// import version from package.json or write your own version. Should be in the format of x.x.x
 import { version } from "@/utils";
 
 nexys.configure((config) => config.setAppVersion(version));
