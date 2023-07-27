@@ -1,0 +1,8 @@
+{
+  "label": "Ignore",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "Configure ignore type."
+  }
+}

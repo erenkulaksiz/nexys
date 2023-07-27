@@ -1,0 +1,8 @@
+{
+  "label": "User Configuration",
+  "position": 4,
+  "link": {
+    "type": "generated-index",
+    "description": "You might want to configure your client so that you will know which users encountered which errors."
+  }
+}

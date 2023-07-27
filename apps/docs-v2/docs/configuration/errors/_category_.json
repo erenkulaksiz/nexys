@@ -1,0 +1,8 @@
+{
+  "label": "Errors",
+  "position": 11,
+  "link": {
+    "type": "generated-index",
+    "description": "Configure your errors."
+  }
+}

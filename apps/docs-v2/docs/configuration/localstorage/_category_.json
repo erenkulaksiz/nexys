@@ -1,0 +1,8 @@
+{
+  "label": "Local Storage",
+  "position": 10,
+  "link": {
+    "type": "generated-index",
+    "description": "Configurate local storage."
+  }
+}

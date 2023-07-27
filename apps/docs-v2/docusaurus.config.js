@@ -72,6 +72,11 @@ const config = {
             label: 'Get Started',
           },
           {
+            href: 'https://dash.nexys.app',
+            label: 'Dashboard',
+            position: 'right',
+          },
+          {
             href: 'https://github.com/erenkulaksiz/nexys',
             label: 'GitHub',
             position: 'right',
