@@ -14,4 +14,4 @@ const nexys = new Nexys("API_KEY", { appName: "APP_NAME", debug: true });
 
 In second parameter you can pass an object with your config options.
 
-View config options [here](/docs/configuration/config-options).
+View config options here.
