@@ -7,7 +7,7 @@ description: Use Local Storage configuration
 
 ---
 
-If enabled, Nexys will store your logs in the browser's local storage. If the user is offline, Nexys will send the logs to the server when the user is online again.
+If enabled, **Nexys** will store your logs in the browser's local storage. If the user is offline, **Nexys** will send the logs to the server when the user is online again.
 
 - **Option:** `useLocalStorage` 
 - **Type:** `boolean`

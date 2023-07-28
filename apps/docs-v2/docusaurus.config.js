@@ -39,6 +39,7 @@ const config = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl: 'https://github.com/erenkulaksiz/nexys/tree/master/apps/docs-v2/',
+          routeBasePath: '/'
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -67,12 +68,6 @@ const config = {
         },
         items: [
           {
-            type: 'docSidebar',
-            sidebarId: 'tutorialSidebar',
-            position: 'left',
-            label: 'Get Started',
-          },
-          {
             href: 'https://dash.nexys.app',
             label: 'Dashboard',
             position: 'right',
@@ -92,7 +87,7 @@ const config = {
             items: [
               {
                 label: 'Get Started',
-                to: '/docs/intro',
+                to: '/intro',
               },
             ],
           },

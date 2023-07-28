@@ -7,7 +7,7 @@ description: Test key configuration
 
 ---
 
-Nexys localStorage availability is checked with a test key. You can change this key with `testKey` option.
+**Nexys** localStorage availability is checked with a test key. You can change this key with `testKey` option.
 
 - **Option:** `testKey` 
 - **Type:** `string`

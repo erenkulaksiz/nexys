@@ -38,7 +38,7 @@ export default nexys;
 ```
 
 and you are set! Make sure you replace `API_KEY` with your API key and `APP_NAME` with your app name. You can find your API key on your [dashboard](https://dash.nexys.app/).
-Want configuration options? Check out the [configuration](/docs/category/configuration) page.
+Want configuration options? Check out the [configuration](/category/configuration) page.
 
 ## Usage
 

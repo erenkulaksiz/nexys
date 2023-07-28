@@ -11,7 +11,7 @@ You might not want **logPool** for all of your logs. You can use `sendAllOnType`
 
 If there is an error on your application, you don't want to wait for the next logPool to send it.
 
-Logs start with **AUTO:** prefix are automatically catched by Nexys and should be inside **sendAllOnType** configuration.
+Logs start with **AUTO:** prefix are automatically catched by **Nexys** and should be inside **sendAllOnType** configuration.
 
 - **Option:** `sendAllOnType` 
 - **Type:** `string | string[] | false`

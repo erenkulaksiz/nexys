@@ -7,7 +7,7 @@ description: App name configuration
 
 ---
 
-This option is required. It is used to identify your application in **Nexys** dashboard. You enter **appName** while creating a new project in Nexys dashboard and this name need to be unique.
+This option is required. It is used to identify your application in **Nexys** dashboard. You enter **appName** while creating a new project in **Nexys** dashboard and this name need to be unique.
 
 - **Option:** `appName` 
 - **Type:** `string`

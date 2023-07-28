@@ -33,7 +33,7 @@ export default function NotFound() {
               </p>
               <Link
                 className="button button--secondary button--lg"
-                to="/docs/intro">
+                to="/">
                 Return Home
               </Link>
             </div>

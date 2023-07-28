@@ -7,7 +7,7 @@ description: API Key configuration
 
 ---
 
-This option is required. It is to identify your application in Nexys dashboard. You can retrieve this key from your [Nexys dashboard](https://dash.nexys.app) in the **Settings** tab.
+This option is required. It is to identify your application in **Nexys** dashboard. You can retrieve this key from your [Nexys dashboard](https://dash.nexys.app) in the **Settings** tab.
 
 This API key is public and can be used in your frontend code, also in server-side code. It is not a secret key.
 
