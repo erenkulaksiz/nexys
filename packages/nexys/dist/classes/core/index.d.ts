@@ -90,6 +90,7 @@ export declare class Core {
      * @param options.type - `Optional` - Log type
      * @param options.level - `Optional` - Log level
      * @param options.tags - `Optional` - Log tags
+     * @param options.action - `Optional` - Log action
      *
      * @public
      */
