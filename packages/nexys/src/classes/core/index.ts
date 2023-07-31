@@ -22,7 +22,6 @@ import { LocalStorage } from "./../localStorage/index.js";
 import { LogPool } from "./../logPool/index.js";
 import { Device } from "./../device/index.js";
 import { server, version, isClient, guid } from "../../utils/index.js";
-import setupEventHandlers from "./setupEventHandlers.js";
 import loadFromLocalStorage from "./loadFromLocalStorage.js";
 import getPagePath from "../../utils/getPagePath.js";
 import type {
@@ -63,6 +62,7 @@ export class Core {
   _isClient: boolean = isClient();
   _allowDeviceData: boolean = true;
   _allowGeoLocation: boolean = false;
+  _allowElementData: boolean = true;
   _env: string = this._processAvailable
     ? process?.env?.NODE_ENV ?? "production"
     : "production";
@@ -99,6 +99,7 @@ export class Core {
     this._allowDeviceData = options?.allowDeviceData ?? this._allowDeviceData;
     this._allowGeoLocation =
       options?.allowGeoLocation ?? this._allowGeoLocation;
+    this._allowElementData = typeof options?.allowElementData == "undefined";
 
     this._sendAllOnType =
       typeof options?.sendAllOnType == "undefined"
@@ -156,8 +157,6 @@ export class Core {
         defaultOptions.localStorage?.useLocalStorage,
     });
 
-    // Initialize others
-    setupEventHandlers(this);
     loadFromLocalStorage(this);
 
     if (!this._isClient) {
@@ -253,6 +252,7 @@ export class Core {
    * @param options.type - `Optional` - Log type
    * @param options.level - `Optional` - Log level
    * @param options.tags - `Optional` - Log tags
+   * @param options.action - `Optional` - Log action
    *
    * @public
    */
@@ -282,7 +282,7 @@ export class Core {
    * ```javascript
    * // Initialize the client
    * const nexys = new Nexys("API_KEY", { appName: "My_app" });
-   * // inside /pages/_app.jsx|tsx
+   * // inside pages/_app.jsx|tsx
    * export function reportWebVitals(metric: NextWebVitalsMetric) {
    *  nexys.metric(metric);
    * }

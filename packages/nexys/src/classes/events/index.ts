@@ -16,6 +16,8 @@
  */
 
 import { Core } from "../core/index.js";
+import { guid } from "../../utils/guid.js";
+import getPagePath from "../../utils/getPagePath.js";
 import type { EventTypes } from "./types";
 
 export class Events {
@@ -43,6 +45,7 @@ export class Events {
     this.core = core;
 
     if (this.core?._options?.errors?.allowAutomaticHandling) {
+      this.setupEventHandlers();
       this.bindErrorEvents();
     }
   }
@@ -85,5 +88,87 @@ export class Events {
     this.core.InternalLogger.log(
       "Events: Couldnt bind error event. Not client."
     );
+  }
+
+  private setupEventHandlers() {
+    this.on.error = (event: ErrorEvent) => {
+      this.core.InternalLogger.log("Events: Received error", event);
+
+      const extractedError = {
+        message: event?.message,
+        errmessage: event?.error?.message,
+        stack: event?.error?.stack,
+        type: event?.type,
+        colno: event?.colno,
+        lineno: event?.lineno,
+        filename: event?.filename,
+        defaultPrevented: event?.defaultPrevented,
+        isTrusted: event?.isTrusted,
+        timeStamp: event?.timeStamp,
+      };
+
+      this.core.LogPool.push({
+        data: {
+          ...extractedError,
+        },
+        ts: new Date().getTime(),
+        options: {
+          type: "AUTO:ERROR",
+        },
+        guid: guid(),
+        path: getPagePath(this.core),
+      });
+    };
+
+    this.on.unhandledRejection = (event: PromiseRejectionEvent) => {
+      this.core.InternalLogger.log(
+        "Events: Received unhandledRejection: ",
+        event
+      );
+
+      const extractedRejection = {
+        message: event?.reason?.message,
+        stack: event?.reason?.stack,
+        type: event?.type,
+        isTrusted: event?.isTrusted,
+        defaultPrevented: event?.defaultPrevented,
+        timeStamp: event?.timeStamp,
+      };
+
+      this.core.LogPool.push({
+        data: {
+          ...extractedRejection,
+        },
+        ts: new Date().getTime(),
+        options: {
+          type: "AUTO:UNHANDLEDREJECTION",
+        },
+        guid: guid(),
+        path: getPagePath(this.core),
+      });
+    };
+
+    this.on.request.success = (event) => {
+      this.core.InternalLogger.log("Events: Received request success: ", event);
+    };
+
+    this.on.request.error = (event) => {
+      const messages: {
+        [key: string]: string;
+      } = {
+        "API:FAILED:400:app-name": `NexysCore: Your configured app name and the app name you entered on your project is mismatching. Please check your configuration. Erasing localStorage.`,
+        "API:FAILED:400:not-verified": `NexysCore: Your project is not verified. Erasing localStorage.`,
+        "API:FAILED:400:domain": `NexysCore: This domain is not allowed. Enable localhost access on your project if you are testing. Erasing localStorage.`,
+      };
+      const message = messages[event.message];
+      if (message) {
+        this.core.InternalLogger.log(message);
+        this.core.LocalStorage.clear();
+        this.core.LogPool.clearLogs();
+        this.core.LogPool.clearRequests();
+        return;
+      }
+      this.core.InternalLogger.log("Events: Received request error: ", event);
+    };
   }
 }

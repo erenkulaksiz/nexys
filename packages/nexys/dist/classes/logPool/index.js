@@ -61,8 +61,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { version, libraryName, collectNextJSData, collectVercelEnv, collectDOMData, guid, } from "../../utils/index.js";
+import { guid } from "../../utils/index.js";
 import getPagePath from "../../utils/getPagePath.js";
+import { collectData } from "../../utils/collect.js";
 var LogPool = /** @class */ (function () {
     function LogPool(core) {
         // All logs stored here.
@@ -75,11 +76,7 @@ var LogPool = /** @class */ (function () {
             throw new Error("LogPool: setLogs() expects an array.");
         // Checking if logs has timestamps and data.
         logs.forEach(function (log) {
-            if (!log.ts)
-                throw new Error("LogPool: setLogs() expects an array of logs.");
-            if (!log.data)
-                throw new Error("LogPool: setLogs() expects an array of logs.");
-            if (!log.guid)
+            if (!log.ts || !log.data || !log.guid)
                 throw new Error("LogPool: setLogs() expects an array of logs.");
         });
         this.logs = logs;
@@ -90,13 +87,7 @@ var LogPool = /** @class */ (function () {
             throw new Error("LogPool: setRequests() expects an array.");
         // Checking if requests has timestamps and data.
         requests.forEach(function (request) {
-            if (!(request === null || request === void 0 ? void 0 : request.res))
-                throw new Error("LogPool: setRequests() expects an array of requests.");
-            if (!(request === null || request === void 0 ? void 0 : request.status))
-                throw new Error("LogPool: setRequests() expects an array of requests.");
-            if (!(request === null || request === void 0 ? void 0 : request.ts))
-                throw new Error("LogPool: setRequests() expects an array of requests.");
-            if (!(request === null || request === void 0 ? void 0 : request.guid))
+            if (!(request === null || request === void 0 ? void 0 : request.res) || !(request === null || request === void 0 ? void 0 : request.status) || !(request === null || request === void 0 ? void 0 : request.ts) || !(request === null || request === void 0 ? void 0 : request.guid))
                 throw new Error("LogPool: setRequests() expects an array of requests.");
         });
         this.requests = requests;
@@ -106,37 +97,32 @@ var LogPool = /** @class */ (function () {
     LogPool.prototype.push = function (_a) {
         var _b, _c;
         var data = _a.data, options = _a.options, ts = _a.ts, guid = _a.guid, path = _a.path, stack = _a.stack;
-        this.logs.push({
+        var log = {
             data: data,
-            ts: ts,
             options: options,
+            ts: ts,
             guid: guid,
             path: path,
             stack: stack,
-        });
+        };
+        this.logs.push(log);
         this.process();
-        (_c = (_b = this.core.Events.on).logAdd) === null || _c === void 0 ? void 0 : _c.call(_b, { data: data, options: options, ts: ts, guid: guid, path: path, stack: stack });
-        this.core.LocalStorage.addToLogPool({
-            data: data,
-            options: options,
-            ts: ts,
-            guid: guid,
-            path: path,
-            stack: stack,
-        });
+        (_c = (_b = this.core.Events.on).logAdd) === null || _c === void 0 ? void 0 : _c.call(_b, log);
+        this.core.LocalStorage.addToLogPool(log);
     };
     LogPool.prototype.pushRequest = function (_a) {
         var _b, _c;
         var res = _a.res, status = _a.status, ts = _a.ts, guid = _a.guid;
-        this.core.InternalLogger.log("LogPool: Pushing request to requests array.", res, status, ts, guid);
-        this.requests.push({
+        var req = {
             res: res,
             status: status,
             ts: ts,
             guid: guid,
-        });
-        (_c = (_b = this.core.Events.on).requestAdd) === null || _c === void 0 ? void 0 : _c.call(_b, { res: res, status: status, ts: ts, guid: guid });
-        this.core.LocalStorage.addToRequest({ res: res, status: status, ts: ts, guid: guid });
+        };
+        this.core.InternalLogger.log("LogPool: Pushing request to requests array.", req);
+        this.requests.push(req);
+        (_c = (_b = this.core.Events.on).requestAdd) === null || _c === void 0 ? void 0 : _c.call(_b, req);
+        this.core.LocalStorage.addToRequest(req);
     };
     LogPool.prototype.clearLogs = function () {
         var _a, _b;
@@ -233,62 +219,28 @@ var LogPool = /** @class */ (function () {
      * Sends all data on Nexys to the server.
      */
     LogPool.prototype.sendAll = function () {
-        var _a;
         return __awaiter(this, void 0, void 0, function () {
-            var _start, _end, deviceData, config, CollectData, nextJSData, vercelEnv, DOMData;
+            var _start, _end, CollectData;
             var _this = this;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
                         _start = null, _end = null;
                         if (this.core._isClient)
                             _start = performance.now();
                         this.core.InternalLogger.log("LogPool: sendAll() called.");
-                        deviceData = "disabled";
-                        if (!this.core._allowDeviceData) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.core.Device.getDeviceData().catch(function (err) { return null; })];
-                    case 1:
-                        deviceData =
-                            (_a = (_b.sent())) !== null && _a !== void 0 ? _a : "client-disabled";
-                        return [3 /*break*/, 3];
-                    case 2:
-                        deviceData = "disabled";
-                        _b.label = 3;
-                    case 3:
-                        config = this.core._config;
                         if (this.logs.length === 0 && this.requests.length === 0) {
-                            this.core.InternalLogger.log("LogPool: No logs or requests to send.");
+                            this.core.InternalLogger.error("LogPool: No logs or requests to send.");
                             return [2 /*return*/];
                         }
-                        CollectData = {
-                            logs: this.logs,
-                            requests: this.requests,
-                            deviceData: deviceData,
-                            package: {
-                                libraryName: libraryName,
-                                version: version,
-                            },
-                            options: __assign(__assign({}, this.core._options), { logPoolSize: this.core._logPoolSize, allowDeviceData: this.core._allowDeviceData, sendAllOnType: this.core._sendAllOnType, ignoreType: this.core._ignoreType, ignoreTypeSize: this.core._ignoreTypeSize }),
-                            env: {
-                                type: this.core._env,
-                                isClient: this.core._isClient,
-                            },
-                        };
-                        if (config) {
-                            CollectData = __assign(__assign({}, CollectData), { config: config });
+                        return [4 /*yield*/, collectData(this.core)];
+                    case 1:
+                        CollectData = _a.sent();
+                        if (!CollectData) {
+                            this.core.InternalLogger.error("LogPool: collectData() returned null.");
+                            return [2 /*return*/];
                         }
-                        nextJSData = collectNextJSData();
-                        if (nextJSData) {
-                            CollectData = __assign(__assign({}, CollectData), { env: __assign(__assign({}, CollectData.env), nextJSData) });
-                        }
-                        vercelEnv = collectVercelEnv();
-                        if (vercelEnv) {
-                            CollectData = __assign(__assign({}, CollectData), { env: __assign(__assign({}, CollectData.env), vercelEnv) });
-                        }
-                        DOMData = collectDOMData();
-                        if (DOMData) {
-                            CollectData = __assign(__assign({}, CollectData), { env: __assign(__assign({}, CollectData.env), DOMData) });
-                        }
+                        CollectData = __assign(__assign({}, CollectData), { logs: this.logs, requests: this.requests });
                         this.core.API.sendRequest({
                             data: CollectData,
                         })

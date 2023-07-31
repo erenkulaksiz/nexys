@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { getDeviceDataReturnTypes } from "src/classes/device/types.js";
 export interface NexysOptions {
     appName?: string;
     debug?: boolean;
@@ -22,6 +23,7 @@ export interface NexysOptions {
     server?: string;
     allowDeviceData?: boolean;
     allowGeoLocation?: boolean;
+    allowElementData?: boolean;
     ignoreType?: false | logOptionTypes | logOptionTypes[];
     ignoreTypeSize?: number;
     errors?: {
@@ -54,6 +56,25 @@ export interface logTypes {
     guid: string;
     stack?: string;
 }
+export interface errorLogTypes {
+    data: {
+        message: string;
+        errmessage?: string;
+        stack?: string;
+        type?: string;
+        colno?: string;
+        lineno?: string;
+        filename?: string;
+        defaultPrevented?: boolean;
+        isTrusted?: boolean;
+        timeStamp?: number;
+    };
+    options?: logOptions;
+    path?: string | null;
+    ts: number;
+    guid: string;
+    stack?: string;
+}
 export interface requestTypes {
     res: string | object;
     status: string;
@@ -69,6 +90,27 @@ export interface configFunctions {
     setUser: (user: string) => void;
     setClient: (client: string) => void;
     setAppVersion: (version: string) => void;
+}
+export interface collectDataTypes {
+    logs?: logTypes[];
+    requests?: requestTypes[];
+    deviceData: getDeviceDataReturnTypes | "disabled" | "client-disabled";
+    package: {
+        libraryName: string;
+        version: string;
+    };
+    options: {
+        logPoolSize: number;
+        allowDeviceData: boolean;
+        sendAllOnType: NexysOptions["sendAllOnType"];
+        ignoreType: NexysOptions["ignoreType"];
+        ignoreTypeSize: number;
+    };
+    env: {
+        type: string;
+        isClient: boolean;
+    };
+    config?: configTypes;
 }
 declare global {
     interface Window {

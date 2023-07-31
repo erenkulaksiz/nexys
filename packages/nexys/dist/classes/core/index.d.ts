@@ -20,7 +20,7 @@ import { InternalLogger } from "./../internalLogger/index.js";
 import { LocalStorage } from "./../localStorage/index.js";
 import { LogPool } from "./../logPool/index.js";
 import { Device } from "./../device/index.js";
-import type { NexysOptions, logTypes, configTypes, configFunctions } from "../../types";
+import type { NexysOptions, logTypes, configTypes, configFunctions, errorLogTypes } from "../../types";
 export declare class Core {
     InternalLogger: InternalLogger;
     LogPool: LogPool;
@@ -37,6 +37,7 @@ export declare class Core {
     _isClient: boolean;
     _allowDeviceData: boolean;
     _allowGeoLocation: boolean;
+    _allowElementData: boolean;
     _env: string;
     _sendAllOnType: NexysOptions["sendAllOnType"];
     _ignoreType: NexysOptions["ignoreType"];
@@ -92,7 +93,7 @@ export declare class Core {
      *
      * @public
      */
-    error(data: logTypes["data"], options?: logTypes["options"]): void;
+    error(data: errorLogTypes["data"], options?: logTypes["options"]): void;
     /**
      * `NextJS only method`
      *  Collect metric data for NextJS for performance measuring
@@ -104,7 +105,7 @@ export declare class Core {
      * ```javascript
      * // Initialize the client
      * const nexys = new Nexys("API_KEY", { appName: "My_app" });
-     * // inside /pages/_app.jsx|tsx
+     * // inside pages/_app.jsx|tsx
      * export function reportWebVitals(metric: NextWebVitalsMetric) {
      *  nexys.metric(metric);
      * }

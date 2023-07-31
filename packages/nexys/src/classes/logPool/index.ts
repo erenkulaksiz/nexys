@@ -16,19 +16,11 @@
  */
 
 import { Core } from "../core/index.js";
-import {
-  version,
-  libraryName,
-  collectNextJSData,
-  collectVercelEnv,
-  collectDOMData,
-  guid,
-} from "../../utils/index.js";
+import { guid } from "../../utils/index.js";
 import getPagePath from "../../utils/getPagePath.js";
-//import type { LogPoolConstructorParams } from "./types";
+import { collectData } from "../../utils/collect.js";
 import type { requestTypes } from "../../types";
-import type { logTypes, NexysOptions, configTypes } from "./../../types";
-import type { getDeviceDataReturnTypes } from "./../device/types";
+import type { logTypes } from "./../../types";
 
 export class LogPool {
   private core: Core;
@@ -45,11 +37,7 @@ export class LogPool {
       throw new Error("LogPool: setLogs() expects an array.");
     // Checking if logs has timestamps and data.
     logs.forEach((log: logTypes) => {
-      if (!log.ts)
-        throw new Error("LogPool: setLogs() expects an array of logs.");
-      if (!log.data)
-        throw new Error("LogPool: setLogs() expects an array of logs.");
-      if (!log.guid)
+      if (!log.ts || !log.data || !log.guid)
         throw new Error("LogPool: setLogs() expects an array of logs.");
     });
     this.logs = logs;
@@ -61,13 +49,7 @@ export class LogPool {
       throw new Error("LogPool: setRequests() expects an array.");
     // Checking if requests has timestamps and data.
     requests.forEach((request: requestTypes) => {
-      if (!request?.res)
-        throw new Error("LogPool: setRequests() expects an array of requests.");
-      if (!request?.status)
-        throw new Error("LogPool: setRequests() expects an array of requests.");
-      if (!request?.ts)
-        throw new Error("LogPool: setRequests() expects an array of requests.");
-      if (!request?.guid)
+      if (!request?.res || !request?.status || !request?.ts || !request?.guid)
         throw new Error("LogPool: setRequests() expects an array of requests.");
     });
     this.requests = requests;
@@ -76,42 +58,34 @@ export class LogPool {
   }
 
   public push({ data, options, ts, guid, path, stack }: logTypes): void {
-    this.logs.push({
+    const log = {
       data,
-      ts,
       options,
+      ts,
       guid,
       path,
       stack,
-    });
+    };
+    this.logs.push(log);
     this.process();
-    this.core.Events.on.logAdd?.({ data, options, ts, guid, path, stack });
-    this.core.LocalStorage.addToLogPool({
-      data,
-      options,
-      ts,
-      guid,
-      path,
-      stack,
-    });
+    this.core.Events.on.logAdd?.(log);
+    this.core.LocalStorage.addToLogPool(log);
   }
 
   private pushRequest({ res, status, ts, guid }: requestTypes): void {
-    this.core.InternalLogger.log(
-      "LogPool: Pushing request to requests array.",
-      res,
-      status,
-      ts,
-      guid
-    );
-    this.requests.push({
+    const req = {
       res,
       status,
       ts,
       guid,
-    });
-    this.core.Events.on.requestAdd?.({ res, status, ts, guid });
-    this.core.LocalStorage.addToRequest({ res, status, ts, guid });
+    };
+    this.core.InternalLogger.log(
+      "LogPool: Pushing request to requests array.",
+      req
+    );
+    this.requests.push(req);
+    this.core.Events.on.requestAdd?.(req);
+    this.core.LocalStorage.addToRequest(req);
   }
 
   public clearLogs(): void {
@@ -226,105 +200,24 @@ export class LogPool {
       _end: number | null = null;
     if (this.core._isClient) _start = performance.now();
     this.core.InternalLogger.log("LogPool: sendAll() called.");
-    let deviceData: getDeviceDataReturnTypes | "disabled" | "client-disabled" =
-      "disabled";
-    if (this.core._allowDeviceData) {
-      deviceData =
-        (await this.core.Device.getDeviceData().catch((err) => null)) ??
-        "client-disabled";
-    } else {
-      deviceData = "disabled";
-    }
-    const config = this.core._config;
 
     if (this.logs.length === 0 && this.requests.length === 0) {
-      this.core.InternalLogger.log("LogPool: No logs or requests to send.");
+      this.core.InternalLogger.error("LogPool: No logs or requests to send.");
       return;
     }
 
-    interface ICollectData {
-      logs: logTypes[];
-      requests: requestTypes[];
-      deviceData: getDeviceDataReturnTypes | "disabled" | "client-disabled";
-      package: {
-        libraryName: string;
-        version: string;
-      };
-      options: {
-        logPoolSize: number;
-        allowDeviceData: boolean;
-        sendAllOnType: NexysOptions["sendAllOnType"];
-        ignoreType: NexysOptions["ignoreType"];
-        ignoreTypeSize: number;
-      };
-      env: {
-        type: string;
-        isClient: boolean;
-      };
-      config?: configTypes;
+    let CollectData = await collectData(this.core);
+
+    if (!CollectData) {
+      this.core.InternalLogger.error("LogPool: collectData() returned null.");
+      return;
     }
 
-    let CollectData: ICollectData = {
+    CollectData = {
+      ...CollectData,
       logs: this.logs,
       requests: this.requests,
-      deviceData,
-      package: {
-        libraryName,
-        version,
-      },
-      options: {
-        ...this.core._options,
-        logPoolSize: this.core._logPoolSize,
-        allowDeviceData: this.core._allowDeviceData,
-        sendAllOnType: this.core._sendAllOnType,
-        ignoreType: this.core._ignoreType,
-        ignoreTypeSize: this.core._ignoreTypeSize,
-      },
-      env: {
-        type: this.core._env,
-        isClient: this.core._isClient,
-      },
     };
-
-    if (config) {
-      CollectData = {
-        ...CollectData,
-        config,
-      };
-    }
-
-    const nextJSData = collectNextJSData();
-    if (nextJSData) {
-      CollectData = {
-        ...CollectData,
-        env: {
-          ...CollectData.env,
-          ...nextJSData,
-        },
-      };
-    }
-
-    const vercelEnv = collectVercelEnv();
-    if (vercelEnv) {
-      CollectData = {
-        ...CollectData,
-        env: {
-          ...CollectData.env,
-          ...vercelEnv,
-        },
-      };
-    }
-
-    const DOMData = collectDOMData();
-    if (DOMData) {
-      CollectData = {
-        ...CollectData,
-        env: {
-          ...CollectData.env,
-          ...DOMData,
-        },
-      };
-    }
 
     this.core.API.sendRequest({
       data: CollectData,

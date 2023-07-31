@@ -68,7 +68,6 @@ import { LocalStorage } from "./../localStorage/index.js";
 import { LogPool } from "./../logPool/index.js";
 import { Device } from "./../device/index.js";
 import { server, version, isClient, guid } from "../../utils/index.js";
-import setupEventHandlers from "./setupEventHandlers.js";
 import loadFromLocalStorage from "./loadFromLocalStorage.js";
 import getPagePath from "../../utils/getPagePath.js";
 var defaultOptions = {
@@ -95,6 +94,7 @@ var Core = /** @class */ (function () {
         this._isClient = isClient();
         this._allowDeviceData = true;
         this._allowGeoLocation = false;
+        this._allowElementData = true;
         this._env = this._processAvailable
             ? (_b = (_a = process === null || process === void 0 ? void 0 : process.env) === null || _a === void 0 ? void 0 : _a.NODE_ENV) !== null && _b !== void 0 ? _b : "production"
             : "production";
@@ -118,6 +118,7 @@ var Core = /** @class */ (function () {
         this._allowDeviceData = (_e = options === null || options === void 0 ? void 0 : options.allowDeviceData) !== null && _e !== void 0 ? _e : this._allowDeviceData;
         this._allowGeoLocation =
             (_f = options === null || options === void 0 ? void 0 : options.allowGeoLocation) !== null && _f !== void 0 ? _f : this._allowGeoLocation;
+        this._allowElementData = typeof (options === null || options === void 0 ? void 0 : options.allowElementData) == "undefined";
         this._sendAllOnType =
             typeof (options === null || options === void 0 ? void 0 : options.sendAllOnType) == "undefined"
                 ? this._sendAllOnType
@@ -157,8 +158,6 @@ var Core = /** @class */ (function () {
             isEncrypted: (_r = (_q = this._options.localStorage) === null || _q === void 0 ? void 0 : _q.cryption) !== null && _r !== void 0 ? _r : (_s = defaultOptions.localStorage) === null || _s === void 0 ? void 0 : _s.cryption,
             active: (_u = (_t = this._options.localStorage) === null || _t === void 0 ? void 0 : _t.useLocalStorage) !== null && _u !== void 0 ? _u : (_v = defaultOptions.localStorage) === null || _v === void 0 ? void 0 : _v.useLocalStorage,
         });
-        // Initialize others
-        setupEventHandlers(this);
         loadFromLocalStorage(this);
         if (!this._isClient) {
             this.InternalLogger.log("NexysCore: Detected that we are running NexysCore on non client side environment.");
@@ -266,7 +265,7 @@ var Core = /** @class */ (function () {
      * ```javascript
      * // Initialize the client
      * const nexys = new Nexys("API_KEY", { appName: "My_app" });
-     * // inside /pages/_app.jsx|tsx
+     * // inside pages/_app.jsx|tsx
      * export function reportWebVitals(metric: NextWebVitalsMetric) {
      *  nexys.metric(metric);
      * }

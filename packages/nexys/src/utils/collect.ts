@@ -16,30 +16,24 @@
  */
 
 import { isClient } from "./isClient.js";
+import { Core } from "src/classes/core/index.js";
+import { libraryName, version } from "./index.js";
+import type { collectDataTypes } from "src/types.js";
+import type { getDeviceDataReturnTypes } from "src/classes/device/types.js";
 
-export function collectNextJSData(allowElementCount: boolean = true) {
+export function collectNextJSData() {
   if (isClient()) {
     /* @ts-ignore next-line */
     const { __NEXT_DATA__, next } = window;
     if (__NEXT_DATA__) {
       const { buildId, nextExport, page, query } = __NEXT_DATA__;
-      if (document && "getElementById" in document && allowElementCount) {
-        return {
-          buildId,
-          nextExport,
-          page,
-          query,
-          ver: next?.version,
-        };
-      } else {
-        return {
-          buildId,
-          nextExport,
-          page,
-          query,
-          ver: next?.version,
-        };
-      }
+      return {
+        buildId,
+        nextExport,
+        page,
+        query,
+        ver: next?.version,
+      };
     }
     return null;
   }
@@ -83,4 +77,85 @@ export function collectDOMData() {
     };
   }
   return null;
+}
+
+export async function collectData(core: Core) {
+  const { _config: config } = core;
+
+  let deviceData: getDeviceDataReturnTypes | "disabled" | "client-disabled" =
+    "disabled";
+
+  if (core._allowDeviceData) {
+    deviceData =
+      (await core.Device.getDeviceData().catch((err) => null)) ??
+      "client-disabled";
+  } else {
+    deviceData = "disabled";
+  }
+
+  let CollectData: collectDataTypes = {
+    deviceData,
+    package: {
+      libraryName,
+      version,
+    },
+    options: {
+      ...core._options,
+      logPoolSize: core._logPoolSize,
+      allowDeviceData: core._allowDeviceData,
+      sendAllOnType: core._sendAllOnType,
+      ignoreType: core._ignoreType,
+      ignoreTypeSize: core._ignoreTypeSize,
+    },
+    env: {
+      type: core._env,
+      isClient: core._isClient,
+    },
+  };
+
+  if (config) {
+    CollectData = {
+      ...CollectData,
+      config,
+    };
+  }
+
+  const nextJSData = collectNextJSData();
+  if (nextJSData) {
+    CollectData = {
+      ...CollectData,
+      env: {
+        ...CollectData.env,
+        ...nextJSData,
+      },
+    };
+  }
+
+  const vercelEnv = collectVercelEnv();
+  if (vercelEnv) {
+    CollectData = {
+      ...CollectData,
+      env: {
+        ...CollectData.env,
+        ...vercelEnv,
+      },
+    };
+  }
+
+  if (core._isClient) {
+    if (document && "getElementById" in document && core._allowElementData) {
+      const DOMData = collectDOMData();
+      if (DOMData) {
+        CollectData = {
+          ...CollectData,
+          env: {
+            ...CollectData.env,
+            ...DOMData,
+          },
+        };
+      }
+    }
+  }
+
+  return CollectData;
 }

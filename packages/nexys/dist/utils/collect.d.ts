@@ -14,7 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export declare function collectNextJSData(allowElementCount?: boolean): {
+import { Core } from "src/classes/core/index.js";
+import type { collectDataTypes } from "src/types.js";
+export declare function collectNextJSData(): {
     buildId: any;
     nextExport: any;
     page: any;
@@ -38,4 +40,5 @@ export declare function collectVercelEnv(): {
 export declare function collectDOMData(): {
     el: number;
 } | null;
+export declare function collectData(core: Core): Promise<collectDataTypes>;
 //# sourceMappingURL=collect.d.ts.map

@@ -22,5 +22,6 @@ export declare class Events {
     on: EventTypes;
     constructor(core: Core);
     private bindErrorEvents;
+    private setupEventHandlers;
 }
 //# sourceMappingURL=index.d.ts.map

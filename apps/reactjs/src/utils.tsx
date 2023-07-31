@@ -1,9 +1,10 @@
 import Nexys from "nexys";
+import { debugServer } from "nexys/dist/utils";
 
-export const nexys: Nexys = new Nexys("2f22dec8-1850-4bd8-88fe-b2ffda521f1e", {
-  appName: "test10",
+export const nexys: Nexys = new Nexys("fa010d89-dcd6-4273-b236-479296c97a19", {
+  appName: "test",
   debug: true,
-  server: "http://localhost:3000",
+  //server: debugServer,
   localStorage: {
     cryption: false,
   },

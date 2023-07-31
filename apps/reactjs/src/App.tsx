@@ -17,7 +17,7 @@ function App() {
       </button>
       <button
         onClick={async () => {
-          nexys.error("test.");
+          nexys.error({ message: "test" });
           //console.log("Client return:", log);
         }}
       >
