@@ -38,6 +38,4 @@ We currently support **NextJS**, **React** and **NodeJS** platforms.
 
 **Nexys** collects your client's data by how you configured it. Nexys is highly customizable and can be configured to collect any data you want. You can collect user data, or you can send them anonymously, or you can send them both. **Nexys** is a **privacy-first** analytics platform, and we don't collect any data from your users without your permission.
 
-## Focus on your product
-
-We know that you want to focus on your product and not on analytics. That's why we made **Nexys** as simple as possible. You can integrate **Nexys** with your product in less than 5 minutes. You can use our [Javascript SDK](/installation).
+We know that you want to focus on your product and not on analytics. That's why we made **Nexys** as simple as possible. You can integrate **Nexys** with your product in less than 5 minutes. You can use our [Javascript Library](/installation).

@@ -9,16 +9,18 @@ description: Test key configuration
 
 **Nexys** localStorage availability is checked with a test key. You can change this key with `testKey` option.
 
-- **Option:** `testKey` 
-- **Type:** `string`
-- **Default:** `__nexysTest__`
+| Option | Type | Default |
+| --- | --- | --- |
+| testKey | `string` | "\__nexysTest__" |
 
 ```javascript
 // This code will disable local storage feature.
 const nexys = new Nexys("API_KEY", { 
     appName: "APP_NAME", 
+    // highlight-start
     localStorage: {
       testKey: false
     }
+    // highlight-end
 });
 ```

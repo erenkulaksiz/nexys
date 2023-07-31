@@ -9,13 +9,16 @@ description: App name configuration
 
 This option is required. It is used to identify your application in **Nexys** dashboard. You enter **appName** while creating a new project in **Nexys** dashboard and this name need to be unique.
 
-- **Option:** `appName` 
-- **Type:** `string`
-- **Default:** `""`
+| Option | Type | Default |
+| --- | --- | --- |
+| appName | `string` | "" |
 
 ```javascript            
-const nexys = new Nexys("API_KEY", { appName: "APP_NAME" });
-                                              /*^^^^^^^*/
+const nexys = new Nexys(
+  "API_KEY", 
+  // highlight-next-line
+  { appName: "APP_NAME" }
+);
 ```
 
 

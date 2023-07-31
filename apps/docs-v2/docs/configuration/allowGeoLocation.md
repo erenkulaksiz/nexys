@@ -13,11 +13,15 @@ Trying to enable this feature will ask user for permission to access their locat
 
 Default is `false` because this feature ask's user for permission to access their location.
 
-- **Option:** `allowGeoLocation`
-- **Type:** `boolean`
-- **Default:** `false`
+| Option | Type | Default |
+| --- | --- | --- |
+| allowGeoLocation | `boolean` | false |
 
 ```javascript
 // This code will enable geo location feature.
-const nexys = new Nexys("API_KEY", { appName: "APP_NAME", allowGeoLocation: true });
+const nexys = new Nexys("API_KEY", { 
+    appName: "APP_NAME", 
+    // highlight-next-line
+    allowGeoLocation: true
+});
 ```

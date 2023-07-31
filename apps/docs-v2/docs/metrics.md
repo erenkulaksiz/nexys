@@ -22,6 +22,7 @@ import type { NextWebVitalsMetric, AppProps } from "next/app";
 
 // Exporting function called `reportWebVitals` is required for NextJS to collect metrics.
 export function reportWebVitals(metric: NextWebVitalsMetric) {
+  // highlight-next-line
   nexys.metric(metric);
 }
 

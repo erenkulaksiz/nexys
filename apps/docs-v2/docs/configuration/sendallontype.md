@@ -13,14 +13,15 @@ If there is an error on your application, you don't want to wait for the next lo
 
 Logs start with **AUTO:** prefix are automatically catched by **Nexys** and should be inside **sendAllOnType** configuration.
 
-- **Option:** `sendAllOnType` 
-- **Type:** `string | string[] | false`
-- **Default:** `["AUTO:ERROR", "AUTO:UNHANDLEDREJECTION", "ERROR"]`
+| Option | Type | Default |
+| --- | --- | --- |
+| sendAllOnType | `string` `string[]` `false` | ["AUTO:ERROR", "AUTO:UNHANDLEDREJECTION", "ERROR"] |
 
 ```javascript
 // This code will send all logs on logPool to our servers when an error occurs.
 const nexys = new Nexys("API_KEY", { 
     appName: "APP_NAME", 
+    // highlight-next-line
     sendAllOnType: ["ERROR", "FATAL", "PURCHASE_ERROR"]
 });
 ```
@@ -31,6 +32,7 @@ Want only one type to be sent immediately?:
 // This code will send all logs on logPool matched with "ERROR" type.
 const nexys = new Nexys("API_KEY", { 
     appName: "APP_NAME", 
+    // highlight-next-line
     sendAllOnType: "ERROR"
 });
 ```
@@ -41,6 +43,7 @@ Want to disable **sendAllOnType**?:
 // This code will disable sendAllOnType feature.
 const nexys = new Nexys("API_KEY", { 
     appName: "APP_NAME", 
+    // highlight-next-line
     sendAllOnType: false
 });
 ```

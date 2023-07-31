@@ -9,13 +9,14 @@ description: Ignore Type Size configuration
 
 Use if you want to send all logs if ignored log type size is bigger than **ignoreTypeSize**.
 
-- **Option:** `ignoreTypeSize` 
-- **Type:** `number`
-- **Default:** `50`
+| Option | Type | Default |
+| --- | --- | --- |
+| ignoreTypeSize | `number` | 50 |
 
 ```javascript
 const nexys = new Nexys("API_KEY", { 
     appName: "APP_NAME", 
+    // highlight-next-line
     ignoreTypeSize: 100
 });
 ```

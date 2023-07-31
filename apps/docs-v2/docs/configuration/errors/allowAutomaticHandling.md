@@ -9,16 +9,18 @@ description: Allow automatic handling configuration
 
 If enabled, Nexys will automatically handle errors and unhandled rejections and add them to the **logPool**.
 
-- **Option:** `allowAutomaticHandling`
-- **Type:** `boolean`
-- **Default:** `true`
+| Option | Type | Default |
+| --- | --- | --- |
+| allowAutomaticHandling | `boolean` | true |
 
 ```javascript
 // This code will disable automatic handling feature.
 const nexys = new Nexys("API_KEY", { 
     appName: "APP_NAME", 
+    // highlight-start
     errors: {
       allowAutomaticHandling: false
     }
+    // highlight-end
 });
 ```

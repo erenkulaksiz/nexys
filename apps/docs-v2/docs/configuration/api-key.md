@@ -15,12 +15,15 @@ The only you need to look for, if you are using this key on frontend code is to 
 
 Currently, we do not allow entering multiple domains, but you can contact us if you need this feature. We will add this soon.
 
-- **Option:** `first parameter` 
-- **Type:** `string`
-- **Default:** `""`
+| Option | Type | Default |
+| --- | --- | --- |
+| first parameter | `string` | "" |
 
 ```javascript
-const nexys = new Nexys("API_KEY", { appName: "APP_NAME" });
-                       /*^^^^^^^*/
+const nexys = new Nexys(
+  // highlight-next-line
+  "API_KEY", 
+  { appName: "APP_NAME" }
+);
 ```
 
