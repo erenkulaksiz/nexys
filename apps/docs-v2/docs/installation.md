@@ -31,8 +31,14 @@ First, create a new file called `nexys.ts|js` somewhere on your project. Prefera
 import { Nexys } from 'nexys';
 
 // first parameter takes api key, second takes config options
-// highlight-next-line
-const nexys = new Nexys("API_KEY", { appName: "APP_NAME" });
+const nexys = new Nexys(
+  // highlight-next-line
+  "API_KEY", 
+  { 
+    // highlight-next-line
+    appName: "APP_NAME" 
+  }
+);
 
 export default nexys;
 ```
@@ -50,7 +56,14 @@ import nexys from '../nexys';
 export default function Home() {
   return (
     <div>
-      <button onClick={() => nexys.log("Hello World!")}>Log Hello World!</button>
+      <button 
+        onClick={() => {
+          // highlight-next-line
+          nexys.log("Hello World!")
+        }}
+      >
+        Log Hello World!
+      </button>
     </div>
   )
 }
