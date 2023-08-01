@@ -12,8 +12,10 @@ After you have installed and created required files, you can start configuring y
 # Example configuration
 
 ```javascript
-const nexys = new Nexys("API_KEY", { appName: "APP_NAME" });
-                                   /*^^ Config Options ^^*/
+const nexys = new Nexys("API_KEY", {
+  // highlight-next-line
+  appName: "APP_NAME" 
+});
 ```
 
 In second parameter you can pass an object with your config options.
