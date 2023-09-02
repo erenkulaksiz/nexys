@@ -97,130 +97,189 @@ var LogPool = /** @class */ (function () {
     LogPool.prototype.push = function (_a) {
         var _b, _c;
         var data = _a.data, options = _a.options, ts = _a.ts, guid = _a.guid, path = _a.path, stack = _a.stack;
-        var log = {
-            data: data,
-            options: options,
-            ts: ts,
-            guid: guid,
-            path: path,
-            stack: stack,
-        };
-        this.logs.push(log);
-        this.process();
-        (_c = (_b = this.core.Events.on).logAdd) === null || _c === void 0 ? void 0 : _c.call(_b, log);
-        this.core.LocalStorage.addToLogPool(log);
+        return __awaiter(this, void 0, void 0, function () {
+            var log;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
+                    case 0:
+                        log = {
+                            data: data,
+                            options: options,
+                            ts: ts,
+                            guid: guid,
+                            path: path,
+                            stack: stack,
+                        };
+                        this.logs.push(log);
+                        this.process();
+                        (_c = (_b = this.core.Events.on).logAdd) === null || _c === void 0 ? void 0 : _c.call(_b, log);
+                        return [4 /*yield*/, this.core.LocalStorage.addToLogPool(log)];
+                    case 1:
+                        _d.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
     };
     LogPool.prototype.pushRequest = function (_a) {
         var _b, _c;
         var res = _a.res, status = _a.status, ts = _a.ts, guid = _a.guid;
-        var req = {
-            res: res,
-            status: status,
-            ts: ts,
-            guid: guid,
-        };
-        this.core.InternalLogger.log("LogPool: Pushing request to requests array.", req);
-        this.requests.push(req);
-        (_c = (_b = this.core.Events.on).requestAdd) === null || _c === void 0 ? void 0 : _c.call(_b, req);
-        this.core.LocalStorage.addToRequest(req);
+        return __awaiter(this, void 0, void 0, function () {
+            var req;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
+                    case 0:
+                        req = {
+                            res: res,
+                            status: status,
+                            ts: ts,
+                            guid: guid,
+                        };
+                        this.core.InternalLogger.log("LogPool: Pushing request to requests array.", req);
+                        this.requests.push(req);
+                        (_c = (_b = this.core.Events.on).requestAdd) === null || _c === void 0 ? void 0 : _c.call(_b, req);
+                        return [4 /*yield*/, this.core.LocalStorage.addToRequest(req)];
+                    case 1:
+                        _d.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
     };
     LogPool.prototype.clearLogs = function () {
         var _a, _b;
-        this.logs = [];
-        this.core.LocalStorage.clearLogPool();
-        (_b = (_a = this.core.Events.on).logsClear) === null || _b === void 0 ? void 0 : _b.call(_a);
-        this.core.InternalLogger.log("LogPool: Cleared logs.");
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        this.logs = [];
+                        return [4 /*yield*/, this.core.LocalStorage.clearLogPool()];
+                    case 1:
+                        _c.sent();
+                        (_b = (_a = this.core.Events.on).logsClear) === null || _b === void 0 ? void 0 : _b.call(_a);
+                        this.core.InternalLogger.log("LogPool: Cleared logs.");
+                        return [2 /*return*/];
+                }
+            });
+        });
     };
     LogPool.prototype.clearRequests = function () {
         var _a, _b;
-        this.requests = [];
-        this.core.LocalStorage.clearRequests();
-        (_b = (_a = this.core.Events.on).requestsClear) === null || _b === void 0 ? void 0 : _b.call(_a);
-        this.core.InternalLogger.log("LogPool: Cleared requests.");
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        this.requests = [];
+                        return [4 /*yield*/, this.core.LocalStorage.clearRequests()];
+                    case 1:
+                        _c.sent();
+                        (_b = (_a = this.core.Events.on).requestsClear) === null || _b === void 0 ? void 0 : _b.call(_a);
+                        this.core.InternalLogger.log("LogPool: Cleared requests.");
+                        return [2 /*return*/];
+                }
+            });
+        });
     };
     /**
      * Process internal data to determine whether or not we should need to send data to the server.
      */
     LogPool.prototype.process = function () {
-        var _this = this;
         var _a, _b, _c, _d;
-        this.core.InternalLogger.log("LogPool: Processing logs...");
-        if (this.logs.length > 0 && this.core._logPoolSize != 0) {
-            var sendAllOnType = this.core._sendAllOnType;
-            if (!sendAllOnType)
-                return;
-            // Check if sendAllOnType is array or string.
-            if (Array.isArray(sendAllOnType)) {
-                // Array
-                for (var i = 0; i < this.logs.length; i++) {
-                    var log = this.logs[i];
-                    if (!((_a = log === null || log === void 0 ? void 0 : log.options) === null || _a === void 0 ? void 0 : _a.type))
-                        continue;
-                    if (this.core.API._sendingRequest)
-                        continue;
-                    if (sendAllOnType.includes(log.options.type)) {
+        return __awaiter(this, void 0, void 0, function () {
+            var sendAllOnType, i, log, i, log, logsLength, diffLength;
+            var _this = this;
+            return __generator(this, function (_e) {
+                switch (_e.label) {
+                    case 0:
+                        this.core.InternalLogger.log("LogPool: Processing logs...");
+                        if (!(this.logs.length > 0 && this.core._logPoolSize != 0)) return [3 /*break*/, 9];
+                        sendAllOnType = this.core._sendAllOnType;
+                        if (!sendAllOnType)
+                            return [2 /*return*/];
+                        if (!Array.isArray(sendAllOnType)) return [3 /*break*/, 5];
+                        i = 0;
+                        _e.label = 1;
+                    case 1:
+                        if (!(i < this.logs.length)) return [3 /*break*/, 4];
+                        log = this.logs[i];
+                        if (!((_a = log === null || log === void 0 ? void 0 : log.options) === null || _a === void 0 ? void 0 : _a.type))
+                            return [3 /*break*/, 3];
+                        if (this.core.API._sendingRequest)
+                            return [3 /*break*/, 3];
+                        if (!sendAllOnType.includes(log.options.type)) return [3 /*break*/, 3];
                         this.core.InternalLogger.log("LogPool: sendAllOnType is array and log includes ".concat(log.options.type, " type."));
-                        this.sendAll();
-                        break;
-                    }
-                }
-            }
-            else {
-                // String
-                for (var i = 0; i < this.logs.length; i++) {
-                    var log = this.logs[i];
-                    if (!((_b = log === null || log === void 0 ? void 0 : log.options) === null || _b === void 0 ? void 0 : _b.type))
-                        continue;
-                    if (this.core.API._sendingRequest)
-                        continue;
-                    if (log.options.type == sendAllOnType) {
+                        return [4 /*yield*/, this.sendAll()];
+                    case 2:
+                        _e.sent();
+                        return [3 /*break*/, 4];
+                    case 3:
+                        i++;
+                        return [3 /*break*/, 1];
+                    case 4: return [3 /*break*/, 9];
+                    case 5:
+                        i = 0;
+                        _e.label = 6;
+                    case 6:
+                        if (!(i < this.logs.length)) return [3 /*break*/, 9];
+                        log = this.logs[i];
+                        if (!((_b = log === null || log === void 0 ? void 0 : log.options) === null || _b === void 0 ? void 0 : _b.type))
+                            return [3 /*break*/, 8];
+                        if (this.core.API._sendingRequest)
+                            return [3 /*break*/, 8];
+                        if (!(log.options.type == sendAllOnType)) return [3 /*break*/, 8];
                         this.core.InternalLogger.log("LogPool: sendAllOnType is string and log is ".concat(log.options.type, " type."));
+                        return [4 /*yield*/, this.sendAll()];
+                    case 7:
+                        _e.sent();
+                        return [3 /*break*/, 9];
+                    case 8:
+                        i++;
+                        return [3 /*break*/, 6];
+                    case 9:
+                        logsLength = 0;
+                        if (this.core._ignoreType !== false) {
+                            logsLength = this.logs.filter(function (log) {
+                                var _a;
+                                if (!((_a = log === null || log === void 0 ? void 0 : log.options) === null || _a === void 0 ? void 0 : _a.type))
+                                    return true;
+                                if (Array.isArray(_this.core._ignoreType) &&
+                                    _this.core._ignoreType.includes(log.options.type))
+                                    return false;
+                                if (typeof _this.core._ignoreType == "string" &&
+                                    _this.core._ignoreType == log.options.type)
+                                    return false;
+                                return true;
+                            }).length;
+                            diffLength = this.logs.length - logsLength;
+                            if (diffLength > this.core._ignoreTypeSize) {
+                                this.core.InternalLogger.log("LogPool: diffLength (this.logs.length - logsLength): ".concat(diffLength, " ignoreTypeSize: ").concat(this.core._ignoreTypeSize, " - Ignored logs max reached."));
+                                logsLength += diffLength;
+                            }
+                            else {
+                                this.core.InternalLogger.log("LogPool: Ignoring ".concat(diffLength, " logs. ignoreType: ").concat(this.core._ignoreType, " ignoreTypeSize: ").concat(this.core._ignoreTypeSize));
+                            }
+                        }
+                        if (logsLength < this.core._logPoolSize) {
+                            this.core.InternalLogger.log("LogPool: logPoolSize is ".concat(this.core._logPoolSize, " but logs length is ").concat(logsLength));
+                            return [2 /*return*/];
+                        }
+                        if (this.core.API._sendingRequest) {
+                            this.core.InternalLogger.log("LogPool: Already sending request to the server.");
+                            return [2 /*return*/];
+                        }
+                        (_d = (_c = this.core.Events.on).process) === null || _d === void 0 ? void 0 : _d.call(_c);
                         this.sendAll();
-                        break;
-                    }
+                        return [2 /*return*/];
                 }
-            }
-        }
-        var logsLength = 0;
-        if (this.core._ignoreType !== false) {
-            logsLength = this.logs.filter(function (log) {
-                var _a;
-                if (!((_a = log === null || log === void 0 ? void 0 : log.options) === null || _a === void 0 ? void 0 : _a.type))
-                    return true;
-                if (Array.isArray(_this.core._ignoreType) &&
-                    _this.core._ignoreType.includes(log.options.type))
-                    return false;
-                if (typeof _this.core._ignoreType == "string" &&
-                    _this.core._ignoreType == log.options.type)
-                    return false;
-                return true;
-            }).length;
-            var diffLength = this.logs.length - logsLength;
-            if (diffLength > this.core._ignoreTypeSize) {
-                this.core.InternalLogger.log("LogPool: diffLength (this.logs.length - logsLength): ".concat(diffLength, " ignoreTypeSize: ").concat(this.core._ignoreTypeSize, " - Ignored logs max reached."));
-                logsLength += diffLength;
-            }
-            else {
-                this.core.InternalLogger.log("LogPool: Ignoring ".concat(diffLength, " logs. ignoreType: ").concat(this.core._ignoreType, " ignoreTypeSize: ").concat(this.core._ignoreTypeSize));
-            }
-        }
-        if (logsLength < this.core._logPoolSize) {
-            this.core.InternalLogger.log("LogPool: logPoolSize is ".concat(this.core._logPoolSize, " but logs length is ").concat(logsLength));
-            return;
-        }
-        if (this.core.API._sendingRequest) {
-            this.core.InternalLogger.log("LogPool: Already sending request to the server.");
-            return;
-        }
-        (_d = (_c = this.core.Events.on).process) === null || _d === void 0 ? void 0 : _d.call(_c);
-        this.sendAll();
+            });
+        });
     };
     /**
      * Sends all data on Nexys to the server.
      */
     LogPool.prototype.sendAll = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var _start, _end, CollectData;
+            var _start, _end, CollectData, sent;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -243,11 +302,11 @@ var LogPool = /** @class */ (function () {
                         this.core.InternalLogger.log("LogPool: Sending data to the server.", CollectData);
                         return [4 /*yield*/, this.core.API.sendData(CollectData)];
                     case 2:
-                        _a.sent();
+                        sent = _a.sent();
                         if (this.core._isClient)
                             _end = performance.now();
-                        if (_start && _end) {
-                            this.core.LogPool.push({
+                        if (!(_start && _end && sent)) return [3 /*break*/, 4];
+                        return [4 /*yield*/, this.core.LogPool.push({
                                 data: {
                                     type: "LOGPOOL:SENDALL",
                                     diff: _end - _start,
@@ -258,10 +317,12 @@ var LogPool = /** @class */ (function () {
                                 },
                                 guid: guid(),
                                 path: getPagePath(this.core),
-                            });
-                            this.core.InternalLogger.log("API: Request took ".concat(_end - _start, "ms."));
-                        }
-                        return [2 /*return*/];
+                            })];
+                    case 3:
+                        _a.sent();
+                        this.core.InternalLogger.log("API: Request took ".concat(_end - _start, "ms."));
+                        _a.label = 4;
+                    case 4: return [2 /*return*/];
                 }
             });
         });

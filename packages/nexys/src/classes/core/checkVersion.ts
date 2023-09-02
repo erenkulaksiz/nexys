@@ -2,7 +2,7 @@ import { Core } from ".";
 import isNewerVersion from "../../utils/version.js";
 
 export default function checkVersion(core: Core) {
-  if (!core._APIValues) return;
+  if (!core._APIValues || !core._APIValues.client) return;
   const isCloseToLimit =
     core._APIValues.logUsage >= core._APIValues.logUsageLimit * 0.8;
   const isOverLimit = core._APIValues.logUsage >= core._APIValues.logUsageLimit;
@@ -43,4 +43,6 @@ export default function checkVersion(core: Core) {
     );
     //core._initialized = false;
   }
+
+  core.InternalLogger.log("NexysCore: Version check done.");
 }

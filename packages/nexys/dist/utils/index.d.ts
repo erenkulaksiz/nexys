@@ -17,7 +17,7 @@
 export declare const server = "https://dash.nexys.app";
 export declare const debugServer = "http://localhost:3000";
 export declare const libraryName = "Nexys";
-export declare const version = "1.0.36";
+export declare const version = "1.0.37";
 export { Base64 } from "./base64.js";
 export { isClient } from "./isClient.js";
 export { guid } from "./guid.js";

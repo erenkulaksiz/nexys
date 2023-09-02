@@ -35,14 +35,14 @@ export interface NexysOptions {
 
   localStorage?: {
     useLocalStorage?: boolean; // use localStorage?
+    useAdapter?: boolean; // use adapter on localStorage?
+    adapter?: LocalStorageAdapters; // adapter on localStorage
     cryption?: boolean; // use cryption on client, if localStorage is enabled?
     key?: string; // use key on localStorage
     testKey?: string; // use test key on localStorage
     successRequestsMaxSize?: number; // maximum storage length of success requests
     failedRequestsMaxSize?: number; // maximum storage length of failed requests
   };
-
-  _i_EXTREMELY_SECRET_DO_NOT_USE_PLEASE?: boolean;
 }
 
 export type logActionTypes = string;
@@ -138,4 +138,11 @@ declare global {
   interface Window {
     nexys: Core;
   }
+}
+
+export interface LocalStorageAdapters {
+  getItem: (key: string) => Promise<any>;
+  setItem: (key: string, value: any) => Promise<void>;
+  clear: () => Promise<void>;
+  removeItem: (key: string) => Promise<void>;
 }

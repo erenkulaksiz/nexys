@@ -135,38 +135,58 @@ var API = /** @class */ (function () {
                 return [2 /*return*/, this.sendRequest({
                         data: data,
                     })
-                        .then(function (res) {
+                        .then(function (res) { return __awaiter(_this, void 0, void 0, function () {
+                        var data;
                         var _a, _b;
-                        var data = res.json.data;
-                        _this.core.LocalStorage.setAPIValues(data);
-                        _this.core._APIValues = data;
-                        _this.core.InternalLogger.log("API: Successful request", res);
-                        (_b = (_a = _this.core.Events.on.request).success) === null || _b === void 0 ? void 0 : _b.call(_a, { res: res, json: res.json });
-                        _this.core.LogPool.clearRequests();
-                        _this.core.LogPool.clearLogs();
-                        return true;
-                    })
-                        .catch(function (err) {
+                        return __generator(this, function (_c) {
+                            switch (_c.label) {
+                                case 0:
+                                    data = res.json.data;
+                                    return [4 /*yield*/, this.core.LocalStorage.setAPIValues(data)];
+                                case 1:
+                                    _c.sent();
+                                    this.core._APIValues = data;
+                                    this.core.InternalLogger.log("API: Successful request", res);
+                                    (_b = (_a = this.core.Events.on.request).success) === null || _b === void 0 ? void 0 : _b.call(_a, { res: res, json: res.json });
+                                    return [4 /*yield*/, this.core.LogPool.clearRequests()];
+                                case 2:
+                                    _c.sent();
+                                    return [4 /*yield*/, this.core.LogPool.clearLogs()];
+                                case 3:
+                                    _c.sent();
+                                    return [2 /*return*/, true];
+                            }
+                        });
+                    }); })
+                        .catch(function (err) { return __awaiter(_this, void 0, void 0, function () {
                         var _a, _b;
-                        _this.core.InternalLogger.error("API: Request failed.", err);
-                        (_b = (_a = _this.core.Events.on.request).error) === null || _b === void 0 ? void 0 : _b.call(_a, err);
-                        if ((err === null || err === void 0 ? void 0 : err.message) == "API:FAILED:400:api-key") {
-                            _this.core.InternalLogger.error("API: Your API key is not valid. Please make sure you entered correct credentials.");
-                        }
-                        if ((err === null || err === void 0 ? void 0 : err.message) !== "API:ALREADY_SENDING") {
-                            _this.core.API.requestCompleted();
-                            _this.core.LogPool.pushRequest({
-                                res: {
-                                    message: err.message,
-                                    stack: err.stack,
-                                },
-                                status: "failed",
-                                ts: new Date().getTime(),
-                                guid: guid(),
-                            });
-                        }
-                        return false;
-                    })];
+                        return __generator(this, function (_c) {
+                            switch (_c.label) {
+                                case 0:
+                                    this.core.InternalLogger.error("API: Request failed.", err);
+                                    (_b = (_a = this.core.Events.on.request).error) === null || _b === void 0 ? void 0 : _b.call(_a, err);
+                                    if ((err === null || err === void 0 ? void 0 : err.message) == "API:FAILED:400:api-key") {
+                                        this.core.InternalLogger.error("API: Your API key is not valid. Please make sure you entered correct credentials.");
+                                    }
+                                    if (!((err === null || err === void 0 ? void 0 : err.message) != "API:FAILED:400:api-key" &&
+                                        (err === null || err === void 0 ? void 0 : err.message) != "API:ALREADY_SENDING")) return [3 /*break*/, 2];
+                                    this.core.API.requestCompleted();
+                                    return [4 /*yield*/, this.core.LogPool.pushRequest({
+                                            res: {
+                                                message: err.message,
+                                                stack: err.stack,
+                                            },
+                                            status: "failed",
+                                            ts: new Date().getTime(),
+                                            guid: guid(),
+                                        })];
+                                case 1:
+                                    _c.sent();
+                                    _c.label = 2;
+                                case 2: return [2 /*return*/, false];
+                            }
+                        });
+                    }); })];
             });
         });
     };

@@ -18,9 +18,9 @@
 import { Core } from ".";
 import checkVersion from "../core/checkVersion.js";
 
-export default function loadFromLocalStorage(core: Core) {
+export default async function loadFromLocalStorage(core: Core): Promise<void> {
   // Load logs from localStorage
-  const localLogs = core.LocalStorage.getLocalLogs();
+  const localLogs = await core.LocalStorage.getLocalLogs();
   if (
     Array.isArray(localLogs) &&
     localLogs.length > 0 &&
@@ -40,7 +40,7 @@ export default function loadFromLocalStorage(core: Core) {
   }
 
   // Load requests from localStorage
-  const localRequests = core.LocalStorage.getLocalRequests();
+  const localRequests = await core.LocalStorage.getLocalRequests();
   if (
     Array.isArray(localRequests) &&
     localRequests.length > 0 &&
@@ -61,8 +61,8 @@ export default function loadFromLocalStorage(core: Core) {
     );
   }
 
-  const localUser = core.LocalStorage.getLocalUser();
   if (core._options.localStorage?.useLocalStorage) {
+    const localUser = await core.LocalStorage.getLocalUser();
     if (localUser) {
       core._config = {
         ...core._config,
@@ -79,7 +79,7 @@ export default function loadFromLocalStorage(core: Core) {
     }
   }
 
-  const APIValues = core.LocalStorage.getAPIValues();
+  const APIValues = await core.LocalStorage.getAPIValues();
   if (APIValues) {
     core._APIValues = APIValues;
     core.InternalLogger.log(

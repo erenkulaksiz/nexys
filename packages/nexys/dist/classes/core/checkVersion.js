@@ -1,6 +1,6 @@
 import isNewerVersion from "../../utils/version.js";
 export default function checkVersion(core) {
-    if (!core._APIValues)
+    if (!core._APIValues || !core._APIValues.client)
         return;
     var isCloseToLimit = core._APIValues.logUsage >= core._APIValues.logUsageLimit * 0.8;
     var isOverLimit = core._APIValues.logUsage >= core._APIValues.logUsageLimit;
@@ -20,4 +20,5 @@ export default function checkVersion(core) {
         core.InternalLogger.error("NexysCore: You are using version ".concat(core._version, " and latest version is ").concat(core._APIValues.client.hardVersion, ". You wont be able to use Nexys with this version. Please upgrade your library."));
         //core._initialized = false;
     }
+    core.InternalLogger.log("NexysCore: Version check done.");
 }

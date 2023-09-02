@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Base64, isClient } from "../../utils/index.js";
+import { Base64 } from "../../utils/index.js";
 import { Core } from "../core/index.js";
 import type { logTypes, requestTypes } from "../../types";
 import type {
@@ -23,6 +23,7 @@ import type {
   LocalStorageConstructorParams,
   LocalStorageTypes,
 } from "./types";
+import type { LocalStorageAdapters } from "../../types";
 
 /**
  * @class LocalStorage
@@ -30,7 +31,7 @@ import type {
  */
 export class LocalStorage {
   private core: Core;
-  private _localStorage: Storage | null = null;
+  private _localStorage: LocalStorageAdapters | Storage | null = null;
   public isActive: boolean = false;
   public isEncrypted: boolean = false;
   public isAvailable: boolean = false;
@@ -44,12 +45,33 @@ export class LocalStorage {
     { key, testKey, isEncrypted, active }: LocalStorageConstructorParams
   ) {
     this.core = core;
-    this._localStorage = this.core._isClient ? window?.localStorage : null;
+    if (core._useLocalStorageAdapter) {
+      if (typeof this.core._options.localStorage?.adapter != "undefined") {
+        this._localStorage = this.core._options.localStorage?.adapter;
+        this.core.InternalLogger.log(
+          "LocalStorage: Adapter",
+          this._localStorage
+        );
+      } else {
+        this._localStorage = this.core._isClient ? window?.localStorage : null;
+        this.core.InternalLogger.error(
+          "LocalStorage: Using localStorage adapter fallback. (window.localStorage)"
+        );
+      }
+    } else {
+      this._localStorage = this.core._isClient ? window?.localStorage : null;
+      this.core.InternalLogger.log(
+        "LocalStorage: Using no localStorage adapter."
+      );
+    }
     this.key = key;
     this.testKey = testKey;
     this.isEncrypted = isEncrypted;
     this.isActive = active;
-    this.isAvailable = this.checkAvailability();
+  }
+
+  public async setup(): Promise<void> {
+    this.isAvailable = await this.checkAvailability();
 
     this.core.InternalLogger.log("LocalStorage: Available:", this.isAvailable);
 
@@ -67,13 +89,13 @@ export class LocalStorage {
       }
     }
 
-    this.init();
+    await this.init();
   }
 
-  private init(): void {
+  private async init(): Promise<void> {
     if (!this.shouldUseLocalStorage) return;
     this.core.InternalLogger.log("LocalStorage: Initializing...");
-    let localItem = this.get();
+    let localItem = await this.get();
     if (localItem) {
       this.core.InternalLogger.log(
         "LocalStorage: Found local item:",
@@ -81,17 +103,41 @@ export class LocalStorage {
       );
     } else {
       this.core.InternalLogger.log("LocalStorage: No local item found.");
-      localItem = this.resetLocalValue();
+      localItem = await this.resetLocalValue();
     }
     this.core.Events.on.localStorageInit?.(localItem);
   }
 
-  private checkAvailability(): boolean {
-    // Check if we have localStorage object.
-    if (typeof this._localStorage === "undefined") return false;
+  public async removeItem(key: string): Promise<void> {
+    if (!this.shouldUseLocalStorage) return;
+    this.core.InternalLogger.log("LocalStorage: Removing...", key);
+    await this._localStorage?.removeItem(key);
+  }
+
+  public async setItem(key: string, value: any): Promise<void> {
+    if (!this.shouldUseLocalStorage) return;
+    this.core.InternalLogger.log("LocalStorage: Setting...", value);
+    await this._localStorage?.setItem(key, value);
+  }
+
+  public async getItem(key: string): Promise<any> {
+    if (!this.shouldUseLocalStorage) return null;
+    this.core.InternalLogger.log("LocalStorage: Getting...", key);
+    return await this._localStorage?.getItem(key);
+  }
+
+  public async checkAvailability(): Promise<boolean> {
+    if (!this.core._isClient) return false;
+    this.core.InternalLogger.log("LocalStorage: Checking availability...");
+    if (typeof this._localStorage == "undefined") {
+      this.core.InternalLogger.log(
+        "LocalStorage: Not available - cant check availability."
+      );
+      return false;
+    }
     try {
-      localStorage.setItem(this.testKey, this.testKey);
-      localStorage.removeItem(this.testKey);
+      await this.setItem(this.testKey, this.testKey);
+      await this.removeItem(this.testKey);
       return true;
     } catch (e) {
       return false;
@@ -99,13 +145,13 @@ export class LocalStorage {
   }
 
   // Returns any since item can be anything
-  public get(): LocalStorageTypes | null {
+  public async get(): Promise<LocalStorageTypes | null> {
     if (!this.shouldUseLocalStorage) return null;
     let localItem = null;
     let parsed = null;
 
     try {
-      localItem = this?._localStorage?.getItem(this.key);
+      localItem = await this?.getItem(this.key);
 
       if (!localItem) {
         return null;
@@ -134,7 +180,7 @@ export class LocalStorage {
     return parsed;
   }
 
-  public set(value: any): void {
+  public async set(value: any): Promise<void> {
     if (!this.shouldUseLocalStorage) return;
     let localItem = value;
 
@@ -154,29 +200,29 @@ export class LocalStorage {
     }
 
     try {
-      this?._localStorage?.setItem(this.key, localItem);
+      await this?.setItem(this.key, localItem);
     } catch (e) {
       return;
     }
   }
 
   // This function overrides specified values.
-  public setOverride(value: any): void {
+  public async setOverride(value: any): Promise<void> {
     if (!this.shouldUseLocalStorage) return;
-    let localValue = this.get();
+    let localValue = await this.get();
     const merged = Object.assign({}, value, localValue);
-    this.set(merged);
+    await this.set(merged);
   }
 
-  public clear(): void {
+  public async clear(): Promise<void> {
     if (!this.shouldUseLocalStorage) return;
     this.core.InternalLogger.log("LocalStorage: Clearing everything.");
-    this?._localStorage?.clear();
+    await this?._localStorage?.clear();
   }
 
-  public clearLogPool(): void {
+  public async clearLogPool(): Promise<void> {
     if (!this.shouldUseLocalStorage) return;
-    const localValue = this.get();
+    const localValue = await this.get();
     if (!localValue) {
       this.core.InternalLogger.log(
         "LocalStorage: Local value is null in clearLogPool."
@@ -188,9 +234,9 @@ export class LocalStorage {
     this.set(localValue);
   }
 
-  public clearRequests(): void {
+  public async clearRequests(): Promise<void> {
     if (!this.shouldUseLocalStorage) return;
-    const localValue = this.get();
+    const localValue = await this.get();
     if (!localValue) {
       this.core.InternalLogger.log(
         "LocalStorage: Local value is null in clearRequests."
@@ -202,14 +248,20 @@ export class LocalStorage {
     this.set(localValue);
   }
 
-  public addToLogPool({ data, options, guid, path, stack }: logTypes): void {
+  public async addToLogPool({
+    data,
+    options,
+    guid,
+    path,
+    stack,
+  }: logTypes): Promise<void> {
     if (!this.shouldUseLocalStorage) return;
-    let localValue = this.get();
+    let localValue = await this.get();
     if (!localValue) {
       this.core.InternalLogger.log(
         "LocalStorage: Local value is null in addToLogPool."
       );
-      this.resetLocalValue();
+      await this.resetLocalValue();
       // Resets and pushes first log.
       localValue = {
         logPool: [
@@ -218,7 +270,7 @@ export class LocalStorage {
         requests: [],
         lastLogUpdate: new Date().getTime(),
       };
-      this.set(localValue);
+      await this.set(localValue);
       return;
     }
     localValue.logPool.push({
@@ -230,57 +282,64 @@ export class LocalStorage {
       stack,
     });
     localValue.lastLogUpdate = new Date().getTime();
-    this.set(localValue);
+    await this.set(localValue);
   }
 
-  public addToRequest({ res, status, ts, guid }: requestTypes): void {
+  public async addToRequest({
+    res,
+    status,
+    ts,
+    guid,
+  }: requestTypes): Promise<void> {
     if (!this.shouldUseLocalStorage) return;
-    let localValue = this.get();
+    let localValue = await this.get();
     if (!localValue) {
       this.core.InternalLogger.log(
         "LocalStorage: Local value is null in addToRequest."
       );
-      this.resetLocalValue();
+      await this.resetLocalValue();
       // Resets and pushes first log.
       localValue = {
         logPool: [],
         requests: [{ res, status, ts, guid }],
         lastLogUpdate: 0,
       };
-      this.set(localValue);
+      await this.set(localValue);
       return;
     }
     localValue.requests.push({ res, status, ts, guid });
-    this.set(localValue);
+    await this.set(localValue);
   }
 
-  public getLocalLogs(): logTypes[] | null {
+  public async getLocalLogs(): Promise<logTypes[] | null> {
     if (!this.shouldUseLocalStorage) return null;
-    let localValue = this.get();
+    let localValue = await this.get();
     if (!localValue) {
       this.core.InternalLogger.log(
         "LocalStorage: Local value is null in getLocalLogs."
       );
-      return this.resetLocalValue().logPool;
+      const { logPool } = await this.resetLocalValue();
+      return logPool;
     }
     return localValue?.logPool;
   }
 
-  public getLocalRequests(): requestTypes[] | null {
+  public async getLocalRequests(): Promise<requestTypes[] | null> {
     if (!this.shouldUseLocalStorage) return null;
-    let localValue = this.get();
+    let localValue = await this.get();
     if (!localValue) {
       this.core.InternalLogger.log(
         "LocalStorage: Local value is null in getLocalRequests."
       );
-      return this.resetLocalValue().requests;
+      const { requests } = await this.resetLocalValue();
+      return requests;
     }
     return localValue?.requests;
   }
 
-  public getLocalUser(): string | null {
+  public async getLocalUser(): Promise<string | null> {
     if (!this.shouldUseLocalStorage) return null;
-    let localValue = this.get();
+    let localValue = await this.get();
     if (!localValue) {
       this.core.InternalLogger.log(
         "LocalStorage: Local value is null in getLocalUserData."
@@ -290,7 +349,7 @@ export class LocalStorage {
     return localValue?.userData?.user || null;
   }
 
-  public resetLocalValue(): LocalStorageTypes {
+  public async resetLocalValue(): Promise<LocalStorageTypes> {
     this.core.InternalLogger.log(
       "LocalStorage: Resetting local value in resetLocalValue."
     );
@@ -299,28 +358,28 @@ export class LocalStorage {
       requests: [],
       lastLogUpdate: 0,
     };
-    this.set(val);
+    await this.set(val);
     return val;
   }
 
-  public setAPIValues(value: APIValues): void {
+  public async setAPIValues(value: APIValues): Promise<void> {
     if (!this.shouldUseLocalStorage) return;
-    let localValue = this.get();
+    let localValue = await this.get();
     if (!localValue) {
       this.core.InternalLogger.log(
         "LocalStorage: Local value is null in setAPIValue."
       );
       this.resetLocalValue();
-      localValue = this.get();
+      localValue = await this.get();
       return;
     }
     localValue.API = value;
     this.set(localValue);
   }
 
-  public getAPIValues(): APIValues | null {
+  public async getAPIValues(): Promise<APIValues | null> {
     if (!this.shouldUseLocalStorage) return null;
-    let localValue = this.get();
+    let localValue = await this.get();
     if (!localValue) {
       this.core.InternalLogger.log(
         "LocalStorage: Local value is null in getAPIValue."
@@ -330,21 +389,21 @@ export class LocalStorage {
     return localValue.API || null;
   }
 
-  public setUser(user: string): void {
+  public async setUser(user: string): Promise<void> {
     if (!this.shouldUseLocalStorage) return;
-    let localValue = this.get();
+    let localValue = await this.get();
     if (!localValue) {
       this.core.InternalLogger.log(
         "LocalStorage: Local value is null in setUser."
       );
-      this.resetLocalValue();
-      localValue = this.get();
+      await this.resetLocalValue();
+      localValue = await this.get();
       return;
     }
     if (!localValue.userData) {
       localValue.userData = {};
     }
     localValue.userData.user = user;
-    this.set(localValue);
+    await this.set(localValue);
   }
 }

@@ -38,6 +38,7 @@ const defaultOptions = {
   // NexysOptions
   localStorage: {
     useLocalStorage: true,
+    useAdapter: false,
     cryption: true,
     key: "__nex__",
     testKey: "__nex-t__",
@@ -80,6 +81,7 @@ export class Core {
   _config: configTypes | null = null;
   //_internalMetrics: any = [];
   _APIValues: APIValues | null = null;
+  _useLocalStorageAdapter: boolean = false;
 
   // Core
   constructor(API_KEY: string, options?: NexysOptions) {
@@ -121,6 +123,11 @@ export class Core {
         ? this._ignoreTypeSize
         : options?.ignoreTypeSize;
 
+    this._useLocalStorageAdapter =
+      typeof options?.localStorage?.useAdapter == "undefined"
+        ? this._useLocalStorageAdapter
+        : options?.localStorage?.useAdapter;
+
     if (!this._apiKey) throw new Error("NexysCore: API_KEY is not defined");
     if (!this._options.appName)
       throw new Error(
@@ -130,19 +137,14 @@ export class Core {
     this.InternalLogger = new InternalLogger({
       active: this._options?.debug ?? false,
     });
-
     this.LogPool = new LogPool(this);
-
     this.Events = new Events(this);
-
     this.API = new API(this, {
       server: this._server,
       apiKey: this._apiKey,
       appName: this._options.appName,
     });
-
     this.Device = new Device(this);
-
     this.LocalStorage = new LocalStorage(this, {
       key: this._options.localStorage?.key ?? defaultOptions.localStorage?.key,
       testKey:
@@ -156,9 +158,12 @@ export class Core {
         defaultOptions.localStorage?.useLocalStorage,
     });
 
-    loadFromLocalStorage(this);
+    Promise.resolve(this.LocalStorage.setup()).then(async () => {
+      await loadFromLocalStorage(this);
+      checkVersion(this);
+    });
+
     this._initialized = true;
-    checkVersion(this);
 
     if (!this._isClient) {
       this.InternalLogger.log(
@@ -229,10 +234,13 @@ export class Core {
    * @returns {void} - Returns nothing.
    *
    */
-  public log(data: logTypes["data"], options?: logTypes["options"]) {
+  public async log(
+    data: logTypes["data"],
+    options?: logTypes["options"]
+  ): Promise<void> {
     this._checkInitialized();
     const e = new Error();
-    this.LogPool.push({
+    await this.LogPool.push({
       data,
       options,
       stack: e.stack,
@@ -267,13 +275,13 @@ export class Core {
    * @returns {void} - Returns nothing.
    *
    */
-  public error(
+  public async error(
     data: errorLogTypes["data"],
     options?: logTypes["options"]
-  ): void {
+  ): Promise<void> {
     this._checkInitialized();
     const e = new Error();
-    this.LogPool.push({
+    await this.LogPool.push({
       data,
       options: {
         ...options,
@@ -308,16 +316,16 @@ export class Core {
    * @returns {void} - Returns nothing.
    *
    */
-  public metric(metric: {
+  public async metric(metric: {
     id: string;
     label: string;
     name: string;
     startTime: number;
     value: number;
-  }): void {
+  }): Promise<void> {
     this._checkInitialized();
     const e = new Error();
-    this.LogPool.push({
+    await this.LogPool.push({
       data: metric,
       options: {
         type: "METRIC",
@@ -364,24 +372,15 @@ export class Core {
     (() =>
       typeof config == "function" &&
       config({
-        setUser: (user: string) => {
+        setUser: async (user: string) => {
           this._config = {
             ...this._config,
             user,
           };
-          this.LocalStorage.setUser(user);
+          await this.LocalStorage.setUser(user);
           this.InternalLogger.log("NexysCore: User configured", user);
         },
-        /*
-        setClient: (client: string) => {
-          this._config = {
-            ...this._config,
-            client,
-          };
-          this.InternalLogger.log("NexysCore: Client configured", client);
-        },
-        */
-        setAppVersion: (appVersion: string) => {
+        setAppVersion: async (appVersion: string) => {
           this._config = {
             ...this._config,
             appVersion,
@@ -406,10 +405,10 @@ export class Core {
    * @returns {void} - Returns nothing.
    *
    */
-  public clear(): void {
+  public async clear(): Promise<void> {
     this._checkInitialized();
-    this.LogPool.clearLogs();
-    this.LogPool.clearRequests();
+    await this.LogPool.clearLogs();
+    await this.LogPool.clearRequests();
   }
 
   /**

@@ -23,6 +23,16 @@ function App() {
         click to log
       </button>
       <button
+        onClick={async () => {
+          nexys.configure((config) => {
+            config.setUser("@testt");
+          });
+          //console.log("Client return:", log);
+        }}
+      >
+        set user
+      </button>
+      <button
         onClick={() => {
           throw new Error("DACIA");
         }}

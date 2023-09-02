@@ -32,13 +32,14 @@ export interface NexysOptions {
     };
     localStorage?: {
         useLocalStorage?: boolean;
+        useAdapter?: boolean;
+        adapter?: LocalStorageAdapters;
         cryption?: boolean;
         key?: string;
         testKey?: string;
         successRequestsMaxSize?: number;
         failedRequestsMaxSize?: number;
     };
-    _i_EXTREMELY_SECRET_DO_NOT_USE_PLEASE?: boolean;
 }
 export type logActionTypes = string;
 export type logOptionTypes = "DEBUG" | "INFO" | "WARNING" | "ERROR" | "FATAL" | "AUTO:ERROR" | "AUTO:UNHANDLEDREJECTION" | "METRIC";
@@ -115,5 +116,11 @@ declare global {
     interface Window {
         nexys: Core;
     }
+}
+export interface LocalStorageAdapters {
+    getItem: (key: string) => Promise<any>;
+    setItem: (key: string, value: any) => Promise<void>;
+    clear: () => Promise<void>;
+    removeItem: (key: string) => Promise<void>;
 }
 //# sourceMappingURL=types.d.ts.map

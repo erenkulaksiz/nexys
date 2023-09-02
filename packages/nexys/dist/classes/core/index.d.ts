@@ -46,6 +46,7 @@ export declare class Core {
     _ignoreTypeSize: number;
     _config: configTypes | null;
     _APIValues: APIValues | null;
+    _useLocalStorageAdapter: boolean;
     constructor(API_KEY: string, options?: NexysOptions);
     private _checkInitialized;
     /**
@@ -73,7 +74,7 @@ export declare class Core {
      * @returns {void} - Returns nothing.
      *
      */
-    log(data: logTypes["data"], options?: logTypes["options"]): void;
+    log(data: logTypes["data"], options?: logTypes["options"]): Promise<void>;
     /**
      * Adds error request to logPool in Nexys instance.
      *
@@ -99,7 +100,7 @@ export declare class Core {
      * @returns {void} - Returns nothing.
      *
      */
-    error(data: errorLogTypes["data"], options?: logTypes["options"]): void;
+    error(data: errorLogTypes["data"], options?: logTypes["options"]): Promise<void>;
     /**
      * `NextJS only method`
      *  Collect metric data for NextJS for performance measuring
@@ -128,7 +129,7 @@ export declare class Core {
         name: string;
         startTime: number;
         value: number;
-    }): void;
+    }): Promise<void>;
     /**
      * Configures Nexys instance. All logs sent to Nexys will use these configurations.
      * This method will help you trough identifying your logs where came from like which user or which device.
@@ -172,7 +173,7 @@ export declare class Core {
      * @returns {void} - Returns nothing.
      *
      */
-    clear(): void;
+    clear(): Promise<void>;
     /**
      * This method will force a request to Nexys.
      * Use this method if you want to send all logs to Nexys immediately.

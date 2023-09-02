@@ -83,17 +83,17 @@ export class API {
     return this.sendRequest({
       data,
     })
-      .then((res) => {
+      .then(async (res) => {
         const data = res.json.data;
-        this.core.LocalStorage.setAPIValues(data);
+        await this.core.LocalStorage.setAPIValues(data);
         this.core._APIValues = data;
         this.core.InternalLogger.log("API: Successful request", res);
         this.core.Events.on.request.success?.({ res, json: res.json });
-        this.core.LogPool.clearRequests();
-        this.core.LogPool.clearLogs();
+        await this.core.LogPool.clearRequests();
+        await this.core.LogPool.clearLogs();
         return true;
       })
-      .catch((err) => {
+      .catch(async (err) => {
         this.core.InternalLogger.error("API: Request failed.", err);
         this.core.Events.on.request.error?.(err);
         if (err?.message == "API:FAILED:400:api-key") {
@@ -101,9 +101,12 @@ export class API {
             "API: Your API key is not valid. Please make sure you entered correct credentials."
           );
         }
-        if (err?.message !== "API:ALREADY_SENDING") {
+        if (
+          err?.message != "API:FAILED:400:api-key" &&
+          err?.message != "API:ALREADY_SENDING"
+        ) {
           this.core.API.requestCompleted();
-          this.core.LogPool.pushRequest({
+          await this.core.LogPool.pushRequest({
             res: {
               message: err.message,
               stack: err.stack,

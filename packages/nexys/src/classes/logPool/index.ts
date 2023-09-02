@@ -57,7 +57,14 @@ export class LogPool {
     this.process();
   }
 
-  public push({ data, options, ts, guid, path, stack }: logTypes): void {
+  public async push({
+    data,
+    options,
+    ts,
+    guid,
+    path,
+    stack,
+  }: logTypes): Promise<void> {
     const log = {
       data,
       options,
@@ -69,10 +76,15 @@ export class LogPool {
     this.logs.push(log);
     this.process();
     this.core.Events.on.logAdd?.(log);
-    this.core.LocalStorage.addToLogPool(log);
+    await this.core.LocalStorage.addToLogPool(log);
   }
 
-  public pushRequest({ res, status, ts, guid }: requestTypes): void {
+  public async pushRequest({
+    res,
+    status,
+    ts,
+    guid,
+  }: requestTypes): Promise<void> {
     const req = {
       res,
       status,
@@ -85,19 +97,19 @@ export class LogPool {
     );
     this.requests.push(req);
     this.core.Events.on.requestAdd?.(req);
-    this.core.LocalStorage.addToRequest(req);
+    await this.core.LocalStorage.addToRequest(req);
   }
 
-  public clearLogs(): void {
+  public async clearLogs(): Promise<void> {
     this.logs = [];
-    this.core.LocalStorage.clearLogPool();
+    await this.core.LocalStorage.clearLogPool();
     this.core.Events.on.logsClear?.();
     this.core.InternalLogger.log("LogPool: Cleared logs.");
   }
 
-  public clearRequests(): void {
+  public async clearRequests(): Promise<void> {
     this.requests = [];
-    this.core.LocalStorage.clearRequests();
+    await this.core.LocalStorage.clearRequests();
     this.core.Events.on.requestsClear?.();
     this.core.InternalLogger.log("LogPool: Cleared requests.");
   }
@@ -105,7 +117,7 @@ export class LogPool {
   /**
    * Process internal data to determine whether or not we should need to send data to the server.
    */
-  public process(): void {
+  public async process(): Promise<void> {
     this.core.InternalLogger.log("LogPool: Processing logs...");
 
     if (this.logs.length > 0 && this.core._logPoolSize != 0) {
@@ -123,7 +135,7 @@ export class LogPool {
             this.core.InternalLogger.log(
               `LogPool: sendAllOnType is array and log includes ${log.options.type} type.`
             );
-            this.sendAll();
+            await this.sendAll();
             break;
           }
         }
@@ -137,7 +149,7 @@ export class LogPool {
             this.core.InternalLogger.log(
               `LogPool: sendAllOnType is string and log is ${log.options.type} type.`
             );
-            this.sendAll();
+            await this.sendAll();
             break;
           }
         }
@@ -195,7 +207,7 @@ export class LogPool {
   /**
    * Sends all data on Nexys to the server.
    */
-  public async sendAll() {
+  public async sendAll(): Promise<void> {
     let _start: number | null = null,
       _end: number | null = null;
     if (this.core._isClient) _start = performance.now();
@@ -224,12 +236,12 @@ export class LogPool {
       CollectData
     );
 
-    await this.core.API.sendData(CollectData);
+    const sent = await this.core.API.sendData(CollectData);
 
     if (this.core._isClient) _end = performance.now();
 
-    if (_start && _end) {
-      this.core.LogPool.push({
+    if (_start && _end && sent) {
+      await this.core.LogPool.push({
         data: {
           type: "LOGPOOL:SENDALL",
           diff: _end - _start,

@@ -24,14 +24,14 @@ export declare class LogPool {
     constructor(core: Core);
     setLogs(logs: logTypes[]): void;
     setRequests(requests: requestTypes[]): void;
-    push({ data, options, ts, guid, path, stack }: logTypes): void;
-    pushRequest({ res, status, ts, guid }: requestTypes): void;
-    clearLogs(): void;
-    clearRequests(): void;
+    push({ data, options, ts, guid, path, stack, }: logTypes): Promise<void>;
+    pushRequest({ res, status, ts, guid, }: requestTypes): Promise<void>;
+    clearLogs(): Promise<void>;
+    clearRequests(): Promise<void>;
     /**
      * Process internal data to determine whether or not we should need to send data to the server.
      */
-    process(): void;
+    process(): Promise<void>;
     /**
      * Sends all data on Nexys to the server.
      */

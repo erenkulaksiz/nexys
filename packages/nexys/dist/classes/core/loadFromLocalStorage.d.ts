@@ -15,5 +15,5 @@
  * limitations under the License.
  */
 import { Core } from ".";
-export default function loadFromLocalStorage(core: Core): void;
+export default function loadFromLocalStorage(core: Core): Promise<void>;
 //# sourceMappingURL=loadFromLocalStorage.d.ts.map
