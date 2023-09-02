@@ -1,6 +1,6 @@
 {
   "name": "nexys",
-  "version": "1.0.35",
+  "version": "1.0.36",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "license": "Apache 2.0",
@@ -28,11 +28,12 @@
     "lint": "eslint \"**/*.ts*\"",
     "build": "tsc",
     "dev": "tsc-watch --onSuccess tsc",
-    "build:all": "npm run build:es2015 && npm run build:esm && npm run build:cjs && npm run build:umd && npm run build:umd:min",
+    "build:all": "npm run build:es2015 && npm run build:esm && npm run build:cjs && npm run build:umd && npm run build:umd-minify",
     "build:es2015": "tsc --module es2015 --target es2015 --outDir build/es2015",
     "build:esm": "tsc --module es2015 --target es5 --outDir build/esm",
     "build:cjs": "tsc --module commonjs --target es5 --outDir build/cjs",
-    "build:umd": "rollup dist/index.js --file dist/bundle.js --format umd --name nexys"
+    "build:umd": "rollup dist/index.js --file bundle.js --format umd --name nexys",
+    "build:umd-minify": "rollup dist/index.js --file bundle.js --format umd --name nexys && uglifyjs bundle.js --output dist/bundle.min.js"
   },
   "devDependencies": {
     "@types/node": "^18.11.9",

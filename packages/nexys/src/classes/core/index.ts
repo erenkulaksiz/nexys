@@ -24,6 +24,7 @@ import { Device } from "./../device/index.js";
 import { server, version, isClient, guid } from "../../utils/index.js";
 import loadFromLocalStorage from "./loadFromLocalStorage.js";
 import getPagePath from "../../utils/getPagePath.js";
+import checkVersion from "./checkVersion.js";
 import type {
   NexysOptions,
   logTypes,
@@ -31,14 +32,15 @@ import type {
   configFunctions,
   errorLogTypes,
 } from "../../types";
+import type { APIValues } from "../localStorage/types.js";
 
 const defaultOptions = {
   // NexysOptions
   localStorage: {
     useLocalStorage: true,
     cryption: true,
-    key: "__nexysLogPool__",
-    testKey: "__nexysTest__",
+    key: "__nex__",
+    testKey: "__nex-t__",
   },
   errors: {
     allowAutomaticHandling: true, // Used for automatic exception handling.
@@ -46,13 +48,15 @@ const defaultOptions = {
 };
 
 export class Core {
+  // Classes
   InternalLogger: InternalLogger;
   LogPool: LogPool;
   Events: Events;
   API: API;
   Device: Device;
   LocalStorage: LocalStorage;
-
+  // Variables
+  _initialized: boolean = false;
   _processAvailable: boolean = typeof process != "undefined";
   _apiKey: string;
   _version: string = version;
@@ -74,7 +78,8 @@ export class Core {
   _ignoreType: NexysOptions["ignoreType"] = "METRIC";
   _ignoreTypeSize: number = 50;
   _config: configTypes | null = null;
-  _internalMetrics: any = [];
+  //_internalMetrics: any = [];
+  _APIValues: APIValues | null = null;
 
   // Core
   constructor(API_KEY: string, options?: NexysOptions) {
@@ -122,28 +127,22 @@ export class Core {
         "NexysCore: Please specify appName in constructor options"
       );
 
-    // Internal Logger
     this.InternalLogger = new InternalLogger({
       active: this._options?.debug ?? false,
     });
 
-    // LogPool
     this.LogPool = new LogPool(this);
 
-    // Event Handler
     this.Events = new Events(this);
 
-    // API
     this.API = new API(this, {
       server: this._server,
       apiKey: this._apiKey,
       appName: this._options.appName,
     });
 
-    // Device
     this.Device = new Device(this);
 
-    // LocalStorage
     this.LocalStorage = new LocalStorage(this, {
       key: this._options.localStorage?.key ?? defaultOptions.localStorage?.key,
       testKey:
@@ -158,6 +157,8 @@ export class Core {
     });
 
     loadFromLocalStorage(this);
+    this._initialized = true;
+    checkVersion(this);
 
     if (!this._isClient) {
       this.InternalLogger.log(
@@ -196,6 +197,13 @@ export class Core {
     }
   }
 
+  private _checkInitialized(): void {
+    if (!this._initialized)
+      this.InternalLogger.error(
+        "NexysCore: You need to initialize NexysCore before using it. Probably you forgot to call new Nexys() or you are on wrong version."
+      );
+  }
+
   /**
    * Adds log request to logPool in Nexys instance.
    *
@@ -217,10 +225,12 @@ export class Core {
    * @param options.level - `Optional` - Log level
    * @param options.tags - `Optional` - Log tags
    * @param options.action - `Optional` - Log action
-   *
    * @public
+   * @returns {void} - Returns nothing.
+   *
    */
   public log(data: logTypes["data"], options?: logTypes["options"]) {
+    this._checkInitialized();
     const e = new Error();
     this.LogPool.push({
       data,
@@ -253,10 +263,15 @@ export class Core {
    * @param options.level - `Optional` - Log level
    * @param options.tags - `Optional` - Log tags
    * @param options.action - `Optional` - Log action
-   *
    * @public
+   * @returns {void} - Returns nothing.
+   *
    */
-  public error(data: errorLogTypes["data"], options?: logTypes["options"]) {
+  public error(
+    data: errorLogTypes["data"],
+    options?: logTypes["options"]
+  ): void {
+    this._checkInitialized();
     const e = new Error();
     this.LogPool.push({
       data,
@@ -289,6 +304,9 @@ export class Core {
    * ```
    *
    * @param metric Metric data that you get from calling reportWebVitals in NextJS
+   * @public
+   * @returns {void} - Returns nothing.
+   *
    */
   public metric(metric: {
     id: string;
@@ -296,7 +314,8 @@ export class Core {
     name: string;
     startTime: number;
     value: number;
-  }) {
+  }): void {
+    this._checkInitialized();
     const e = new Error();
     this.LogPool.push({
       data: metric,
@@ -332,8 +351,16 @@ export class Core {
    *  config.setAppVersion("1.0.0");
    * });
    * ```
+   *
+   * @param config - Config functions
+   * @param config.setUser - Set user
+   * @param config.setAppVersion - Set application version
+   * @public
+   * @returns {void} - Returns nothing.
+   *
    */
-  public configure(config: (config: configFunctions) => void) {
+  public configure(config: (config: configFunctions) => void): void {
+    this._checkInitialized();
     (() =>
       typeof config == "function" &&
       config({
@@ -342,8 +369,10 @@ export class Core {
             ...this._config,
             user,
           };
+          this.LocalStorage.setUser(user);
           this.InternalLogger.log("NexysCore: User configured", user);
         },
+        /*
         setClient: (client: string) => {
           this._config = {
             ...this._config,
@@ -351,6 +380,7 @@ export class Core {
           };
           this.InternalLogger.log("NexysCore: Client configured", client);
         },
+        */
         setAppVersion: (appVersion: string) => {
           this._config = {
             ...this._config,
@@ -371,8 +401,13 @@ export class Core {
    * ```javascript
    * nexys.clear();
    * ```
+   *
+   * @public
+   * @returns {void} - Returns nothing.
+   *
    */
-  public clear() {
+  public clear(): void {
+    this._checkInitialized();
     this.LogPool.clearLogs();
     this.LogPool.clearRequests();
   }
@@ -386,8 +421,49 @@ export class Core {
    * ```javascript
    * nexys.forceRequest();
    * ```
+   *
+   * @async - This method is async.
+   * @public
+   * @returns {Promise<void>} - Returns nothing.
+   *
    */
-  public async forceRequest() {
+  public async forceRequest(): Promise<void> {
+    this._checkInitialized();
     await this.LogPool.sendAll();
+  }
+
+  /**
+   * This method will return Nexys library version in string.
+   *
+   * @example
+   * ```javascript
+   * nexys.getLibraryVersion();
+   * ```
+   *
+   * @public
+   * @returns {string} - Returns library version.
+   *
+   */
+  public getLibraryVersion(): string {
+    this._checkInitialized();
+    return this._version;
+  }
+
+  /**
+   * This method will return configured user.
+   * If user is not configured, it will return null.
+   *
+   * @example
+   * ```javascript
+   * nexys.getUser();
+   * ```
+   *
+   * @public
+   * @returns {string | null} - Returns user if configured, otherwise null.
+   *
+   */
+  public getUser(): string | null {
+    this._checkInitialized();
+    return this._config?.user ?? null;
   }
 }

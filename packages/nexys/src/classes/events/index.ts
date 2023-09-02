@@ -78,9 +78,11 @@ export class Events {
             return true;
           }
         );
+        /*
         window.addEventListener("unload", (event: BeforeUnloadEvent) => {
           this.core.InternalLogger.log("Events: Received unload event", event);
         });
+        */
         this._bindedErrorEvent = true;
         this.core.InternalLogger.log("Events: Binded error events.");
       } catch (err) {

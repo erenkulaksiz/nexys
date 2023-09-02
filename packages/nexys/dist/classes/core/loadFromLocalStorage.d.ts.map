@@ -1,1 +1,1 @@
-{"version":3,"file":"loadFromLocalStorage.d.ts","sourceRoot":"","sources":["../../../src/classes/core/loadFromLocalStorage.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;;GAeG;AAEH,OAAO,EAAE,IAAI,EAAE,MAAM,GAAG,CAAC;AAEzB,MAAM,CAAC,OAAO,UAAU,oBAAoB,CAAC,IAAI,EAAE,IAAI,QA0CtD"}
+{"version":3,"file":"loadFromLocalStorage.d.ts","sourceRoot":"","sources":["../../../src/classes/core/loadFromLocalStorage.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;;GAeG;AAEH,OAAO,EAAE,IAAI,EAAE,MAAM,GAAG,CAAC;AAGzB,MAAM,CAAC,OAAO,UAAU,oBAAoB,CAAC,IAAI,EAAE,IAAI,QAsEtD"}

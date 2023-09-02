@@ -61,6 +61,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+import { guid } from "../../utils/index.js";
 var API = /** @class */ (function () {
     function API(core, _a) {
         var server = _a.server, apiKey = _a.apiKey, appName = _a.appName;
@@ -124,6 +125,48 @@ var API = /** @class */ (function () {
                             }
                         });
                     }); })];
+            });
+        });
+    };
+    API.prototype.sendData = function (data) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                return [2 /*return*/, this.sendRequest({
+                        data: data,
+                    })
+                        .then(function (res) {
+                        var _a, _b;
+                        var data = res.json.data;
+                        _this.core.LocalStorage.setAPIValues(data);
+                        _this.core._APIValues = data;
+                        _this.core.InternalLogger.log("API: Successful request", res);
+                        (_b = (_a = _this.core.Events.on.request).success) === null || _b === void 0 ? void 0 : _b.call(_a, { res: res, json: res.json });
+                        _this.core.LogPool.clearRequests();
+                        _this.core.LogPool.clearLogs();
+                        return true;
+                    })
+                        .catch(function (err) {
+                        var _a, _b;
+                        _this.core.InternalLogger.error("API: Request failed.", err);
+                        (_b = (_a = _this.core.Events.on.request).error) === null || _b === void 0 ? void 0 : _b.call(_a, err);
+                        if ((err === null || err === void 0 ? void 0 : err.message) == "API:FAILED:400:api-key") {
+                            _this.core.InternalLogger.error("API: Your API key is not valid. Please make sure you entered correct credentials.");
+                        }
+                        if ((err === null || err === void 0 ? void 0 : err.message) !== "API:ALREADY_SENDING") {
+                            _this.core.API.requestCompleted();
+                            _this.core.LogPool.pushRequest({
+                                res: {
+                                    message: err.message,
+                                    stack: err.stack,
+                                },
+                                status: "failed",
+                                ts: new Date().getTime(),
+                                guid: guid(),
+                            });
+                        }
+                        return false;
+                    })];
             });
         });
     };

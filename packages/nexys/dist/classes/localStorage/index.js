@@ -26,8 +26,8 @@ var LocalStorage = /** @class */ (function () {
         this.isActive = false;
         this.isEncrypted = false;
         this.isAvailable = false;
-        this.key = "__nexys__";
-        this.testKey = "__nexysTest__";
+        this.key = "__nex__";
+        this.testKey = "__nex-t__";
         this.shouldUseLocalStorage = false;
         this.core = core;
         this._localStorage = this.core._isClient ? window === null || window === void 0 ? void 0 : window.localStorage : null;
@@ -252,6 +252,17 @@ var LocalStorage = /** @class */ (function () {
         }
         return localValue === null || localValue === void 0 ? void 0 : localValue.requests;
     };
+    LocalStorage.prototype.getLocalUser = function () {
+        var _a;
+        if (!this.shouldUseLocalStorage)
+            return null;
+        var localValue = this.get();
+        if (!localValue) {
+            this.core.InternalLogger.log("LocalStorage: Local value is null in getLocalUserData.");
+            return null;
+        }
+        return ((_a = localValue === null || localValue === void 0 ? void 0 : localValue.userData) === null || _a === void 0 ? void 0 : _a.user) || null;
+    };
     LocalStorage.prototype.resetLocalValue = function () {
         this.core.InternalLogger.log("LocalStorage: Resetting local value in resetLocalValue.");
         var val = {
@@ -273,6 +284,32 @@ var LocalStorage = /** @class */ (function () {
             return;
         }
         localValue.API = value;
+        this.set(localValue);
+    };
+    LocalStorage.prototype.getAPIValues = function () {
+        if (!this.shouldUseLocalStorage)
+            return null;
+        var localValue = this.get();
+        if (!localValue) {
+            this.core.InternalLogger.log("LocalStorage: Local value is null in getAPIValue.");
+            return null;
+        }
+        return localValue.API || null;
+    };
+    LocalStorage.prototype.setUser = function (user) {
+        if (!this.shouldUseLocalStorage)
+            return;
+        var localValue = this.get();
+        if (!localValue) {
+            this.core.InternalLogger.log("LocalStorage: Local value is null in setUser.");
+            this.resetLocalValue();
+            localValue = this.get();
+            return;
+        }
+        if (!localValue.userData) {
+            localValue.userData = {};
+        }
+        localValue.userData.user = user;
         this.set(localValue);
     };
     return LocalStorage;

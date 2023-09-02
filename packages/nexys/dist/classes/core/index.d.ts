@@ -21,6 +21,7 @@ import { LocalStorage } from "./../localStorage/index.js";
 import { LogPool } from "./../logPool/index.js";
 import { Device } from "./../device/index.js";
 import type { NexysOptions, logTypes, configTypes, configFunctions, errorLogTypes } from "../../types";
+import type { APIValues } from "../localStorage/types.js";
 export declare class Core {
     InternalLogger: InternalLogger;
     LogPool: LogPool;
@@ -28,6 +29,7 @@ export declare class Core {
     API: API;
     Device: Device;
     LocalStorage: LocalStorage;
+    _initialized: boolean;
     _processAvailable: boolean;
     _apiKey: string;
     _version: string;
@@ -43,8 +45,9 @@ export declare class Core {
     _ignoreType: NexysOptions["ignoreType"];
     _ignoreTypeSize: number;
     _config: configTypes | null;
-    _internalMetrics: any;
+    _APIValues: APIValues | null;
     constructor(API_KEY: string, options?: NexysOptions);
+    private _checkInitialized;
     /**
      * Adds log request to logPool in Nexys instance.
      *
@@ -66,8 +69,9 @@ export declare class Core {
      * @param options.level - `Optional` - Log level
      * @param options.tags - `Optional` - Log tags
      * @param options.action - `Optional` - Log action
-     *
      * @public
+     * @returns {void} - Returns nothing.
+     *
      */
     log(data: logTypes["data"], options?: logTypes["options"]): void;
     /**
@@ -91,8 +95,9 @@ export declare class Core {
      * @param options.level - `Optional` - Log level
      * @param options.tags - `Optional` - Log tags
      * @param options.action - `Optional` - Log action
-     *
      * @public
+     * @returns {void} - Returns nothing.
+     *
      */
     error(data: errorLogTypes["data"], options?: logTypes["options"]): void;
     /**
@@ -113,6 +118,9 @@ export declare class Core {
      * ```
      *
      * @param metric Metric data that you get from calling reportWebVitals in NextJS
+     * @public
+     * @returns {void} - Returns nothing.
+     *
      */
     metric(metric: {
         id: string;
@@ -143,6 +151,13 @@ export declare class Core {
      *  config.setAppVersion("1.0.0");
      * });
      * ```
+     *
+     * @param config - Config functions
+     * @param config.setUser - Set user
+     * @param config.setAppVersion - Set application version
+     * @public
+     * @returns {void} - Returns nothing.
+     *
      */
     configure(config: (config: configFunctions) => void): void;
     /**
@@ -152,6 +167,10 @@ export declare class Core {
      * ```javascript
      * nexys.clear();
      * ```
+     *
+     * @public
+     * @returns {void} - Returns nothing.
+     *
      */
     clear(): void;
     /**
@@ -163,7 +182,39 @@ export declare class Core {
      * ```javascript
      * nexys.forceRequest();
      * ```
+     *
+     * @async - This method is async.
+     * @public
+     * @returns {Promise<void>} - Returns nothing.
+     *
      */
     forceRequest(): Promise<void>;
+    /**
+     * This method will return Nexys library version in string.
+     *
+     * @example
+     * ```javascript
+     * nexys.getLibraryVersion();
+     * ```
+     *
+     * @public
+     * @returns {string} - Returns library version.
+     *
+     */
+    getLibraryVersion(): string;
+    /**
+     * This method will return configured user.
+     * If user is not configured, it will return null.
+     *
+     * @example
+     * ```javascript
+     * nexys.getUser();
+     * ```
+     *
+     * @public
+     * @returns {string | null} - Returns user if configured, otherwise null.
+     *
+     */
+    getUser(): string | null;
 }
 //# sourceMappingURL=index.d.ts.map

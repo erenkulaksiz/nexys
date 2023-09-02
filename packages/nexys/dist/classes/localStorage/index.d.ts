@@ -16,7 +16,7 @@
  */
 import { Core } from "../core/index.js";
 import type { logTypes, requestTypes } from "../../types";
-import type { LocalStorageConstructorParams, LocalStorageTypes } from "./types";
+import type { APIValues, LocalStorageConstructorParams, LocalStorageTypes } from "./types";
 /**
  * @class LocalStorage
  * @description This class is used to handle internal localStorage operations.
@@ -43,7 +43,10 @@ export declare class LocalStorage {
     addToRequest({ res, status, ts, guid }: requestTypes): void;
     getLocalLogs(): logTypes[] | null;
     getLocalRequests(): requestTypes[] | null;
+    getLocalUser(): string | null;
     resetLocalValue(): LocalStorageTypes;
-    setAPIValues(value: any): void;
+    setAPIValues(value: APIValues): void;
+    getAPIValues(): APIValues | null;
+    setUser(user: string): void;
 }
 //# sourceMappingURL=index.d.ts.map

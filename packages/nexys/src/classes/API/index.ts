@@ -16,6 +16,7 @@
  */
 
 import { Core } from "../core/index.js";
+import { guid } from "../../utils/index.js";
 import type { APIConstructorParams, sendRequestParams } from "./types";
 
 export class API {
@@ -76,6 +77,44 @@ export class API {
 
       throw new Error(`API:FAILED:${res.status}:${json?.error}`);
     });
+  }
+
+  public async sendData(data: any): Promise<boolean> {
+    return this.sendRequest({
+      data,
+    })
+      .then((res) => {
+        const data = res.json.data;
+        this.core.LocalStorage.setAPIValues(data);
+        this.core._APIValues = data;
+        this.core.InternalLogger.log("API: Successful request", res);
+        this.core.Events.on.request.success?.({ res, json: res.json });
+        this.core.LogPool.clearRequests();
+        this.core.LogPool.clearLogs();
+        return true;
+      })
+      .catch((err) => {
+        this.core.InternalLogger.error("API: Request failed.", err);
+        this.core.Events.on.request.error?.(err);
+        if (err?.message == "API:FAILED:400:api-key") {
+          this.core.InternalLogger.error(
+            "API: Your API key is not valid. Please make sure you entered correct credentials."
+          );
+        }
+        if (err?.message !== "API:ALREADY_SENDING") {
+          this.core.API.requestCompleted();
+          this.core.LogPool.pushRequest({
+            res: {
+              message: err.message,
+              stack: err.stack,
+            },
+            status: "failed",
+            ts: new Date().getTime(),
+            guid: guid(),
+          });
+        }
+        return false;
+      });
   }
 
   public requestCompleted(): void {

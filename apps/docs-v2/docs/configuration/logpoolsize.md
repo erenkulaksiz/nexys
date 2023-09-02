@@ -14,7 +14,7 @@ LogPool is a buffer that stores your logs before sending them to the server. You
 | logPoolSize | `number` | 5 |
 
 ```javascript
-// This code will set logPoolSize to 10
+// This code will set logPoolSize to 10.
 const nexys = new Nexys("API_KEY", { 
     appName: "APP_NAME",
     // highlight-next-line 

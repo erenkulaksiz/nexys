@@ -24,6 +24,7 @@ export declare class API {
     _sendingRequest: boolean;
     constructor(core: Core, { server, apiKey, appName }: APIConstructorParams);
     sendRequest({ headers, data, }: sendRequestParams): Promise<Response | any>;
+    sendData(data: any): Promise<boolean>;
     requestCompleted(): void;
     private checkAvailability;
 }

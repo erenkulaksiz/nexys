@@ -20,8 +20,179 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
-    var __assign$5 = (undefined && undefined.__assign) || function () {
-        __assign$5 = Object.assign || function(t) {
+    /**
+     * Helper functions to encode/decode localStorage logs into Base64.
+     */
+    var Base64 = {
+        // private property
+        _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+        // public method for encoding
+        encode: function (input) {
+            var output = "";
+            var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+            var i = 0;
+            input = Base64._utf8_encode(input);
+            while (i < input.length) {
+                chr1 = input.charCodeAt(i++);
+                chr2 = input.charCodeAt(i++);
+                chr3 = input.charCodeAt(i++);
+                enc1 = chr1 >> 2;
+                enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+                enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+                enc4 = chr3 & 63;
+                if (isNaN(chr2)) {
+                    enc3 = enc4 = 64;
+                }
+                else if (isNaN(chr3)) {
+                    enc4 = 64;
+                }
+                output =
+                    output +
+                        Base64._keyStr.charAt(enc1) +
+                        Base64._keyStr.charAt(enc2) +
+                        Base64._keyStr.charAt(enc3) +
+                        Base64._keyStr.charAt(enc4);
+            }
+            return output;
+        },
+        // public method for decoding
+        decode: function (input) {
+            var output = "";
+            var chr1, chr2, chr3;
+            var enc1, enc2, enc3, enc4;
+            var i = 0;
+            input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+            while (i < input.length) {
+                enc1 = Base64._keyStr.indexOf(input.charAt(i++));
+                enc2 = Base64._keyStr.indexOf(input.charAt(i++));
+                enc3 = Base64._keyStr.indexOf(input.charAt(i++));
+                enc4 = Base64._keyStr.indexOf(input.charAt(i++));
+                chr1 = (enc1 << 2) | (enc2 >> 4);
+                chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+                chr3 = ((enc3 & 3) << 6) | enc4;
+                output = output + String.fromCharCode(chr1);
+                if (enc3 != 64) {
+                    output = output + String.fromCharCode(chr2);
+                }
+                if (enc4 != 64) {
+                    output = output + String.fromCharCode(chr3);
+                }
+            }
+            output = Base64._utf8_decode(output);
+            return output;
+        },
+        // private method for UTF-8 encoding
+        _utf8_encode: function (string) {
+            string = string.replace(/\r\n/g, "\n");
+            var utftext = "";
+            for (var n = 0; n < string.length; n++) {
+                var c = string.charCodeAt(n);
+                if (c < 128) {
+                    utftext += String.fromCharCode(c);
+                }
+                else if (c > 127 && c < 2048) {
+                    utftext += String.fromCharCode((c >> 6) | 192);
+                    utftext += String.fromCharCode((c & 63) | 128);
+                }
+                else {
+                    utftext += String.fromCharCode((c >> 12) | 224);
+                    utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+                    utftext += String.fromCharCode((c & 63) | 128);
+                }
+            }
+            return utftext;
+        },
+        // private method for UTF-8 decoding
+        _utf8_decode: function (utftext) {
+            var string = "";
+            var i = 0;
+            var c2;
+            var c3;
+            var c = (c2 = 0);
+            while (i < utftext.length) {
+                c = utftext.charCodeAt(i);
+                if (c < 128) {
+                    string += String.fromCharCode(c);
+                    i++;
+                }
+                else if (c > 191 && c < 224) {
+                    c2 = utftext.charCodeAt(i + 1);
+                    string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
+                    i += 2;
+                }
+                else {
+                    c2 = utftext.charCodeAt(i + 1);
+                    c3 = utftext.charCodeAt(i + 2);
+                    string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
+                    i += 3;
+                }
+            }
+            return string;
+        },
+    };
+
+    /**
+     * @license
+     * Copyright 2023 Eren Kulaksiz
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *   http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
+    function isClient() {
+        return typeof window === "undefined" ? false : true;
+    }
+
+    /**
+     * @license
+     * Copyright 2023 Eren Kulaksiz
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *   http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
+    function guid() {
+        function _p8(s) {
+            var p = (Math.random().toString(16) + "000000000").substr(2, 8);
+            return s ? "-" + p.substr(0, 4) + "-" + p.substr(4, 4) : p;
+        }
+        return _p8() + _p8(true) + _p8(true) + _p8();
+    }
+
+    /**
+     * @license
+     * Copyright 2023 Eren Kulaksiz
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *   http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
+    var __assign$6 = (undefined && undefined.__assign) || function () {
+        __assign$6 = Object.assign || function(t) {
             for (var s, i = 1, n = arguments.length; i < n; i++) {
                 s = arguments[i];
                 for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -29,7 +200,7 @@
             }
             return t;
         };
-        return __assign$5.apply(this, arguments);
+        return __assign$6.apply(this, arguments);
     };
     var __awaiter$4 = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
         function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -41,6 +212,199 @@
         });
     };
     var __generator$4 = (undefined && undefined.__generator) || function (thisArg, body) {
+        var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+        return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+        function verb(n) { return function (v) { return step([n, v]); }; }
+        function step(op) {
+            if (f) throw new TypeError("Generator is already executing.");
+            while (g && (g = 0, op[0] && (_ = 0)), _) try {
+                if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+                if (y = 0, t) op = [op[0] & 2, t.value];
+                switch (op[0]) {
+                    case 0: case 1: t = op; break;
+                    case 4: _.label++; return { value: op[1], done: false };
+                    case 5: _.label++; y = op[1]; op = [0]; continue;
+                    case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                    default:
+                        if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                        if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                        if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                        if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                        if (t[2]) _.ops.pop();
+                        _.trys.pop(); continue;
+                }
+                op = body.call(thisArg, _);
+            } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+            if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+        }
+    };
+    function collectNextJSData() {
+        if (isClient()) {
+            /* @ts-ignore next-line */
+            var __NEXT_DATA__ = window.__NEXT_DATA__, next = window.next;
+            if (__NEXT_DATA__) {
+                var buildId = __NEXT_DATA__.buildId, nextExport = __NEXT_DATA__.nextExport, page = __NEXT_DATA__.page, query = __NEXT_DATA__.query;
+                return {
+                    buildId: buildId,
+                    nextExport: nextExport,
+                    page: page,
+                    query: query,
+                    ver: next === null || next === void 0 ? void 0 : next.version,
+                };
+            }
+            return null;
+        }
+        return null;
+    }
+    function collectVercelEnv() {
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
+        if (isClient()) {
+            /* @ts-ignore next-line */
+            if (typeof process == "undefined")
+                return null;
+            if ((_a = process === null || process === void 0 ? void 0 : process.env) === null || _a === void 0 ? void 0 : _a.NEXT_PUBLIC_VERCEL_ENV) {
+                return {
+                    env: (_b = process === null || process === void 0 ? void 0 : process.env) === null || _b === void 0 ? void 0 : _b.NEXT_PUBLIC_VERCEL_ENV,
+                    url: (_c = process === null || process === void 0 ? void 0 : process.env) === null || _c === void 0 ? void 0 : _c.NEXT_PUBLIC_VERCEL_URL,
+                    git: (_d = process === null || process === void 0 ? void 0 : process.env) === null || _d === void 0 ? void 0 : _d.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF,
+                    gitCommitSha: (_e = process === null || process === void 0 ? void 0 : process.env) === null || _e === void 0 ? void 0 : _e.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA,
+                    gitProvider: (_f = process === null || process === void 0 ? void 0 : process.env) === null || _f === void 0 ? void 0 : _f.NEXT_PUBLIC_VERCEL_GIT_PROVIDER,
+                    gitRepoId: (_g = process === null || process === void 0 ? void 0 : process.env) === null || _g === void 0 ? void 0 : _g.NEXT_PUBLIC_VERCEL_GIT_REPO_ID,
+                    gitRepoOwner: (_h = process === null || process === void 0 ? void 0 : process.env) === null || _h === void 0 ? void 0 : _h.NEXT_PUBLIC_VERCEL_GIT_REPO_OWNER,
+                    gitRepoSlug: (_j = process === null || process === void 0 ? void 0 : process.env) === null || _j === void 0 ? void 0 : _j.NEXT_PUBLIC_VERCEL_GIT_REPO_SLUG,
+                    gitCommitMessage: (_k = process === null || process === void 0 ? void 0 : process.env) === null || _k === void 0 ? void 0 : _k.NEXT_PUBLIC_VERCEL_GIT_COMMIT_MESSAGE,
+                    gitCommitAuthorName: (_l = process === null || process === void 0 ? void 0 : process.env) === null || _l === void 0 ? void 0 : _l.NEXT_PUBLIC_VERCEL_GIT_COMMIT_AUTHOR_NAME,
+                    gitCommitAuthorLogin: (_m = process === null || process === void 0 ? void 0 : process.env) === null || _m === void 0 ? void 0 : _m.NEXT_PUBLIC_VERCEL_GIT_COMMIT_AUTHOR_LOGIN,
+                    gitPullRequestId: (_o = process === null || process === void 0 ? void 0 : process.env) === null || _o === void 0 ? void 0 : _o.NEXT_PUBLIC_VERCEL_GIT_PULL_REQUEST_ID,
+                };
+            }
+            return null;
+        }
+        return null;
+    }
+    function collectDOMData() {
+        if (isClient()) {
+            var root = document.getElementsByTagName("body")[0];
+            var allElements = root === null || root === void 0 ? void 0 : root.querySelectorAll("*").length;
+            return {
+                el: allElements,
+            };
+        }
+        return null;
+    }
+    function collectData(core) {
+        var _a;
+        return __awaiter$4(this, void 0, void 0, function () {
+            var config, deviceData, CollectData, nextJSData, vercelEnv, DOMData;
+            return __generator$4(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        config = core._config;
+                        deviceData = "disabled";
+                        if (!core._allowDeviceData) return [3 /*break*/, 2];
+                        return [4 /*yield*/, core.Device.getDeviceData().catch(function (err) { return null; })];
+                    case 1:
+                        deviceData =
+                            (_a = (_b.sent())) !== null && _a !== void 0 ? _a : "client-disabled";
+                        return [3 /*break*/, 3];
+                    case 2:
+                        deviceData = "disabled";
+                        _b.label = 3;
+                    case 3:
+                        CollectData = {
+                            deviceData: deviceData,
+                            package: {
+                                libraryName: libraryName,
+                                version: version,
+                            },
+                            options: __assign$6(__assign$6({}, core._options), { logPoolSize: core._logPoolSize, allowDeviceData: core._allowDeviceData, sendAllOnType: core._sendAllOnType, ignoreType: core._ignoreType, ignoreTypeSize: core._ignoreTypeSize }),
+                            env: {
+                                type: core._env,
+                                isClient: core._isClient,
+                            },
+                        };
+                        if (config) {
+                            CollectData = __assign$6(__assign$6({}, CollectData), { config: config });
+                        }
+                        nextJSData = collectNextJSData();
+                        if (nextJSData) {
+                            CollectData = __assign$6(__assign$6({}, CollectData), { env: __assign$6(__assign$6({}, CollectData.env), nextJSData) });
+                        }
+                        vercelEnv = collectVercelEnv();
+                        if (vercelEnv) {
+                            CollectData = __assign$6(__assign$6({}, CollectData), { env: __assign$6(__assign$6({}, CollectData.env), vercelEnv) });
+                        }
+                        if (core._isClient) {
+                            if (document && "getElementById" in document && core._allowElementData) {
+                                DOMData = collectDOMData();
+                                if (DOMData) {
+                                    CollectData = __assign$6(__assign$6({}, CollectData), { env: __assign$6(__assign$6({}, CollectData.env), DOMData) });
+                                }
+                            }
+                        }
+                        return [2 /*return*/, CollectData];
+                }
+            });
+        });
+    }
+
+    /**
+     * @license
+     * Copyright 2023 Eren Kulaksiz
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *   http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
+    var server = "https://dash.nexys.app";
+    var libraryName = "Nexys";
+    var version = "1.0.36";
+
+    /**
+     * @license
+     * Copyright 2023 Eren Kulaksiz
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *   http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
+    var __assign$5 = (undefined && undefined.__assign) || function () {
+        __assign$5 = Object.assign || function(t) {
+            for (var s, i = 1, n = arguments.length; i < n; i++) {
+                s = arguments[i];
+                for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                    t[p] = s[p];
+            }
+            return t;
+        };
+        return __assign$5.apply(this, arguments);
+    };
+    var __awaiter$3 = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+        function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+        return new (P || (P = Promise))(function (resolve, reject) {
+            function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+            function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+            function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+            step((generator = generator.apply(thisArg, _arguments || [])).next());
+        });
+    };
+    var __generator$3 = (undefined && undefined.__generator) || function (thisArg, body) {
         var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
         return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
         function verb(n) { return function (v) { return step([n, v]); }; }
@@ -82,10 +446,10 @@
         API.prototype.sendRequest = function (_a) {
             var _b, _c;
             var headers = _a.headers, data = _a.data;
-            return __awaiter$4(this, void 0, void 0, function () {
+            return __awaiter$3(this, void 0, void 0, function () {
                 var server;
                 var _this = this;
-                return __generator$4(this, function (_d) {
+                return __generator$3(this, function (_d) {
                     if (!this.checkAvailability())
                         throw new Error("fetch is not defined (node environment)");
                     if (this._sendingRequest) {
@@ -99,10 +463,10 @@
                             method: "POST",
                             headers: __assign$5({ "Content-Type": "application/json" }, headers),
                             body: JSON.stringify(data),
-                        }).then(function (res) { return __awaiter$4(_this, void 0, void 0, function () {
+                        }).then(function (res) { return __awaiter$3(_this, void 0, void 0, function () {
                             var json;
                             var _a, _b;
-                            return __generator$4(this, function (_c) {
+                            return __generator$3(this, function (_c) {
                                 switch (_c.label) {
                                     case 0:
                                         json = null;
@@ -133,6 +497,48 @@
                 });
             });
         };
+        API.prototype.sendData = function (data) {
+            return __awaiter$3(this, void 0, void 0, function () {
+                var _this = this;
+                return __generator$3(this, function (_a) {
+                    return [2 /*return*/, this.sendRequest({
+                            data: data,
+                        })
+                            .then(function (res) {
+                            var _a, _b;
+                            var data = res.json.data;
+                            _this.core.LocalStorage.setAPIValues(data);
+                            _this.core._APIValues = data;
+                            _this.core.InternalLogger.log("API: Successful request", res);
+                            (_b = (_a = _this.core.Events.on.request).success) === null || _b === void 0 ? void 0 : _b.call(_a, { res: res, json: res.json });
+                            _this.core.LogPool.clearRequests();
+                            _this.core.LogPool.clearLogs();
+                            return true;
+                        })
+                            .catch(function (err) {
+                            var _a, _b;
+                            _this.core.InternalLogger.error("API: Request failed.", err);
+                            (_b = (_a = _this.core.Events.on.request).error) === null || _b === void 0 ? void 0 : _b.call(_a, err);
+                            if ((err === null || err === void 0 ? void 0 : err.message) == "API:FAILED:400:api-key") {
+                                _this.core.InternalLogger.error("API: Your API key is not valid. Please make sure you entered correct credentials.");
+                            }
+                            if ((err === null || err === void 0 ? void 0 : err.message) !== "API:ALREADY_SENDING") {
+                                _this.core.API.requestCompleted();
+                                _this.core.LogPool.pushRequest({
+                                    res: {
+                                        message: err.message,
+                                        stack: err.stack,
+                                    },
+                                    status: "failed",
+                                    ts: new Date().getTime(),
+                                    guid: guid(),
+                                });
+                            }
+                            return false;
+                        })];
+                });
+            });
+        };
         API.prototype.requestCompleted = function () {
             this._sendingRequest = false;
         };
@@ -141,30 +547,6 @@
         };
         return API;
     }());
-
-    /**
-     * @license
-     * Copyright 2023 Eren Kulaksiz
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *   http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
-    function guid() {
-        function _p8(s) {
-            var p = (Math.random().toString(16) + "000000000").substr(2, 8);
-            return s ? "-" + p.substr(0, 4) + "-" + p.substr(4, 4) : p;
-        }
-        return _p8() + _p8(true) + _p8(true) + _p8();
-    }
 
     /**
      * @license
@@ -269,9 +651,11 @@
                             _this.on.unhandledRejection(event);
                         return true;
                     });
-                    window.addEventListener("unload", function (event) {
-                        _this.core.InternalLogger.log("Events: Received unload event", event);
+                    /*
+                    window.addEventListener("unload", (event: BeforeUnloadEvent) => {
+                      this.core.InternalLogger.log("Events: Received unload event", event);
                     });
+                    */
                     this._bindedErrorEvent = true;
                     this.core.InternalLogger.log("Events: Binded error events.");
                 }
@@ -441,346 +825,6 @@
      * limitations under the License.
      */
     /**
-     * Helper functions to encode/decode localStorage logs into Base64.
-     */
-    var Base64 = {
-        // private property
-        _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
-        // public method for encoding
-        encode: function (input) {
-            var output = "";
-            var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
-            var i = 0;
-            input = Base64._utf8_encode(input);
-            while (i < input.length) {
-                chr1 = input.charCodeAt(i++);
-                chr2 = input.charCodeAt(i++);
-                chr3 = input.charCodeAt(i++);
-                enc1 = chr1 >> 2;
-                enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
-                enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
-                enc4 = chr3 & 63;
-                if (isNaN(chr2)) {
-                    enc3 = enc4 = 64;
-                }
-                else if (isNaN(chr3)) {
-                    enc4 = 64;
-                }
-                output =
-                    output +
-                        Base64._keyStr.charAt(enc1) +
-                        Base64._keyStr.charAt(enc2) +
-                        Base64._keyStr.charAt(enc3) +
-                        Base64._keyStr.charAt(enc4);
-            }
-            return output;
-        },
-        // public method for decoding
-        decode: function (input) {
-            var output = "";
-            var chr1, chr2, chr3;
-            var enc1, enc2, enc3, enc4;
-            var i = 0;
-            input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
-            while (i < input.length) {
-                enc1 = Base64._keyStr.indexOf(input.charAt(i++));
-                enc2 = Base64._keyStr.indexOf(input.charAt(i++));
-                enc3 = Base64._keyStr.indexOf(input.charAt(i++));
-                enc4 = Base64._keyStr.indexOf(input.charAt(i++));
-                chr1 = (enc1 << 2) | (enc2 >> 4);
-                chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
-                chr3 = ((enc3 & 3) << 6) | enc4;
-                output = output + String.fromCharCode(chr1);
-                if (enc3 != 64) {
-                    output = output + String.fromCharCode(chr2);
-                }
-                if (enc4 != 64) {
-                    output = output + String.fromCharCode(chr3);
-                }
-            }
-            output = Base64._utf8_decode(output);
-            return output;
-        },
-        // private method for UTF-8 encoding
-        _utf8_encode: function (string) {
-            string = string.replace(/\r\n/g, "\n");
-            var utftext = "";
-            for (var n = 0; n < string.length; n++) {
-                var c = string.charCodeAt(n);
-                if (c < 128) {
-                    utftext += String.fromCharCode(c);
-                }
-                else if (c > 127 && c < 2048) {
-                    utftext += String.fromCharCode((c >> 6) | 192);
-                    utftext += String.fromCharCode((c & 63) | 128);
-                }
-                else {
-                    utftext += String.fromCharCode((c >> 12) | 224);
-                    utftext += String.fromCharCode(((c >> 6) & 63) | 128);
-                    utftext += String.fromCharCode((c & 63) | 128);
-                }
-            }
-            return utftext;
-        },
-        // private method for UTF-8 decoding
-        _utf8_decode: function (utftext) {
-            var string = "";
-            var i = 0;
-            var c2;
-            var c3;
-            var c = (c2 = 0);
-            while (i < utftext.length) {
-                c = utftext.charCodeAt(i);
-                if (c < 128) {
-                    string += String.fromCharCode(c);
-                    i++;
-                }
-                else if (c > 191 && c < 224) {
-                    c2 = utftext.charCodeAt(i + 1);
-                    string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
-                    i += 2;
-                }
-                else {
-                    c2 = utftext.charCodeAt(i + 1);
-                    c3 = utftext.charCodeAt(i + 2);
-                    string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
-                    i += 3;
-                }
-            }
-            return string;
-        },
-    };
-
-    /**
-     * @license
-     * Copyright 2023 Eren Kulaksiz
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *   http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
-    function isClient() {
-        return typeof window === "undefined" ? false : true;
-    }
-
-    /**
-     * @license
-     * Copyright 2023 Eren Kulaksiz
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *   http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
-    var __assign$3 = (undefined && undefined.__assign) || function () {
-        __assign$3 = Object.assign || function(t) {
-            for (var s, i = 1, n = arguments.length; i < n; i++) {
-                s = arguments[i];
-                for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                    t[p] = s[p];
-            }
-            return t;
-        };
-        return __assign$3.apply(this, arguments);
-    };
-    var __awaiter$3 = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
-        function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-        return new (P || (P = Promise))(function (resolve, reject) {
-            function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-            function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-            function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-            step((generator = generator.apply(thisArg, _arguments || [])).next());
-        });
-    };
-    var __generator$3 = (undefined && undefined.__generator) || function (thisArg, body) {
-        var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-        return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-        function verb(n) { return function (v) { return step([n, v]); }; }
-        function step(op) {
-            if (f) throw new TypeError("Generator is already executing.");
-            while (g && (g = 0, op[0] && (_ = 0)), _) try {
-                if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-                if (y = 0, t) op = [op[0] & 2, t.value];
-                switch (op[0]) {
-                    case 0: case 1: t = op; break;
-                    case 4: _.label++; return { value: op[1], done: false };
-                    case 5: _.label++; y = op[1]; op = [0]; continue;
-                    case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                    default:
-                        if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                        if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                        if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                        if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                        if (t[2]) _.ops.pop();
-                        _.trys.pop(); continue;
-                }
-                op = body.call(thisArg, _);
-            } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-            if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-        }
-    };
-    function collectNextJSData() {
-        if (isClient()) {
-            /* @ts-ignore next-line */
-            var __NEXT_DATA__ = window.__NEXT_DATA__, next = window.next;
-            if (__NEXT_DATA__) {
-                var buildId = __NEXT_DATA__.buildId, nextExport = __NEXT_DATA__.nextExport, page = __NEXT_DATA__.page, query = __NEXT_DATA__.query;
-                return {
-                    buildId: buildId,
-                    nextExport: nextExport,
-                    page: page,
-                    query: query,
-                    ver: next === null || next === void 0 ? void 0 : next.version,
-                };
-            }
-            return null;
-        }
-        return null;
-    }
-    function collectVercelEnv() {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
-        if (isClient()) {
-            /* @ts-ignore next-line */
-            if (typeof process == "undefined")
-                return null;
-            if ((_a = process === null || process === void 0 ? void 0 : process.env) === null || _a === void 0 ? void 0 : _a.NEXT_PUBLIC_VERCEL_ENV) {
-                return {
-                    env: (_b = process === null || process === void 0 ? void 0 : process.env) === null || _b === void 0 ? void 0 : _b.NEXT_PUBLIC_VERCEL_ENV,
-                    url: (_c = process === null || process === void 0 ? void 0 : process.env) === null || _c === void 0 ? void 0 : _c.NEXT_PUBLIC_VERCEL_URL,
-                    git: (_d = process === null || process === void 0 ? void 0 : process.env) === null || _d === void 0 ? void 0 : _d.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF,
-                    gitCommitSha: (_e = process === null || process === void 0 ? void 0 : process.env) === null || _e === void 0 ? void 0 : _e.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA,
-                    gitProvider: (_f = process === null || process === void 0 ? void 0 : process.env) === null || _f === void 0 ? void 0 : _f.NEXT_PUBLIC_VERCEL_GIT_PROVIDER,
-                    gitRepoId: (_g = process === null || process === void 0 ? void 0 : process.env) === null || _g === void 0 ? void 0 : _g.NEXT_PUBLIC_VERCEL_GIT_REPO_ID,
-                    gitRepoOwner: (_h = process === null || process === void 0 ? void 0 : process.env) === null || _h === void 0 ? void 0 : _h.NEXT_PUBLIC_VERCEL_GIT_REPO_OWNER,
-                    gitRepoSlug: (_j = process === null || process === void 0 ? void 0 : process.env) === null || _j === void 0 ? void 0 : _j.NEXT_PUBLIC_VERCEL_GIT_REPO_SLUG,
-                    gitCommitMessage: (_k = process === null || process === void 0 ? void 0 : process.env) === null || _k === void 0 ? void 0 : _k.NEXT_PUBLIC_VERCEL_GIT_COMMIT_MESSAGE,
-                    gitCommitAuthorName: (_l = process === null || process === void 0 ? void 0 : process.env) === null || _l === void 0 ? void 0 : _l.NEXT_PUBLIC_VERCEL_GIT_COMMIT_AUTHOR_NAME,
-                    gitCommitAuthorLogin: (_m = process === null || process === void 0 ? void 0 : process.env) === null || _m === void 0 ? void 0 : _m.NEXT_PUBLIC_VERCEL_GIT_COMMIT_AUTHOR_LOGIN,
-                    gitPullRequestId: (_o = process === null || process === void 0 ? void 0 : process.env) === null || _o === void 0 ? void 0 : _o.NEXT_PUBLIC_VERCEL_GIT_PULL_REQUEST_ID,
-                };
-            }
-            return null;
-        }
-        return null;
-    }
-    function collectDOMData() {
-        if (isClient()) {
-            var root = document.getElementsByTagName("body")[0];
-            var allElements = root === null || root === void 0 ? void 0 : root.querySelectorAll("*").length;
-            return {
-                el: allElements,
-            };
-        }
-        return null;
-    }
-    function collectData(core) {
-        var _a;
-        return __awaiter$3(this, void 0, void 0, function () {
-            var config, deviceData, CollectData, nextJSData, vercelEnv, DOMData;
-            return __generator$3(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        config = core._config;
-                        deviceData = "disabled";
-                        if (!core._allowDeviceData) return [3 /*break*/, 2];
-                        return [4 /*yield*/, core.Device.getDeviceData().catch(function (err) { return null; })];
-                    case 1:
-                        deviceData =
-                            (_a = (_b.sent())) !== null && _a !== void 0 ? _a : "client-disabled";
-                        return [3 /*break*/, 3];
-                    case 2:
-                        deviceData = "disabled";
-                        _b.label = 3;
-                    case 3:
-                        CollectData = {
-                            deviceData: deviceData,
-                            package: {
-                                libraryName: libraryName,
-                                version: version,
-                            },
-                            options: __assign$3(__assign$3({}, core._options), { logPoolSize: core._logPoolSize, allowDeviceData: core._allowDeviceData, sendAllOnType: core._sendAllOnType, ignoreType: core._ignoreType, ignoreTypeSize: core._ignoreTypeSize }),
-                            env: {
-                                type: core._env,
-                                isClient: core._isClient,
-                            },
-                        };
-                        if (config) {
-                            CollectData = __assign$3(__assign$3({}, CollectData), { config: config });
-                        }
-                        nextJSData = collectNextJSData();
-                        if (nextJSData) {
-                            CollectData = __assign$3(__assign$3({}, CollectData), { env: __assign$3(__assign$3({}, CollectData.env), nextJSData) });
-                        }
-                        vercelEnv = collectVercelEnv();
-                        if (vercelEnv) {
-                            CollectData = __assign$3(__assign$3({}, CollectData), { env: __assign$3(__assign$3({}, CollectData.env), vercelEnv) });
-                        }
-                        if (core._isClient) {
-                            if (document && "getElementById" in document && core._allowElementData) {
-                                DOMData = collectDOMData();
-                                if (DOMData) {
-                                    CollectData = __assign$3(__assign$3({}, CollectData), { env: __assign$3(__assign$3({}, CollectData.env), DOMData) });
-                                }
-                            }
-                        }
-                        return [2 /*return*/, CollectData];
-                }
-            });
-        });
-    }
-
-    /**
-     * @license
-     * Copyright 2023 Eren Kulaksiz
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *   http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
-    var server = "https://dash.nexys.app";
-    var libraryName = "Nexys";
-    var version = "1.0.33";
-
-    /**
-     * @license
-     * Copyright 2023 Eren Kulaksiz
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *   http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
-    /**
      * @class LocalStorage
      * @description This class is used to handle internal localStorage operations.
      */
@@ -791,8 +835,8 @@
             this.isActive = false;
             this.isEncrypted = false;
             this.isAvailable = false;
-            this.key = "__nexys__";
-            this.testKey = "__nexysTest__";
+            this.key = "__nex__";
+            this.testKey = "__nex-t__";
             this.shouldUseLocalStorage = false;
             this.core = core;
             this._localStorage = this.core._isClient ? window === null || window === void 0 ? void 0 : window.localStorage : null;
@@ -1017,6 +1061,17 @@
             }
             return localValue === null || localValue === void 0 ? void 0 : localValue.requests;
         };
+        LocalStorage.prototype.getLocalUser = function () {
+            var _a;
+            if (!this.shouldUseLocalStorage)
+                return null;
+            var localValue = this.get();
+            if (!localValue) {
+                this.core.InternalLogger.log("LocalStorage: Local value is null in getLocalUserData.");
+                return null;
+            }
+            return ((_a = localValue === null || localValue === void 0 ? void 0 : localValue.userData) === null || _a === void 0 ? void 0 : _a.user) || null;
+        };
         LocalStorage.prototype.resetLocalValue = function () {
             this.core.InternalLogger.log("LocalStorage: Resetting local value in resetLocalValue.");
             var val = {
@@ -1040,6 +1095,32 @@
             localValue.API = value;
             this.set(localValue);
         };
+        LocalStorage.prototype.getAPIValues = function () {
+            if (!this.shouldUseLocalStorage)
+                return null;
+            var localValue = this.get();
+            if (!localValue) {
+                this.core.InternalLogger.log("LocalStorage: Local value is null in getAPIValue.");
+                return null;
+            }
+            return localValue.API || null;
+        };
+        LocalStorage.prototype.setUser = function (user) {
+            if (!this.shouldUseLocalStorage)
+                return;
+            var localValue = this.get();
+            if (!localValue) {
+                this.core.InternalLogger.log("LocalStorage: Local value is null in setUser.");
+                this.resetLocalValue();
+                localValue = this.get();
+                return;
+            }
+            if (!localValue.userData) {
+                localValue.userData = {};
+            }
+            localValue.userData.user = user;
+            this.set(localValue);
+        };
         return LocalStorage;
     }());
 
@@ -1059,8 +1140,8 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
-    var __assign$2 = (undefined && undefined.__assign) || function () {
-        __assign$2 = Object.assign || function(t) {
+    var __assign$3 = (undefined && undefined.__assign) || function () {
+        __assign$3 = Object.assign || function(t) {
             for (var s, i = 1, n = arguments.length; i < n; i++) {
                 s = arguments[i];
                 for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -1068,7 +1149,7 @@
             }
             return t;
         };
-        return __assign$2.apply(this, arguments);
+        return __assign$3.apply(this, arguments);
     };
     var __awaiter$2 = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
         function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -1263,7 +1344,6 @@
         LogPool.prototype.sendAll = function () {
             return __awaiter$2(this, void 0, void 0, function () {
                 var _start, _end, CollectData;
-                var _this = this;
                 return __generator$2(this, function (_a) {
                     switch (_a.label) {
                         case 0:
@@ -1282,56 +1362,28 @@
                                 this.core.InternalLogger.error("LogPool: collectData() returned null.");
                                 return [2 /*return*/];
                             }
-                            CollectData = __assign$2(__assign$2({}, CollectData), { logs: this.logs, requests: this.requests });
-                            this.core.API.sendRequest({
-                                data: CollectData,
-                            })
-                                .then(function (res) {
-                                var _a, _b;
-                                var data = res.json.data;
-                                _this.core.LocalStorage.setAPIValues(data);
-                                _this.core.InternalLogger.log("API: Successful request", res);
-                                (_b = (_a = _this.core.Events.on.request).success) === null || _b === void 0 ? void 0 : _b.call(_a, res);
-                                _this.clearRequests();
-                                _this.clearLogs();
-                                if (_this.core._isClient)
-                                    _end = performance.now();
-                                if (_start && _end) {
-                                    _this.core.LogPool.push({
-                                        data: {
-                                            type: "LOGPOOL:SENDALL",
-                                            diff: _end - _start,
-                                        },
-                                        ts: new Date().getTime(),
-                                        options: {
-                                            type: "METRIC",
-                                        },
-                                        guid: guid(),
-                                        path: getPagePath(_this.core),
-                                    });
-                                    _this.core.InternalLogger.log("API: Request took ".concat(_end - _start, "ms."));
-                                }
-                            })
-                                .catch(function (err) {
-                                var _a, _b;
-                                _this.core.InternalLogger.error("API: Request failed.", err);
-                                (_b = (_a = _this.core.Events.on.request).error) === null || _b === void 0 ? void 0 : _b.call(_a, err);
-                                if ((err === null || err === void 0 ? void 0 : err.message) == "API:FAILED:400:api-key") {
-                                    _this.core.InternalLogger.error("API: Your API key is not valid. Please make sure you entered correct credentials.");
-                                }
-                                if ((err === null || err === void 0 ? void 0 : err.message) !== "API:ALREADY_SENDING") {
-                                    _this.core.API.requestCompleted();
-                                    _this.pushRequest({
-                                        res: {
-                                            message: err.message,
-                                            stack: err.stack,
-                                        },
-                                        status: "failed",
-                                        ts: new Date().getTime(),
-                                        guid: guid(),
-                                    });
-                                }
-                            });
+                            CollectData = __assign$3(__assign$3({}, CollectData), { logs: this.logs, requests: this.requests });
+                            this.core.InternalLogger.log("LogPool: Sending data to the server.", CollectData);
+                            return [4 /*yield*/, this.core.API.sendData(CollectData)];
+                        case 2:
+                            _a.sent();
+                            if (this.core._isClient)
+                                _end = performance.now();
+                            if (_start && _end) {
+                                this.core.LogPool.push({
+                                    data: {
+                                        type: "LOGPOOL:SENDALL",
+                                        diff: _end - _start,
+                                    },
+                                    ts: new Date().getTime(),
+                                    options: {
+                                        type: "METRIC",
+                                    },
+                                    guid: guid(),
+                                    path: getPagePath(this.core),
+                                });
+                                this.core.InternalLogger.log("API: Request took ".concat(_end - _start, "ms."));
+                            }
                             return [2 /*return*/];
                     }
                 });
@@ -1356,8 +1408,8 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
-    var __assign$1 = (undefined && undefined.__assign) || function () {
-        __assign$1 = Object.assign || function(t) {
+    var __assign$2 = (undefined && undefined.__assign) || function () {
+        __assign$2 = Object.assign || function(t) {
             for (var s, i = 1, n = arguments.length; i < n; i++) {
                 s = arguments[i];
                 for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -1365,7 +1417,7 @@
             }
             return t;
         };
-        return __assign$1.apply(this, arguments);
+        return __assign$2.apply(this, arguments);
     };
     var __awaiter$1 = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
         function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -1552,7 +1604,7 @@
                             return [4 /*yield*/, this.getGeolocation().catch(function (err) { return null; })];
                         case 3:
                             geo = _a.sent();
-                            deviceData = __assign$1(__assign$1({}, deviceData), { geo: geo });
+                            deviceData = __assign$2(__assign$2({}, deviceData), { geo: geo });
                             _a.label = 4;
                         case 4: return [2 /*return*/, Promise.resolve(deviceData)];
                     }
@@ -1561,6 +1613,43 @@
         };
         return Device;
     }());
+
+    function isNewerVersion(oldVer, newVer) {
+        var oldParts = oldVer.split(".");
+        var newParts = newVer.split(".");
+        for (var i = 0; i < newParts.length; i++) {
+            var a = ~~newParts[i];
+            var b = ~~oldParts[i];
+            if (a > b)
+                return true;
+            if (a < b)
+                return false;
+        }
+        return false;
+    }
+
+    function checkVersion(core) {
+        if (!core._APIValues)
+            return;
+        var isCloseToLimit = core._APIValues.logUsage >= core._APIValues.logUsageLimit * 0.8;
+        var isOverLimit = core._APIValues.logUsage >= core._APIValues.logUsageLimit;
+        var isNeedSoftUpdate = isNewerVersion(core._version, core._APIValues.client.softVersion);
+        var isNeedHardUpdate = isNewerVersion(core._version, core._APIValues.client.hardVersion);
+        var isNeedUpdate = isNewerVersion(core._version, core._APIValues.client.latestVersion);
+        if (isCloseToLimit) {
+            core.InternalLogger.log("NexysCore: You are getting close to log limit. Please consider to upgrade your plan.");
+        }
+        if (isOverLimit) {
+            core.InternalLogger.log("NexysCore: You are over log limit. Please consider to upgrade your plan.");
+        }
+        if (!isNeedHardUpdate && (isNeedUpdate || isNeedSoftUpdate)) {
+            core.InternalLogger.log("NexysCore: You are using version ".concat(core._version, " and latest version is ").concat(core._APIValues.client.softVersion, ". You need to upgrade your library."));
+        }
+        if (isNeedHardUpdate) {
+            core.InternalLogger.error("NexysCore: You are using version ".concat(core._version, " and latest version is ").concat(core._APIValues.client.hardVersion, ". You wont be able to use Nexys with this version. Please upgrade your library."));
+            //core._initialized = false;
+        }
+    }
 
     /**
      * @license
@@ -1578,8 +1667,19 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
+    var __assign$1 = (undefined && undefined.__assign) || function () {
+        __assign$1 = Object.assign || function(t) {
+            for (var s, i = 1, n = arguments.length; i < n; i++) {
+                s = arguments[i];
+                for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                    t[p] = s[p];
+            }
+            return t;
+        };
+        return __assign$1.apply(this, arguments);
+    };
     function loadFromLocalStorage(core) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e;
         // Load logs from localStorage
         var localLogs = core.LocalStorage.getLocalLogs();
         if (Array.isArray(localLogs) &&
@@ -1605,6 +1705,22 @@
             localRequests.length == 0 &&
             ((_d = core._options.localStorage) === null || _d === void 0 ? void 0 : _d.useLocalStorage)) {
             core.InternalLogger.log("NexysCore: LocalStorage is empty, no requests found.");
+        }
+        var localUser = core.LocalStorage.getLocalUser();
+        if ((_e = core._options.localStorage) === null || _e === void 0 ? void 0 : _e.useLocalStorage) {
+            if (localUser) {
+                core._config = __assign$1(__assign$1({}, core._config), { user: localUser });
+                core.InternalLogger.log("NexysCore: Set user from localStorage.", localUser);
+            }
+            else {
+                core.InternalLogger.log("NexysCore: LocalStorage is empty, no user found.");
+            }
+        }
+        var APIValues = core.LocalStorage.getAPIValues();
+        if (APIValues) {
+            core._APIValues = APIValues;
+            core.InternalLogger.log("NexysCore: Set API values from localStorage.", APIValues);
+            checkVersion(core);
         }
     }
 
@@ -1676,8 +1792,8 @@
         localStorage: {
             useLocalStorage: true,
             cryption: true,
-            key: "__nexysLogPool__",
-            testKey: "__nexysTest__",
+            key: "__nex__",
+            testKey: "__nex-t__",
         },
         errors: {
             allowAutomaticHandling: true, // Used for automatic exception handling.
@@ -1687,6 +1803,8 @@
         // Core
         function Core(API_KEY, options) {
             var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x;
+            // Variables
+            this._initialized = false;
             this._processAvailable = typeof process != "undefined";
             this._version = version;
             this._server = server;
@@ -1707,7 +1825,8 @@
             this._ignoreType = "METRIC";
             this._ignoreTypeSize = 50;
             this._config = null;
-            this._internalMetrics = [];
+            //_internalMetrics: any = [];
+            this._APIValues = null;
             var _start = null, _end = null;
             if (this._isClient)
                 _start = performance.now();
@@ -1736,23 +1855,17 @@
                 throw new Error("NexysCore: API_KEY is not defined");
             if (!this._options.appName)
                 throw new Error("NexysCore: Please specify appName in constructor options");
-            // Internal Logger
             this.InternalLogger = new InternalLogger({
                 active: (_h = (_g = this._options) === null || _g === void 0 ? void 0 : _g.debug) !== null && _h !== void 0 ? _h : false,
             });
-            // LogPool
             this.LogPool = new LogPool(this);
-            // Event Handler
             this.Events = new Events(this);
-            // API
             this.API = new API(this, {
                 server: this._server,
                 apiKey: this._apiKey,
                 appName: this._options.appName,
             });
-            // Device
             this.Device = new Device(this);
-            // LocalStorage
             this.LocalStorage = new LocalStorage(this, {
                 key: (_k = (_j = this._options.localStorage) === null || _j === void 0 ? void 0 : _j.key) !== null && _k !== void 0 ? _k : (_l = defaultOptions.localStorage) === null || _l === void 0 ? void 0 : _l.key,
                 testKey: (_o = (_m = this._options.localStorage) === null || _m === void 0 ? void 0 : _m.testKey) !== null && _o !== void 0 ? _o : (_p = defaultOptions.localStorage) === null || _p === void 0 ? void 0 : _p.testKey,
@@ -1760,6 +1873,8 @@
                 active: (_u = (_t = this._options.localStorage) === null || _t === void 0 ? void 0 : _t.useLocalStorage) !== null && _u !== void 0 ? _u : (_v = defaultOptions.localStorage) === null || _v === void 0 ? void 0 : _v.useLocalStorage,
             });
             loadFromLocalStorage(this);
+            this._initialized = true;
+            checkVersion(this);
             if (!this._isClient) {
                 this.InternalLogger.log("NexysCore: Detected that we are running NexysCore on non client side environment.");
                 this.InternalLogger.log("NexysCore: Altough NexysCore is designed to run on client side, it can be used on server side as well but some features will might not work.");
@@ -1786,6 +1901,10 @@
                 this.InternalLogger.log("NexysCore: Initialized in ".concat(_end - _start, "ms"));
             }
         }
+        Core.prototype._checkInitialized = function () {
+            if (!this._initialized)
+                this.InternalLogger.error("NexysCore: You need to initialize NexysCore before using it. Probably you forgot to call new Nexys() or you are on wrong version.");
+        };
         /**
          * Adds log request to logPool in Nexys instance.
          *
@@ -1807,10 +1926,12 @@
          * @param options.level - `Optional` - Log level
          * @param options.tags - `Optional` - Log tags
          * @param options.action - `Optional` - Log action
-         *
          * @public
+         * @returns {void} - Returns nothing.
+         *
          */
         Core.prototype.log = function (data, options) {
+            this._checkInitialized();
             var e = new Error();
             this.LogPool.push({
                 data: data,
@@ -1842,10 +1963,12 @@
          * @param options.level - `Optional` - Log level
          * @param options.tags - `Optional` - Log tags
          * @param options.action - `Optional` - Log action
-         *
          * @public
+         * @returns {void} - Returns nothing.
+         *
          */
         Core.prototype.error = function (data, options) {
+            this._checkInitialized();
             var e = new Error();
             this.LogPool.push({
                 data: data,
@@ -1874,8 +1997,12 @@
          * ```
          *
          * @param metric Metric data that you get from calling reportWebVitals in NextJS
+         * @public
+         * @returns {void} - Returns nothing.
+         *
          */
         Core.prototype.metric = function (metric) {
+            this._checkInitialized();
             var e = new Error();
             this.LogPool.push({
                 data: metric,
@@ -1910,20 +2037,34 @@
          *  config.setAppVersion("1.0.0");
          * });
          * ```
+         *
+         * @param config - Config functions
+         * @param config.setUser - Set user
+         * @param config.setAppVersion - Set application version
+         * @public
+         * @returns {void} - Returns nothing.
+         *
          */
         Core.prototype.configure = function (config) {
             var _this = this;
+            this._checkInitialized();
             (function () {
                 return typeof config == "function" &&
                     config({
                         setUser: function (user) {
                             _this._config = __assign(__assign({}, _this._config), { user: user });
+                            _this.LocalStorage.setUser(user);
                             _this.InternalLogger.log("NexysCore: User configured", user);
                         },
-                        setClient: function (client) {
-                            _this._config = __assign(__assign({}, _this._config), { client: client });
-                            _this.InternalLogger.log("NexysCore: Client configured", client);
+                        /*
+                        setClient: (client: string) => {
+                          this._config = {
+                            ...this._config,
+                            client,
+                          };
+                          this.InternalLogger.log("NexysCore: Client configured", client);
                         },
+                        */
                         setAppVersion: function (appVersion) {
                             _this._config = __assign(__assign({}, _this._config), { appVersion: appVersion });
                             _this.InternalLogger.log("NexysCore: App version configured", appVersion);
@@ -1938,8 +2079,13 @@
          * ```javascript
          * nexys.clear();
          * ```
+         *
+         * @public
+         * @returns {void} - Returns nothing.
+         *
          */
         Core.prototype.clear = function () {
+            this._checkInitialized();
             this.LogPool.clearLogs();
             this.LogPool.clearRequests();
         };
@@ -1952,18 +2098,59 @@
          * ```javascript
          * nexys.forceRequest();
          * ```
+         *
+         * @async - This method is async.
+         * @public
+         * @returns {Promise<void>} - Returns nothing.
+         *
          */
         Core.prototype.forceRequest = function () {
             return __awaiter(this, void 0, void 0, function () {
                 return __generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, this.LogPool.sendAll()];
+                        case 0:
+                            this._checkInitialized();
+                            return [4 /*yield*/, this.LogPool.sendAll()];
                         case 1:
                             _a.sent();
                             return [2 /*return*/];
                     }
                 });
             });
+        };
+        /**
+         * This method will return Nexys library version in string.
+         *
+         * @example
+         * ```javascript
+         * nexys.getLibraryVersion();
+         * ```
+         *
+         * @public
+         * @returns {string} - Returns library version.
+         *
+         */
+        Core.prototype.getLibraryVersion = function () {
+            this._checkInitialized();
+            return this._version;
+        };
+        /**
+         * This method will return configured user.
+         * If user is not configured, it will return null.
+         *
+         * @example
+         * ```javascript
+         * nexys.getUser();
+         * ```
+         *
+         * @public
+         * @returns {string | null} - Returns user if configured, otherwise null.
+         *
+         */
+        Core.prototype.getUser = function () {
+            var _a, _b;
+            this._checkInitialized();
+            return (_b = (_a = this._config) === null || _a === void 0 ? void 0 : _a.user) !== null && _b !== void 0 ? _b : null;
         };
         return Core;
     }());

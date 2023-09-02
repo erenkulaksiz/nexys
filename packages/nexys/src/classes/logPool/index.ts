@@ -72,7 +72,7 @@ export class LogPool {
     this.core.LocalStorage.addToLogPool(log);
   }
 
-  private pushRequest({ res, status, ts, guid }: requestTypes): void {
+  public pushRequest({ res, status, ts, guid }: requestTypes): void {
     const req = {
       res,
       status,
@@ -219,53 +219,29 @@ export class LogPool {
       requests: this.requests,
     };
 
-    this.core.API.sendRequest({
-      data: CollectData,
-    })
-      .then((res) => {
-        const data = res.json.data;
-        this.core.LocalStorage.setAPIValues(data);
-        this.core.InternalLogger.log("API: Successful request", res);
-        this.core.Events.on.request.success?.(res);
-        this.clearRequests();
-        this.clearLogs();
-        if (this.core._isClient) _end = performance.now();
-        if (_start && _end) {
-          this.core.LogPool.push({
-            data: {
-              type: "LOGPOOL:SENDALL",
-              diff: _end - _start,
-            },
-            ts: new Date().getTime(),
-            options: {
-              type: "METRIC",
-            },
-            guid: guid(),
-            path: getPagePath(this.core),
-          });
-          this.core.InternalLogger.log(`API: Request took ${_end - _start}ms.`);
-        }
-      })
-      .catch((err) => {
-        this.core.InternalLogger.error("API: Request failed.", err);
-        this.core.Events.on.request.error?.(err);
-        if (err?.message == "API:FAILED:400:api-key") {
-          this.core.InternalLogger.error(
-            "API: Your API key is not valid. Please make sure you entered correct credentials."
-          );
-        }
-        if (err?.message !== "API:ALREADY_SENDING") {
-          this.core.API.requestCompleted();
-          this.pushRequest({
-            res: {
-              message: err.message,
-              stack: err.stack,
-            },
-            status: "failed",
-            ts: new Date().getTime(),
-            guid: guid(),
-          });
-        }
+    this.core.InternalLogger.log(
+      "LogPool: Sending data to the server.",
+      CollectData
+    );
+
+    await this.core.API.sendData(CollectData);
+
+    if (this.core._isClient) _end = performance.now();
+
+    if (_start && _end) {
+      this.core.LogPool.push({
+        data: {
+          type: "LOGPOOL:SENDALL",
+          diff: _end - _start,
+        },
+        ts: new Date().getTime(),
+        options: {
+          type: "METRIC",
+        },
+        guid: guid(),
+        path: getPagePath(this.core),
       });
+      this.core.InternalLogger.log(`API: Request took ${_end - _start}ms.`);
+    }
   }
 }

@@ -7,7 +7,7 @@ title: Installation
 
 ---
 
-Get started by creating a new **React**, **NextJS** or **NodeJS** project.
+Get started by creating a new **HTML**, **React**, **NextJS** or **NodeJS** project.
 
 ## Install
 
@@ -21,12 +21,18 @@ or
 yarn add nexys
 ```
 
+or put this on your HTML file's `<head>` tag:
+
+```html
+<script src="https://unpkg.com/nexys@latest/dist/bundle.min.js"></script>
+```
+
 ## Configure
 
 First, create a new file called `nexys.ts|js` somewhere on your project. Preferably on the root of your project. Then, add the following code to the file to get started.
 
 ```ts title="nexys.ts"
-import { Nexys } from 'nexys';
+import { Nexys } from "nexys";
 
 // first parameter takes api key, second takes config options
 const nexys = new Nexys(
@@ -49,7 +55,7 @@ Want configuration options? Check out the [configuration](/category/configuratio
 Now, you can use **Nexys** anywhere on your project. Here's an example:
 
 ```tsx title="pages/index.tsx"
-import nexys from '../nexys';
+import nexys from "../nexys";
 
 export default function Home() {
   return (

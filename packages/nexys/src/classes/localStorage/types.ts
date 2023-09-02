@@ -24,11 +24,26 @@ export interface LocalStorageConstructorParams {
   active: boolean;
 }
 
+export interface APIValues {
+  client: {
+    latestVersion: string;
+    softVersion: string;
+    hardVersion: string;
+  };
+  logUsage: number;
+  logUsageLimit: number;
+  server: {
+    dashboard: string;
+    version: string;
+  };
+}
+
 export interface LocalStorageTypes {
   logPool: logTypes[];
   lastLogUpdate: number;
   requests: requestTypes[];
-  API?: {
-    [key: string]: string | object;
+  API?: APIValues;
+  userData?: {
+    user?: string;
   };
 }

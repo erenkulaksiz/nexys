@@ -16,8 +16,6 @@
 
 <h1 align="center">Nexys</h1>
 
-🚧 This project is under development 🚧
-
 - 0 dependency 
 - Consistent
 - Customizable & Flexible
@@ -28,7 +26,7 @@ Nexys will gather all device data automatically (screen size, user agent, device
 Also, Nexys will gather all errors on your production application, reports them to dashboard automatically.\
 You can examine each error and log's stack trace, which file/page the error occurred and many more details.
 
-Nexys supports NextJS, ReactJS, NodeJS and more frameworks will be supported soon.
+Nexys supports TypeScript and JavaScript.
 
 # Let's get you started!
 
@@ -42,6 +40,12 @@ npm install nexys
 
 ```javascript
 import Nexys from "nexys";
+```
+
+or put this on your HTML file's `<head>` tag:
+
+```html
+<script src="https://unpkg.com/nexys@latest/dist/bundle.min.js"></script>
 ```
 
 ### Then initialize Nexys

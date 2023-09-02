@@ -16,6 +16,7 @@
  */
 
 import { Core } from ".";
+import checkVersion from "../core/checkVersion.js";
 
 export default function loadFromLocalStorage(core: Core) {
   // Load logs from localStorage
@@ -58,5 +59,33 @@ export default function loadFromLocalStorage(core: Core) {
     core.InternalLogger.log(
       "NexysCore: LocalStorage is empty, no requests found."
     );
+  }
+
+  const localUser = core.LocalStorage.getLocalUser();
+  if (core._options.localStorage?.useLocalStorage) {
+    if (localUser) {
+      core._config = {
+        ...core._config,
+        user: localUser,
+      };
+      core.InternalLogger.log(
+        "NexysCore: Set user from localStorage.",
+        localUser
+      );
+    } else {
+      core.InternalLogger.log(
+        "NexysCore: LocalStorage is empty, no user found."
+      );
+    }
+  }
+
+  const APIValues = core.LocalStorage.getAPIValues();
+  if (APIValues) {
+    core._APIValues = APIValues;
+    core.InternalLogger.log(
+      "NexysCore: Set API values from localStorage.",
+      APIValues
+    );
+    checkVersion(core);
   }
 }

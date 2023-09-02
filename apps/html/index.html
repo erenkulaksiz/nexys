@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://unpkg.com/nexys@latest/dist/bundle.min.js"></script>
+  <script>
+    var nexys = window.nexys("API_KEY", { appName: "APP_NAME", debug: true });
+
+    console.log("library version: " + nexys.getLibraryVersion());
+  </script>
+</head>
+<body>
+  <button onclick="nexys.log('test')">test log</button>
+</body>
+</html>

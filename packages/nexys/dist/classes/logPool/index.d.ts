@@ -25,7 +25,7 @@ export declare class LogPool {
     setLogs(logs: logTypes[]): void;
     setRequests(requests: requestTypes[]): void;
     push({ data, options, ts, guid, path, stack }: logTypes): void;
-    private pushRequest;
+    pushRequest({ res, status, ts, guid }: requestTypes): void;
     clearLogs(): void;
     clearRequests(): void;
     /**

@@ -221,7 +221,6 @@ var LogPool = /** @class */ (function () {
     LogPool.prototype.sendAll = function () {
         return __awaiter(this, void 0, void 0, function () {
             var _start, _end, CollectData;
-            var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -241,55 +240,27 @@ var LogPool = /** @class */ (function () {
                             return [2 /*return*/];
                         }
                         CollectData = __assign(__assign({}, CollectData), { logs: this.logs, requests: this.requests });
-                        this.core.API.sendRequest({
-                            data: CollectData,
-                        })
-                            .then(function (res) {
-                            var _a, _b;
-                            var data = res.json.data;
-                            _this.core.LocalStorage.setAPIValues(data);
-                            _this.core.InternalLogger.log("API: Successful request", res);
-                            (_b = (_a = _this.core.Events.on.request).success) === null || _b === void 0 ? void 0 : _b.call(_a, res);
-                            _this.clearRequests();
-                            _this.clearLogs();
-                            if (_this.core._isClient)
-                                _end = performance.now();
-                            if (_start && _end) {
-                                _this.core.LogPool.push({
-                                    data: {
-                                        type: "LOGPOOL:SENDALL",
-                                        diff: _end - _start,
-                                    },
-                                    ts: new Date().getTime(),
-                                    options: {
-                                        type: "METRIC",
-                                    },
-                                    guid: guid(),
-                                    path: getPagePath(_this.core),
-                                });
-                                _this.core.InternalLogger.log("API: Request took ".concat(_end - _start, "ms."));
-                            }
-                        })
-                            .catch(function (err) {
-                            var _a, _b;
-                            _this.core.InternalLogger.error("API: Request failed.", err);
-                            (_b = (_a = _this.core.Events.on.request).error) === null || _b === void 0 ? void 0 : _b.call(_a, err);
-                            if ((err === null || err === void 0 ? void 0 : err.message) == "API:FAILED:400:api-key") {
-                                _this.core.InternalLogger.error("API: Your API key is not valid. Please make sure you entered correct credentials.");
-                            }
-                            if ((err === null || err === void 0 ? void 0 : err.message) !== "API:ALREADY_SENDING") {
-                                _this.core.API.requestCompleted();
-                                _this.pushRequest({
-                                    res: {
-                                        message: err.message,
-                                        stack: err.stack,
-                                    },
-                                    status: "failed",
-                                    ts: new Date().getTime(),
-                                    guid: guid(),
-                                });
-                            }
-                        });
+                        this.core.InternalLogger.log("LogPool: Sending data to the server.", CollectData);
+                        return [4 /*yield*/, this.core.API.sendData(CollectData)];
+                    case 2:
+                        _a.sent();
+                        if (this.core._isClient)
+                            _end = performance.now();
+                        if (_start && _end) {
+                            this.core.LogPool.push({
+                                data: {
+                                    type: "LOGPOOL:SENDALL",
+                                    diff: _end - _start,
+                                },
+                                ts: new Date().getTime(),
+                                options: {
+                                    type: "METRIC",
+                                },
+                                guid: guid(),
+                                path: getPagePath(this.core),
+                            });
+                            this.core.InternalLogger.log("API: Request took ".concat(_end - _start, "ms."));
+                        }
                         return [2 /*return*/];
                 }
             });

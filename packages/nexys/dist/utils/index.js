@@ -17,7 +17,7 @@
 export var server = "https://dash.nexys.app";
 export var debugServer = "http://localhost:3000";
 export var libraryName = "Nexys";
-export var version = "1.0.33";
+export var version = "1.0.36";
 export { Base64 } from "./base64.js";
 export { isClient } from "./isClient.js";
 export { guid } from "./guid.js";
