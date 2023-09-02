@@ -34,3 +34,5 @@ export default function App({ Component, pageProps }: AppProps) {
 This code will collect FCP (First Contentful Paint), LCP (Largest Contentful Paint), CLS (Cumulative Layout Shift), FID (First Input Delay), TTFB (Time to First Byte).
  
 You can view your app metrics on your project's [dashboard](https://dash.nexys.app/) inside **Metrics** tab.
+
+Also, if you dont want to collect metrics, just don't add `nexys.metric` to your project.

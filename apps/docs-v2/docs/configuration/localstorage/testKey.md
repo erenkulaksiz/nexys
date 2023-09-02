@@ -14,12 +14,12 @@ description: Test key configuration
 | testKey | `string` | "\__nexysTest__" |
 
 ```javascript
-// This code will disable local storage feature.
+// This code will change the test key on localStorage.
 const nexys = new Nexys("API_KEY", { 
     appName: "APP_NAME", 
     // highlight-start
     localStorage: {
-      testKey: false
+      testKey: "myAppTest"
     }
     // highlight-end
 });

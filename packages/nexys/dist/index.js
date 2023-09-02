@@ -55,9 +55,13 @@ import { Core } from "./classes/core/index.js";
 var Nexys = /** @class */ (function (_super) {
     __extends(Nexys, _super);
     /**
+     *
+     * Documentation
+     * @see https://docs.nexys.app
+     *
      * Creates a Nexys instance that can be used anywhere in your application.
      *
-     *  * @example
+     * @example
      * ```javascript
      * // Import the client
      * import Nexys from "nexys";

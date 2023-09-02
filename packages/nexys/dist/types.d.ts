@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { Core } from "./classes/core";
 import type { getDeviceDataReturnTypes } from "src/classes/device/types.js";
 export interface NexysOptions {
     appName?: string;
@@ -114,7 +115,7 @@ export interface collectDataTypes {
 }
 declare global {
     interface Window {
-        nexys: any;
+        nexys: Core;
     }
 }
 //# sourceMappingURL=types.d.ts.map

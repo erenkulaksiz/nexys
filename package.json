@@ -17,7 +17,7 @@
     "email": "erenkulaksz@gmail.com"
   },
   "scripts": {
-    "build": "turbo run build",
+    "build": "turbo run build --filter=nexys --filter=nexys-nextjs --filter=nexys-reactjs --filter=nexys-node",
     "dev:nextjs": "turbo run dev --filter=nexys --filter=nexys-nextjs",
     "dev:reactjs": "turbo run dev --filter=nexys --filter=nexys-react --no-daemon",
     "dev:docs": "turbo run dev --filter=nexys-docs",

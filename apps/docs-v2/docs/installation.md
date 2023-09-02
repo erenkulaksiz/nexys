@@ -7,8 +7,6 @@ title: Installation
 
 ---
 
-## UNLOAD
-
 Get started by creating a new **React**, **NextJS** or **NodeJS** project.
 
 ## Install
