@@ -15,6 +15,8 @@ Ignoring any type will not going to remove that log, but will not count as a log
 | --- | --- | --- |
 | ignoreType | `string` `string[]` `false` | "METRIC" |
 
+## Example
+
 ```javascript
 // This code will ignore all logs with type "TEST" and "METRIC".
 const nexys = new Nexys("API_KEY", { 

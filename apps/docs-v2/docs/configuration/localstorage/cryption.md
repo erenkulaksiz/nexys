@@ -15,6 +15,8 @@ If you want to add some security to your logs on **localStorage**, you can use t
 | --- | --- | --- |
 | cryption | `boolean` | true |
 
+## Example
+
 ```javascript
 // This code will disable cryption feature.
 const nexys = new Nexys("API_KEY", { 

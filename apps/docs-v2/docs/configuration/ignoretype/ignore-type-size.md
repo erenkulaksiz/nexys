@@ -13,6 +13,8 @@ Use if you want to send all logs if ignored log type size is bigger than **ignor
 | --- | --- | --- |
 | ignoreTypeSize | `number` | 50 |
 
+## Example
+
 ```javascript
 const nexys = new Nexys("API_KEY", { 
     appName: "APP_NAME", 

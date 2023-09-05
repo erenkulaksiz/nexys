@@ -92,27 +92,27 @@ var LocalStorage = /** @class */ (function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
+                        this.core.InternalLogger.log("LocalStorage: Available:", this.isAvailable);
+                        if (!this.isActive) return [3 /*break*/, 2];
                         _a = this;
                         return [4 /*yield*/, this.checkAvailability()];
                     case 1:
                         _a.isAvailable = _b.sent();
-                        this.core.InternalLogger.log("LocalStorage: Available:", this.isAvailable);
-                        if (this.isActive) {
-                            this.core.InternalLogger.log("LocalStorage: Set to Active");
-                            // We will not going to use localStorage if library is loaded in server environment.
-                            this.shouldUseLocalStorage =
-                                this.isAvailable && this._localStorage && this.core._isClient
-                                    ? true
-                                    : false;
-                            if (this.shouldUseLocalStorage) {
-                                this.core.InternalLogger.log("LocalStorage: Using localStorage.");
-                            }
-                            else {
-                                this.core.InternalLogger.log("LocalStorage: Not using localStorage.");
-                            }
+                        this.core.InternalLogger.log("LocalStorage: Set to Active");
+                        // We will not going to use localStorage if library is loaded in server environment.
+                        this.shouldUseLocalStorage =
+                            this.isAvailable && this._localStorage && this.core._isClient
+                                ? true
+                                : false;
+                        if (this.shouldUseLocalStorage) {
+                            this.core.InternalLogger.log("LocalStorage: Using localStorage.");
                         }
-                        return [4 /*yield*/, this.init()];
-                    case 2:
+                        else {
+                            this.core.InternalLogger.log("LocalStorage: Not using localStorage.");
+                        }
+                        _b.label = 2;
+                    case 2: return [4 /*yield*/, this.init()];
+                    case 3:
                         _b.sent();
                         return [2 /*return*/];
                 }
@@ -173,9 +173,10 @@ var LocalStorage = /** @class */ (function () {
                     case 0:
                         if (!this.shouldUseLocalStorage)
                             return [2 /*return*/];
-                        this.core.InternalLogger.log("LocalStorage: Setting...", value);
+                        //this.core.InternalLogger.log("LocalStorage: Setting...", value);
                         return [4 /*yield*/, ((_a = this._localStorage) === null || _a === void 0 ? void 0 : _a.setItem(key, value))];
                     case 1:
+                        //this.core.InternalLogger.log("LocalStorage: Setting...", value);
                         _b.sent();
                         return [2 /*return*/];
                 }
@@ -190,18 +191,20 @@ var LocalStorage = /** @class */ (function () {
                     case 0:
                         if (!this.shouldUseLocalStorage)
                             return [2 /*return*/, null];
-                        this.core.InternalLogger.log("LocalStorage: Getting...", key);
                         return [4 /*yield*/, ((_a = this._localStorage) === null || _a === void 0 ? void 0 : _a.getItem(key))];
-                    case 1: return [2 /*return*/, _b.sent()];
+                    case 1: 
+                    //this.core.InternalLogger.log("LocalStorage: Getting...", key);
+                    return [2 /*return*/, _b.sent()];
                 }
             });
         });
     };
     LocalStorage.prototype.checkAvailability = function () {
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
-            var e_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var item, e_1;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
                     case 0:
                         if (!this.core._isClient)
                             return [2 /*return*/, false];
@@ -210,20 +213,29 @@ var LocalStorage = /** @class */ (function () {
                             this.core.InternalLogger.log("LocalStorage: Not available - cant check availability.");
                             return [2 /*return*/, false];
                         }
-                        _a.label = 1;
+                        _d.label = 1;
                     case 1:
-                        _a.trys.push([1, 4, , 5]);
-                        return [4 /*yield*/, this.setItem(this.testKey, this.testKey)];
+                        _d.trys.push([1, 5, , 6]);
+                        this.core.InternalLogger.log("LocalStorage: Checking setItem...");
+                        return [4 /*yield*/, ((_a = this._localStorage) === null || _a === void 0 ? void 0 : _a.setItem(this.testKey, this.testKey))];
                     case 2:
-                        _a.sent();
-                        return [4 /*yield*/, this.removeItem(this.testKey)];
+                        _d.sent();
+                        return [4 /*yield*/, ((_b = this._localStorage) === null || _b === void 0 ? void 0 : _b.getItem(this.testKey))];
                     case 3:
-                        _a.sent();
-                        return [2 /*return*/, true];
+                        item = _d.sent();
+                        this.core.InternalLogger.log("LocalStorage: Checking Item:", item);
+                        if (item != this.testKey) {
+                            this.core.InternalLogger.log("LocalStorage: Not available - item is not equal to testKey.");
+                            return [2 /*return*/, false];
+                        }
+                        return [4 /*yield*/, ((_c = this._localStorage) === null || _c === void 0 ? void 0 : _c.removeItem(this.testKey))];
                     case 4:
-                        e_1 = _a.sent();
+                        _d.sent();
+                        return [2 /*return*/, true];
+                    case 5:
+                        e_1 = _d.sent();
                         return [2 /*return*/, false];
-                    case 5: return [2 /*return*/];
+                    case 6: return [2 /*return*/];
                 }
             });
         });
@@ -619,8 +631,10 @@ var LocalStorage = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!this.shouldUseLocalStorage)
+                        if (!this.shouldUseLocalStorage) {
+                            this.core.InternalLogger.log("LocalStorage: Not using localStorage in setUser.");
                             return [2 /*return*/];
+                        }
                         return [4 /*yield*/, this.get()];
                     case 1:
                         localValue = _a.sent();

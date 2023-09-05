@@ -17,6 +17,8 @@ Default is `false` because this feature ask's user for permission to access thei
 | --- | --- | --- |
 | allowGeoLocation | `boolean` | false |
 
+## Example
+
 ```javascript
 // This code will enable geo location feature.
 const nexys = new Nexys("API_KEY", { 

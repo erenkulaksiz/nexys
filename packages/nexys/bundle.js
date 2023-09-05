@@ -366,7 +366,7 @@
      */
     var server = "https://dash.nexys.app";
     var libraryName = "Nexys";
-    var version = "1.0.37";
+    var version = "1.0.38";
 
     /**
      * @license
@@ -537,8 +537,7 @@
                                         if ((err === null || err === void 0 ? void 0 : err.message) == "API:FAILED:400:api-key") {
                                             this.core.InternalLogger.error("API: Your API key is not valid. Please make sure you entered correct credentials.");
                                         }
-                                        if (!((err === null || err === void 0 ? void 0 : err.message) != "API:FAILED:400:api-key" &&
-                                            (err === null || err === void 0 ? void 0 : err.message) != "API:ALREADY_SENDING")) return [3 /*break*/, 2];
+                                        if (!((err === null || err === void 0 ? void 0 : err.message) != "API:ALREADY_SENDING")) return [3 /*break*/, 2];
                                         this.core.API.requestCompleted();
                                         return [4 /*yield*/, this.core.LogPool.pushRequest({
                                                 res: {
@@ -921,27 +920,27 @@
                 return __generator$4(this, function (_b) {
                     switch (_b.label) {
                         case 0:
+                            this.core.InternalLogger.log("LocalStorage: Available:", this.isAvailable);
+                            if (!this.isActive) return [3 /*break*/, 2];
                             _a = this;
                             return [4 /*yield*/, this.checkAvailability()];
                         case 1:
                             _a.isAvailable = _b.sent();
-                            this.core.InternalLogger.log("LocalStorage: Available:", this.isAvailable);
-                            if (this.isActive) {
-                                this.core.InternalLogger.log("LocalStorage: Set to Active");
-                                // We will not going to use localStorage if library is loaded in server environment.
-                                this.shouldUseLocalStorage =
-                                    this.isAvailable && this._localStorage && this.core._isClient
-                                        ? true
-                                        : false;
-                                if (this.shouldUseLocalStorage) {
-                                    this.core.InternalLogger.log("LocalStorage: Using localStorage.");
-                                }
-                                else {
-                                    this.core.InternalLogger.log("LocalStorage: Not using localStorage.");
-                                }
+                            this.core.InternalLogger.log("LocalStorage: Set to Active");
+                            // We will not going to use localStorage if library is loaded in server environment.
+                            this.shouldUseLocalStorage =
+                                this.isAvailable && this._localStorage && this.core._isClient
+                                    ? true
+                                    : false;
+                            if (this.shouldUseLocalStorage) {
+                                this.core.InternalLogger.log("LocalStorage: Using localStorage.");
                             }
-                            return [4 /*yield*/, this.init()];
-                        case 2:
+                            else {
+                                this.core.InternalLogger.log("LocalStorage: Not using localStorage.");
+                            }
+                            _b.label = 2;
+                        case 2: return [4 /*yield*/, this.init()];
+                        case 3:
                             _b.sent();
                             return [2 /*return*/];
                     }
@@ -1002,9 +1001,10 @@
                         case 0:
                             if (!this.shouldUseLocalStorage)
                                 return [2 /*return*/];
-                            this.core.InternalLogger.log("LocalStorage: Setting...", value);
+                            //this.core.InternalLogger.log("LocalStorage: Setting...", value);
                             return [4 /*yield*/, ((_a = this._localStorage) === null || _a === void 0 ? void 0 : _a.setItem(key, value))];
                         case 1:
+                            //this.core.InternalLogger.log("LocalStorage: Setting...", value);
                             _b.sent();
                             return [2 /*return*/];
                     }
@@ -1019,17 +1019,20 @@
                         case 0:
                             if (!this.shouldUseLocalStorage)
                                 return [2 /*return*/, null];
-                            this.core.InternalLogger.log("LocalStorage: Getting...", key);
                             return [4 /*yield*/, ((_a = this._localStorage) === null || _a === void 0 ? void 0 : _a.getItem(key))];
-                        case 1: return [2 /*return*/, _b.sent()];
+                        case 1: 
+                        //this.core.InternalLogger.log("LocalStorage: Getting...", key);
+                        return [2 /*return*/, _b.sent()];
                     }
                 });
             });
         };
         LocalStorage.prototype.checkAvailability = function () {
+            var _a, _b, _c;
             return __awaiter$4(this, void 0, void 0, function () {
-                return __generator$4(this, function (_a) {
-                    switch (_a.label) {
+                var item;
+                return __generator$4(this, function (_d) {
+                    switch (_d.label) {
                         case 0:
                             if (!this.core._isClient)
                                 return [2 /*return*/, false];
@@ -1038,20 +1041,29 @@
                                 this.core.InternalLogger.log("LocalStorage: Not available - cant check availability.");
                                 return [2 /*return*/, false];
                             }
-                            _a.label = 1;
+                            _d.label = 1;
                         case 1:
-                            _a.trys.push([1, 4, , 5]);
-                            return [4 /*yield*/, this.setItem(this.testKey, this.testKey)];
+                            _d.trys.push([1, 5, , 6]);
+                            this.core.InternalLogger.log("LocalStorage: Checking setItem...");
+                            return [4 /*yield*/, ((_a = this._localStorage) === null || _a === void 0 ? void 0 : _a.setItem(this.testKey, this.testKey))];
                         case 2:
-                            _a.sent();
-                            return [4 /*yield*/, this.removeItem(this.testKey)];
+                            _d.sent();
+                            return [4 /*yield*/, ((_b = this._localStorage) === null || _b === void 0 ? void 0 : _b.getItem(this.testKey))];
                         case 3:
-                            _a.sent();
-                            return [2 /*return*/, true];
+                            item = _d.sent();
+                            this.core.InternalLogger.log("LocalStorage: Checking Item:", item);
+                            if (item != this.testKey) {
+                                this.core.InternalLogger.log("LocalStorage: Not available - item is not equal to testKey.");
+                                return [2 /*return*/, false];
+                            }
+                            return [4 /*yield*/, ((_c = this._localStorage) === null || _c === void 0 ? void 0 : _c.removeItem(this.testKey))];
                         case 4:
-                            _a.sent();
+                            _d.sent();
+                            return [2 /*return*/, true];
+                        case 5:
+                            _d.sent();
                             return [2 /*return*/, false];
-                        case 5: return [2 /*return*/];
+                        case 6: return [2 /*return*/];
                     }
                 });
             });
@@ -1447,8 +1459,10 @@
                 return __generator$4(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            if (!this.shouldUseLocalStorage)
+                            if (!this.shouldUseLocalStorage) {
+                                this.core.InternalLogger.log("LocalStorage: Not using localStorage in setUser.");
                                 return [2 /*return*/];
+                            }
                             return [4 /*yield*/, this.get()];
                         case 1:
                             localValue = _a.sent();
@@ -2679,6 +2693,130 @@
             var _a, _b;
             this._checkInitialized();
             return (_b = (_a = this._config) === null || _a === void 0 ? void 0 : _a.user) !== null && _b !== void 0 ? _b : null;
+        };
+        /**
+         * This method will return log length in logPool.
+         *
+         * @example
+         * ```javascript
+         * nexys.getLogPoolLength();
+         * ```
+         *
+         * @public
+         * @returns {number} - Returns log length in logPool.
+         *
+         */
+        Core.prototype.getLogPoolLength = function () {
+            this._checkInitialized();
+            return this.LogPool.logs.length;
+        };
+        /**
+         * This method will return log types in logPool. Multiple same types will be counted as one. No-typed logs will not be counted.
+         *
+         * @example
+         * ```javascript
+         * nexys.getLogPoolLogTypes();
+         * ```
+         *
+         * @public
+         * @returns {string[]} - Returns log types in logPool.
+         *
+         */
+        Core.prototype.getLogPoolLogTypes = function () {
+            this._checkInitialized();
+            var items = {};
+            this.LogPool.logs.forEach(function (log) {
+                var _a, _b, _c, _d;
+                if ((_a = log === null || log === void 0 ? void 0 : log.options) === null || _a === void 0 ? void 0 : _a.type) {
+                    items[(_b = log === null || log === void 0 ? void 0 : log.options) === null || _b === void 0 ? void 0 : _b.type] = items[(_c = log === null || log === void 0 ? void 0 : log.options) === null || _c === void 0 ? void 0 : _c.type]
+                        ? items[(_d = log === null || log === void 0 ? void 0 : log.options) === null || _d === void 0 ? void 0 : _d.type] + 1
+                        : 1;
+                }
+            });
+            return Object.keys(items);
+        };
+        /**
+         * This method will return logPool logs.
+         *
+         * @example
+         * ```javascript
+         * nexys.getLogPoolLogTypes();
+         * ```
+         *
+         * @public
+         * @returns {logTypes[]} - Returns logPool logs.
+         */
+        Core.prototype.getLogPoolLogs = function () {
+            this._checkInitialized();
+            return this.LogPool.logs;
+        };
+        /**
+         * This method will return requests in logPool. Requests array will be cleared (also on localStorage) after each successful request to Nexys.
+         *
+         * @example
+         * ```javascript
+         * nexys.getLogPoolRequests();
+         * ```
+         *
+         * @public
+         * @returns {requestTypes[]} - Returns requests in logPool.
+         *
+         */
+        Core.prototype.getLogPoolRequests = function () {
+            this._checkInitialized();
+            return this.LogPool.requests;
+        };
+        /**
+         * This method will return API values. API values might be null if there is no request to Nexys yet also if there is no localStorage.
+         *
+         * @example
+         * ```javascript
+         * nexys.getApiValues();
+         * ```
+         *
+         * @public
+         * @returns {APIValues} - Returns APIValues.
+         *
+         */
+        Core.prototype.getApiValues = function () {
+            return this._APIValues;
+        };
+        /**
+         * This method will return if Nexys is initialized or not.
+         *
+         * @example
+         * ```javascript
+         * nexys.getIsInitialized();
+         * ```
+         *
+         * @public
+         * @returns {boolean} - Returns if Nexys is initialized or not.
+         *
+         */
+        Core.prototype.getIsInitialized = function () {
+            return this._initialized;
+        };
+        /**
+         * This method will return DeviceData Nexys can gather.
+         *
+         * @example
+         * ```javascript
+         * nexys.getDeviceData();
+         * ```
+         *
+         * @async - This method is async.
+         * @public
+         * @returns {Promise<getDeviceDataReturnTypes>} - Returns DeviceData.
+         */
+        Core.prototype.getDeviceData = function () {
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, this.Device.getDeviceData()];
+                        case 1: return [2 /*return*/, _a.sent()];
+                    }
+                });
+            });
         };
         return Core;
     }());

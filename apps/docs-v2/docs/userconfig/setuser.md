@@ -10,6 +10,8 @@ description: Set User
 
 You can set the user of your application with this method. This method will be used to identify the user of your application. This feature is crucial for the **User Analytics** feature.
 
+Configuring user will be saved on localStorage. So, you don't need to set it on each page load. You can set it once and it will load it automatically on each page load.
+
 Example:
 
 ```ts title="login.ts"
@@ -27,9 +29,7 @@ function login(){
 ...
 ```
 
-This feature will not store any data on **localStorage**. It will only be used to identify the user of your application.
-
-You might want to do this on each page load. Since if not set while logPool is sending to the dashboard, it will be sent as `undefined`.
+You might want to do this on each page load. Since if not set while logPool is sending data to the dashboard, it will be sent as `undefined`.
 
 ```ts title="pages/_app.tsx"
 ...

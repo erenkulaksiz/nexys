@@ -11,7 +11,9 @@ If you want to change the key of your logs on **localStorage**, you can use this
 
 | Option | Type | Default |
 | --- | --- | --- |
-| key | `string` | "\__nexysLogPool__" |
+| key | `string` | "\__nex__" |
+
+## Example
 
 ```javascript
 // This code will change the key of your logs on localStorage.

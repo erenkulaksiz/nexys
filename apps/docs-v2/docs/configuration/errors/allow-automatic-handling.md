@@ -13,6 +13,8 @@ If enabled, Nexys will automatically handle errors and unhandled rejections and 
 | --- | --- | --- |
 | allowAutomaticHandling | `boolean` | true |
 
+## Example
+
 ```javascript
 // This code will disable automatic handling feature.
 const nexys = new Nexys("API_KEY", { 

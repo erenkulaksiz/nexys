@@ -17,6 +17,8 @@ Logs start with **AUTO:** prefix are automatically catched by **Nexys** and shou
 | --- | --- | --- |
 | sendAllOnType | `string` `string[]` `false` | ["AUTO:ERROR", "AUTO:UNHANDLEDREJECTION", "ERROR"] |
 
+## Example
+
 ```javascript
 // This code will send all logs on logPool to our servers when an error occurs.
 const nexys = new Nexys("API_KEY", { 

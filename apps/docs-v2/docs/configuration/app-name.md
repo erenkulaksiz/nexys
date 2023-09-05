@@ -13,6 +13,8 @@ This option is required. It is used to identify your application in **Nexys** da
 | --- | --- | --- |
 | appName | `string` | "" |
 
+## Example
+
 ```javascript            
 const nexys = new Nexys(
   "API_KEY", 

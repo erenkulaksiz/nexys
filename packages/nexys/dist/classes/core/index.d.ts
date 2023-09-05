@@ -20,8 +20,9 @@ import { InternalLogger } from "./../internalLogger/index.js";
 import { LocalStorage } from "./../localStorage/index.js";
 import { LogPool } from "./../logPool/index.js";
 import { Device } from "./../device/index.js";
-import type { NexysOptions, logTypes, configTypes, configFunctions, errorLogTypes } from "../../types";
+import type { NexysOptions, logTypes, configTypes, configFunctions, errorLogTypes, requestTypes } from "../../types";
 import type { APIValues } from "../localStorage/types.js";
+import type { getDeviceDataReturnTypes } from "../device/types.js";
 export declare class Core {
     InternalLogger: InternalLogger;
     LogPool: LogPool;
@@ -217,5 +218,95 @@ export declare class Core {
      *
      */
     getUser(): string | null;
+    /**
+     * This method will return log length in logPool.
+     *
+     * @example
+     * ```javascript
+     * nexys.getLogPoolLength();
+     * ```
+     *
+     * @public
+     * @returns {number} - Returns log length in logPool.
+     *
+     */
+    getLogPoolLength(): number;
+    /**
+     * This method will return log types in logPool. Multiple same types will be counted as one. No-typed logs will not be counted.
+     *
+     * @example
+     * ```javascript
+     * nexys.getLogPoolLogTypes();
+     * ```
+     *
+     * @public
+     * @returns {string[]} - Returns log types in logPool.
+     *
+     */
+    getLogPoolLogTypes(): string[];
+    /**
+     * This method will return logPool logs.
+     *
+     * @example
+     * ```javascript
+     * nexys.getLogPoolLogTypes();
+     * ```
+     *
+     * @public
+     * @returns {logTypes[]} - Returns logPool logs.
+     */
+    getLogPoolLogs(): logTypes[];
+    /**
+     * This method will return requests in logPool. Requests array will be cleared (also on localStorage) after each successful request to Nexys.
+     *
+     * @example
+     * ```javascript
+     * nexys.getLogPoolRequests();
+     * ```
+     *
+     * @public
+     * @returns {requestTypes[]} - Returns requests in logPool.
+     *
+     */
+    getLogPoolRequests(): requestTypes[];
+    /**
+     * This method will return API values. API values might be null if there is no request to Nexys yet also if there is no localStorage.
+     *
+     * @example
+     * ```javascript
+     * nexys.getApiValues();
+     * ```
+     *
+     * @public
+     * @returns {APIValues} - Returns APIValues.
+     *
+     */
+    getApiValues(): APIValues | null;
+    /**
+     * This method will return if Nexys is initialized or not.
+     *
+     * @example
+     * ```javascript
+     * nexys.getIsInitialized();
+     * ```
+     *
+     * @public
+     * @returns {boolean} - Returns if Nexys is initialized or not.
+     *
+     */
+    getIsInitialized(): boolean;
+    /**
+     * This method will return DeviceData Nexys can gather.
+     *
+     * @example
+     * ```javascript
+     * nexys.getDeviceData();
+     * ```
+     *
+     * @async - This method is async.
+     * @public
+     * @returns {Promise<getDeviceDataReturnTypes>} - Returns DeviceData.
+     */
+    getDeviceData(): Promise<getDeviceDataReturnTypes>;
 }
 //# sourceMappingURL=index.d.ts.map

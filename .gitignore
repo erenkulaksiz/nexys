@@ -36,3 +36,4 @@ yarn-error.log*
 
 # production
 /build
+bundle.js

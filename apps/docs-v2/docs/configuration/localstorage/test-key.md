@@ -11,7 +11,9 @@ description: Test key configuration
 
 | Option | Type | Default |
 | --- | --- | --- |
-| testKey | `string` | "\__nexysTest__" |
+| testKey | `string` | "\__nex-t__" |
+
+## Example
 
 ```javascript
 // This code will change the test key on localStorage.

@@ -6,12 +6,18 @@
   <title>Document</title>
   <script src="https://unpkg.com/nexys@latest/dist/bundle.min.js"></script>
   <script>
-    var nexys = window.nexys("API_KEY", { appName: "APP_NAME", debug: true });
+    var nexys = new window.nexys("API_KEY", { appName: "APP_NAME", debug: true, localStorage: { cryption: false }});
 
-    console.log("library version: " + nexys.getLibraryVersion());
+    nexys.configure((config) => {
+      config.setUser("test");
+    });
+
+    console.log("library version: ", nexys.getLibraryVersion());
   </script>
 </head>
 <body>
   <button onclick="nexys.log('test')">test log</button>
+  <button onclick="nexys.clear()">clear</button>
+  <button onclick="console.log(nexys.getUser())">get user</button>
 </body>
 </html>

@@ -499,6 +499,130 @@ var Core = /** @class */ (function () {
         this._checkInitialized();
         return (_b = (_a = this._config) === null || _a === void 0 ? void 0 : _a.user) !== null && _b !== void 0 ? _b : null;
     };
+    /**
+     * This method will return log length in logPool.
+     *
+     * @example
+     * ```javascript
+     * nexys.getLogPoolLength();
+     * ```
+     *
+     * @public
+     * @returns {number} - Returns log length in logPool.
+     *
+     */
+    Core.prototype.getLogPoolLength = function () {
+        this._checkInitialized();
+        return this.LogPool.logs.length;
+    };
+    /**
+     * This method will return log types in logPool. Multiple same types will be counted as one. No-typed logs will not be counted.
+     *
+     * @example
+     * ```javascript
+     * nexys.getLogPoolLogTypes();
+     * ```
+     *
+     * @public
+     * @returns {string[]} - Returns log types in logPool.
+     *
+     */
+    Core.prototype.getLogPoolLogTypes = function () {
+        this._checkInitialized();
+        var items = {};
+        this.LogPool.logs.forEach(function (log) {
+            var _a, _b, _c, _d;
+            if ((_a = log === null || log === void 0 ? void 0 : log.options) === null || _a === void 0 ? void 0 : _a.type) {
+                items[(_b = log === null || log === void 0 ? void 0 : log.options) === null || _b === void 0 ? void 0 : _b.type] = items[(_c = log === null || log === void 0 ? void 0 : log.options) === null || _c === void 0 ? void 0 : _c.type]
+                    ? items[(_d = log === null || log === void 0 ? void 0 : log.options) === null || _d === void 0 ? void 0 : _d.type] + 1
+                    : 1;
+            }
+        });
+        return Object.keys(items);
+    };
+    /**
+     * This method will return logPool logs.
+     *
+     * @example
+     * ```javascript
+     * nexys.getLogPoolLogTypes();
+     * ```
+     *
+     * @public
+     * @returns {logTypes[]} - Returns logPool logs.
+     */
+    Core.prototype.getLogPoolLogs = function () {
+        this._checkInitialized();
+        return this.LogPool.logs;
+    };
+    /**
+     * This method will return requests in logPool. Requests array will be cleared (also on localStorage) after each successful request to Nexys.
+     *
+     * @example
+     * ```javascript
+     * nexys.getLogPoolRequests();
+     * ```
+     *
+     * @public
+     * @returns {requestTypes[]} - Returns requests in logPool.
+     *
+     */
+    Core.prototype.getLogPoolRequests = function () {
+        this._checkInitialized();
+        return this.LogPool.requests;
+    };
+    /**
+     * This method will return API values. API values might be null if there is no request to Nexys yet also if there is no localStorage.
+     *
+     * @example
+     * ```javascript
+     * nexys.getApiValues();
+     * ```
+     *
+     * @public
+     * @returns {APIValues} - Returns APIValues.
+     *
+     */
+    Core.prototype.getApiValues = function () {
+        return this._APIValues;
+    };
+    /**
+     * This method will return if Nexys is initialized or not.
+     *
+     * @example
+     * ```javascript
+     * nexys.getIsInitialized();
+     * ```
+     *
+     * @public
+     * @returns {boolean} - Returns if Nexys is initialized or not.
+     *
+     */
+    Core.prototype.getIsInitialized = function () {
+        return this._initialized;
+    };
+    /**
+     * This method will return DeviceData Nexys can gather.
+     *
+     * @example
+     * ```javascript
+     * nexys.getDeviceData();
+     * ```
+     *
+     * @async - This method is async.
+     * @public
+     * @returns {Promise<getDeviceDataReturnTypes>} - Returns DeviceData.
+     */
+    Core.prototype.getDeviceData = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.Device.getDeviceData()];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
     return Core;
 }());
 export { Core };

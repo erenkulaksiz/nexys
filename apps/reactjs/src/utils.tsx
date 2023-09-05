@@ -6,6 +6,7 @@ export const nexys: Nexys = new Nexys("fa010d89-dcd6-4273-b236-479296c97a19", {
   debug: true,
   //server: debugServer,
   localStorage: {
+    useLocalStorage: true,
     cryption: false,
     useAdapter: false,
     adapter: {

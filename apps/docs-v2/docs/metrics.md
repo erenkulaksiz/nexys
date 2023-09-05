@@ -8,7 +8,7 @@ sidebar_position: 5
 
 Metrics are the data that you want to collect from your users. You can collect any data you want. You can collect user data, or you can send them anonymously, or you can send them both. **Nexys** is a **privacy-first** analytics platform, and we don't collect any data from your users without your permission.
 
-## Metrics is only available on `NextJS` platforms.
+## Metrics are currently only available on `NextJS` platforms.
 
 React and NodeJS support will come soon.
 

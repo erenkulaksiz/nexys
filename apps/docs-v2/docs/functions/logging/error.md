@@ -1,10 +1,12 @@
 ---
 sidebar_position: 2
-title: Error Logs
+title: Nexys.error()
 description: Logging synthetic errors with Nexys.
 ---
 
-# Error Logs
+# Nexys.error()
+
+Returns `Promise<void>`.
 
 ---
 
@@ -15,6 +17,8 @@ You might not want to throw exceptions to make **Nexys** to detect it as an erro
 ## Error Log Instance
 
 You can simply enter the data you want to log as the first parameter and the options as the second parameter. You don't need to enter the type of the log. It will be automatically set to `ERROR`. But you can change it if you want.
+
+## Example
 
 ```ts
 nexys.error("Hello World!", { action: "HEY" });

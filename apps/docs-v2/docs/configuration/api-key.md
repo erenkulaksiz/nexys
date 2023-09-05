@@ -19,6 +19,8 @@ Currently, we do not allow entering multiple domains, but you can contact us if 
 | --- | --- | --- |
 | first parameter | `string` | "" |
 
+## Example
+
 ```javascript
 const nexys = new Nexys(
   // highlight-next-line

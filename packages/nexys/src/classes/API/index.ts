@@ -101,10 +101,7 @@ export class API {
             "API: Your API key is not valid. Please make sure you entered correct credentials."
           );
         }
-        if (
-          err?.message != "API:FAILED:400:api-key" &&
-          err?.message != "API:ALREADY_SENDING"
-        ) {
+        if (err?.message != "API:ALREADY_SENDING") {
           this.core.API.requestCompleted();
           await this.core.LogPool.pushRequest({
             res: {

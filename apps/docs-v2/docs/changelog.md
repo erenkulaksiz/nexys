@@ -7,6 +7,18 @@ title: Changelog
 
 ---
 
+## 1.0.38
+
+- Fixed bug where setting `useLocalStorage` to false would use `localStorage` anyway.
+- Fixed bug where configuring user would not save it to `localStorage` if `useLocalStorage` is set to `true`.
+- Fixed an issue in HTML example.
+- Added functions `getLibraryVersion`, `getUser`, `getLogPoolLength`, `getLogPoolLogTypes`, `getLogPoolLogs`, `getLogPoolRequests`, `getApiValues`, `getIsInitialized`, `getDeviceData`
+- Added functions to the docs as well as other functions that were not documented.
+
+## 1.0.37
+
+- Added `localStorage` adapter to `Nexys` core.
+
 ## 1.0.36
 
 - Added feature that configuring an user will automatically save it to `localStorage`.

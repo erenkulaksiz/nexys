@@ -13,6 +13,8 @@ If enabled, **Nexys** will store your logs in the browser's local storage. If th
 | --- | --- | --- |
 | useLocalStorage | `boolean` | true |
 
+## Example
+
 ```javascript
 // This code will disable local storage feature.
 const nexys = new Nexys("API_KEY", { 

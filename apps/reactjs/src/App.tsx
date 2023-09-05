@@ -72,6 +72,54 @@ function App() {
       >
         click to force requst
       </button>
+
+      <button
+        onClick={async () => {
+          console.log("user", nexys.getUser());
+        }}
+      >
+        get user
+      </button>
+
+      <button
+        onClick={async () => {
+          console.log("logpoollength", nexys.getLogPoolLength());
+        }}
+      >
+        get logpoollenght
+      </button>
+
+      <button
+        onClick={async () => {
+          console.log("logpooltypes", nexys.getLogPoolLogTypes());
+        }}
+      >
+        get log pool types
+      </button>
+
+      <button
+        onClick={async () => {
+          console.log("logpool logs", nexys.getLogPoolLogs());
+        }}
+      >
+        get logs on logpool
+      </button>
+
+      <button
+        onClick={async () => {
+          console.log("logpool requests", nexys.getLogPoolRequests());
+        }}
+      >
+        get requests on logpool
+      </button>
+
+      <button
+        onClick={async () => {
+          console.log("device data (async)", await nexys.getDeviceData());
+        }}
+      >
+        get device data
+      </button>
       {/*
       <button
         onClick={async () => {

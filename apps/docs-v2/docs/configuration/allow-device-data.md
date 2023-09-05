@@ -13,6 +13,8 @@ If you want to send device data with your logs, you can use this option. You can
 | --- | --- | --- |
 | allowDeviceData | `boolean` | true |
 
+## Example
+
 ```javascript
 // This code will disable device data feature.
 const nexys = new Nexys("API_KEY", { 

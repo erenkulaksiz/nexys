@@ -71,11 +71,10 @@ export class LocalStorage {
   }
 
   public async setup(): Promise<void> {
-    this.isAvailable = await this.checkAvailability();
-
     this.core.InternalLogger.log("LocalStorage: Available:", this.isAvailable);
 
     if (this.isActive) {
+      this.isAvailable = await this.checkAvailability();
       this.core.InternalLogger.log("LocalStorage: Set to Active");
       // We will not going to use localStorage if library is loaded in server environment.
       this.shouldUseLocalStorage =
@@ -116,13 +115,13 @@ export class LocalStorage {
 
   public async setItem(key: string, value: any): Promise<void> {
     if (!this.shouldUseLocalStorage) return;
-    this.core.InternalLogger.log("LocalStorage: Setting...", value);
+    //this.core.InternalLogger.log("LocalStorage: Setting...", value);
     await this._localStorage?.setItem(key, value);
   }
 
   public async getItem(key: string): Promise<any> {
     if (!this.shouldUseLocalStorage) return null;
-    this.core.InternalLogger.log("LocalStorage: Getting...", key);
+    //this.core.InternalLogger.log("LocalStorage: Getting...", key);
     return await this._localStorage?.getItem(key);
   }
 
@@ -136,8 +135,17 @@ export class LocalStorage {
       return false;
     }
     try {
-      await this.setItem(this.testKey, this.testKey);
-      await this.removeItem(this.testKey);
+      this.core.InternalLogger.log("LocalStorage: Checking setItem...");
+      await this._localStorage?.setItem(this.testKey, this.testKey);
+      const item = await this._localStorage?.getItem(this.testKey);
+      this.core.InternalLogger.log("LocalStorage: Checking Item:", item);
+      if (item != this.testKey) {
+        this.core.InternalLogger.log(
+          "LocalStorage: Not available - item is not equal to testKey."
+        );
+        return false;
+      }
+      await this._localStorage?.removeItem(this.testKey);
       return true;
     } catch (e) {
       return false;
@@ -390,7 +398,12 @@ export class LocalStorage {
   }
 
   public async setUser(user: string): Promise<void> {
-    if (!this.shouldUseLocalStorage) return;
+    if (!this.shouldUseLocalStorage) {
+      this.core.InternalLogger.log(
+        "LocalStorage: Not using localStorage in setUser."
+      );
+      return;
+    }
     let localValue = await this.get();
     if (!localValue) {
       this.core.InternalLogger.log(

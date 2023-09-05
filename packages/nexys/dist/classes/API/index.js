@@ -168,8 +168,7 @@ var API = /** @class */ (function () {
                                     if ((err === null || err === void 0 ? void 0 : err.message) == "API:FAILED:400:api-key") {
                                         this.core.InternalLogger.error("API: Your API key is not valid. Please make sure you entered correct credentials.");
                                     }
-                                    if (!((err === null || err === void 0 ? void 0 : err.message) != "API:FAILED:400:api-key" &&
-                                        (err === null || err === void 0 ? void 0 : err.message) != "API:ALREADY_SENDING")) return [3 /*break*/, 2];
+                                    if (!((err === null || err === void 0 ? void 0 : err.message) != "API:ALREADY_SENDING")) return [3 /*break*/, 2];
                                     this.core.API.requestCompleted();
                                     return [4 /*yield*/, this.core.LogPool.pushRequest({
                                             res: {

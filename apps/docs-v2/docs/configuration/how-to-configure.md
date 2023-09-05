@@ -9,7 +9,7 @@ description: How to configure Nexys
 
 After you have installed and created required files, you can start configuring your **Nexys** application.
 
-# Example configuration
+## Example
 
 ```javascript
 const nexys = new Nexys("API_KEY", {

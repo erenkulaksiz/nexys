@@ -1,10 +1,12 @@
 ---
 sidebar_position: 1
-title: Log
+title: Nexys.log()
 description: You can log anything you want with Nexys.
 ---
 
-# Logging
+# Nexys.log()
+
+Returns `Promise<void>`.
 
 ---
 
@@ -12,7 +14,7 @@ description: You can log anything you want with Nexys.
 
 Let's assume you have been configured your **Nexys** instance.
 
-## Log Instance
+## Example
 
 ```ts
 nexys.log("Hello World!", { type: "INFO" });
