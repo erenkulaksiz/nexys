@@ -8,7 +8,7 @@ description: Subscribe to any Nexys event.
 
 ---
 
-Subscribe to any Nexys event. You can subscribe to any event listed in [Event Types](/docs/functions/events/event-types).
+Subscribe to any Nexys event. You can subscribe to any event listed in [Event Types](/functions/events/event-types).
 
 ## Usage
 
