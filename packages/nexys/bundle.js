@@ -191,8 +191,8 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
-    var __assign$6 = (undefined && undefined.__assign) || function () {
-        __assign$6 = Object.assign || function(t) {
+    var __assign$7 = (undefined && undefined.__assign) || function () {
+        __assign$7 = Object.assign || function(t) {
             for (var s, i = 1, n = arguments.length; i < n; i++) {
                 s = arguments[i];
                 for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -200,7 +200,7 @@
             }
             return t;
         };
-        return __assign$6.apply(this, arguments);
+        return __assign$7.apply(this, arguments);
     };
     var __awaiter$6 = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
         function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -317,28 +317,28 @@
                                 libraryName: libraryName,
                                 version: version,
                             },
-                            options: __assign$6(__assign$6({}, core._options), { logPoolSize: core._logPoolSize, allowDeviceData: core._allowDeviceData, sendAllOnType: core._sendAllOnType, ignoreType: core._ignoreType, ignoreTypeSize: core._ignoreTypeSize }),
+                            options: __assign$7(__assign$7({}, core._options), { logPoolSize: core._logPoolSize, allowDeviceData: core._allowDeviceData, sendAllOnType: core._sendAllOnType, ignoreType: core._ignoreType, ignoreTypeSize: core._ignoreTypeSize }),
                             env: {
                                 type: core._env,
                                 isClient: core._isClient,
                             },
                         };
                         if (config) {
-                            CollectData = __assign$6(__assign$6({}, CollectData), { config: config });
+                            CollectData = __assign$7(__assign$7({}, CollectData), { config: config });
                         }
                         nextJSData = collectNextJSData();
                         if (nextJSData) {
-                            CollectData = __assign$6(__assign$6({}, CollectData), { env: __assign$6(__assign$6({}, CollectData.env), nextJSData) });
+                            CollectData = __assign$7(__assign$7({}, CollectData), { env: __assign$7(__assign$7({}, CollectData.env), nextJSData) });
                         }
                         vercelEnv = collectVercelEnv();
                         if (vercelEnv) {
-                            CollectData = __assign$6(__assign$6({}, CollectData), { env: __assign$6(__assign$6({}, CollectData.env), vercelEnv) });
+                            CollectData = __assign$7(__assign$7({}, CollectData), { env: __assign$7(__assign$7({}, CollectData.env), vercelEnv) });
                         }
                         if (core._isClient) {
                             if (document && "getElementById" in document && core._allowElementData) {
                                 DOMData = collectDOMData();
                                 if (DOMData) {
-                                    CollectData = __assign$6(__assign$6({}, CollectData), { env: __assign$6(__assign$6({}, CollectData.env), DOMData) });
+                                    CollectData = __assign$7(__assign$7({}, CollectData), { env: __assign$7(__assign$7({}, CollectData.env), DOMData) });
                                 }
                             }
                         }
@@ -366,7 +366,7 @@
      */
     var server = "https://dash.nexys.app";
     var libraryName = "Nexys";
-    var version = "1.0.38";
+    var version = "1.0.39";
 
     /**
      * @license
@@ -384,8 +384,8 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
-    var __assign$5 = (undefined && undefined.__assign) || function () {
-        __assign$5 = Object.assign || function(t) {
+    var __assign$6 = (undefined && undefined.__assign) || function () {
+        __assign$6 = Object.assign || function(t) {
             for (var s, i = 1, n = arguments.length; i < n; i++) {
                 s = arguments[i];
                 for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -393,7 +393,7 @@
             }
             return t;
         };
-        return __assign$5.apply(this, arguments);
+        return __assign$6.apply(this, arguments);
     };
     var __awaiter$5 = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
         function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -444,47 +444,45 @@
             this._appName = appName;
         }
         API.prototype.sendRequest = function (_a) {
-            var _b, _c;
             var headers = _a.headers, data = _a.data;
             return __awaiter$5(this, void 0, void 0, function () {
                 var server;
                 var _this = this;
-                return __generator$5(this, function (_d) {
+                return __generator$5(this, function (_b) {
                     if (!this.checkAvailability())
                         throw new Error("fetch is not defined (node environment)");
                     if (this._sendingRequest) {
                         throw new Error("API:ALREADY_SENDING");
                     }
                     this._sendingRequest = true;
-                    (_c = (_b = this.core.Events.on.request).sending) === null || _c === void 0 ? void 0 : _c.call(_b, data);
+                    this.core.Events.fire("request.sending", data);
                     server = "".concat(this._server, "/api/report/").concat(this._apiKey, "/").concat(this._appName);
                     this.core.InternalLogger.log("API: Sending request to server", server);
                     return [2 /*return*/, fetch(server, {
                             method: "POST",
-                            headers: __assign$5({ "Content-Type": "application/json" }, headers),
+                            headers: __assign$6({ "Content-Type": "application/json" }, headers),
                             body: JSON.stringify(data),
                         }).then(function (res) { return __awaiter$5(_this, void 0, void 0, function () {
                             var json;
-                            var _a, _b;
-                            return __generator$5(this, function (_c) {
-                                switch (_c.label) {
+                            return __generator$5(this, function (_a) {
+                                switch (_a.label) {
                                     case 0:
                                         json = null;
-                                        _c.label = 1;
+                                        _a.label = 1;
                                     case 1:
-                                        _c.trys.push([1, 3, , 4]);
+                                        _a.trys.push([1, 3, , 4]);
                                         return [4 /*yield*/, res.json()];
                                     case 2:
-                                        json = _c.sent();
+                                        json = _a.sent();
                                         return [3 /*break*/, 4];
                                     case 3:
-                                        _c.sent();
+                                        _a.sent();
                                         json = null;
                                         throw new Error("API:FAILED:JSON_PARSE_ERROR");
                                     case 4:
                                         if (res === null || res === void 0 ? void 0 : res.ok) {
                                             this.requestCompleted();
-                                            (_b = (_a = this.core.Events.on.request).success) === null || _b === void 0 ? void 0 : _b.call(_a, { res: res, json: json });
+                                            this.core.Events.fire("request.success", { res: res, json: json });
                                             return [2 /*return*/, {
                                                     res: res,
                                                     json: json,
@@ -506,34 +504,32 @@
                         })
                             .then(function (res) { return __awaiter$5(_this, void 0, void 0, function () {
                             var data;
-                            var _a, _b;
-                            return __generator$5(this, function (_c) {
-                                switch (_c.label) {
+                            return __generator$5(this, function (_a) {
+                                switch (_a.label) {
                                     case 0:
                                         data = res.json.data;
                                         return [4 /*yield*/, this.core.LocalStorage.setAPIValues(data)];
                                     case 1:
-                                        _c.sent();
+                                        _a.sent();
                                         this.core._APIValues = data;
                                         this.core.InternalLogger.log("API: Successful request", res);
-                                        (_b = (_a = this.core.Events.on.request).success) === null || _b === void 0 ? void 0 : _b.call(_a, { res: res, json: res.json });
+                                        this.core.Events.fire("request.add", { res: res, json: res.json });
                                         return [4 /*yield*/, this.core.LogPool.clearRequests()];
                                     case 2:
-                                        _c.sent();
+                                        _a.sent();
                                         return [4 /*yield*/, this.core.LogPool.clearLogs()];
                                     case 3:
-                                        _c.sent();
+                                        _a.sent();
                                         return [2 /*return*/, true];
                                 }
                             });
                         }); })
                             .catch(function (err) { return __awaiter$5(_this, void 0, void 0, function () {
-                            var _a, _b;
-                            return __generator$5(this, function (_c) {
-                                switch (_c.label) {
+                            return __generator$5(this, function (_a) {
+                                switch (_a.label) {
                                     case 0:
                                         this.core.InternalLogger.error("API: Request failed.", err);
-                                        (_b = (_a = this.core.Events.on.request).error) === null || _b === void 0 ? void 0 : _b.call(_a, err);
+                                        this.core.Events.fire("request.error", err);
                                         if ((err === null || err === void 0 ? void 0 : err.message) == "API:FAILED:400:api-key") {
                                             this.core.InternalLogger.error("API: Your API key is not valid. Please make sure you entered correct credentials.");
                                         }
@@ -549,8 +545,8 @@
                                                 guid: guid(),
                                             })];
                                     case 1:
-                                        _c.sent();
-                                        _c.label = 2;
+                                        _a.sent();
+                                        _a.label = 2;
                                     case 2: return [2 /*return*/, false];
                                 }
                             });
@@ -609,8 +605,8 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
-    var __assign$4 = (undefined && undefined.__assign) || function () {
-        __assign$4 = Object.assign || function(t) {
+    var __assign$5 = (undefined && undefined.__assign) || function () {
+        __assign$5 = Object.assign || function(t) {
             for (var s, i = 1, n = arguments.length; i < n; i++) {
                 s = arguments[i];
                 for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -618,28 +614,13 @@
             }
             return t;
         };
-        return __assign$4.apply(this, arguments);
+        return __assign$5.apply(this, arguments);
     };
     var Events = /** @class */ (function () {
         function Events(core) {
             var _a, _b, _c;
             this._bindedErrorEvent = false;
-            this.on = {
-                error: null,
-                unhandledRejection: null,
-                logAdd: null,
-                logsClear: null,
-                requestsClear: null,
-                coreInit: null,
-                process: null,
-                request: {
-                    sending: null,
-                    success: null,
-                    error: null,
-                },
-                requestAdd: null,
-                localStorageInit: null,
-            };
+            this.on = {};
             this.core = core;
             if ((_c = (_b = (_a = this.core) === null || _a === void 0 ? void 0 : _a._options) === null || _b === void 0 ? void 0 : _b.errors) === null || _c === void 0 ? void 0 : _c.allowAutomaticHandling) {
                 this.setupEventHandlers();
@@ -661,13 +642,12 @@
                             return false;
                         }
                         event.error.hasBeenCaught = true;
-                        typeof _this.on.error == "function" && _this.on.error(event);
+                        _this.fire("errors.error", event);
                         return true;
                     });
                     window.addEventListener("unhandledrejection", function (event) {
                         event.stopImmediatePropagation();
-                        typeof _this.on.unhandledRejection == "function" &&
-                            _this.on.unhandledRejection(event);
+                        _this.fire("errors.unhandled.rejection", event);
                         return true;
                     });
                     /*
@@ -677,9 +657,11 @@
                     */
                     this._bindedErrorEvent = true;
                     this.core.InternalLogger.log("Events: Binded error events.");
+                    this.fire("events.bind.success");
                 }
                 catch (err) {
                     this.core.InternalLogger.log("Events: Couuldnt bind error event.", err);
+                    this.fire("events.bind.failed");
                 }
                 return;
             }
@@ -687,7 +669,7 @@
         };
         Events.prototype.setupEventHandlers = function () {
             var _this = this;
-            this.on.error = function (event) {
+            this.subscribe("errors.error", function (event) {
                 var _a, _b;
                 _this.core.InternalLogger.log("Events: Received error", event);
                 var extractedError = {
@@ -703,7 +685,8 @@
                     timeStamp: event === null || event === void 0 ? void 0 : event.timeStamp,
                 };
                 _this.core.LogPool.push({
-                    data: __assign$4({}, extractedError),
+                    data: __assign$5({}, extractedError),
+                    stack: extractedError.stack,
                     ts: new Date().getTime(),
                     options: {
                         type: "AUTO:ERROR",
@@ -711,8 +694,8 @@
                     guid: guid(),
                     path: getPagePath(_this.core),
                 });
-            };
-            this.on.unhandledRejection = function (event) {
+            });
+            this.subscribe("errors.unhandled.rejection", function (event) {
                 var _a, _b;
                 _this.core.InternalLogger.log("Events: Received unhandledRejection: ", event);
                 var extractedRejection = {
@@ -724,7 +707,8 @@
                     timeStamp: event === null || event === void 0 ? void 0 : event.timeStamp,
                 };
                 _this.core.LogPool.push({
-                    data: __assign$4({}, extractedRejection),
+                    data: __assign$5({}, extractedRejection),
+                    stack: extractedRejection.stack,
                     ts: new Date().getTime(),
                     options: {
                         type: "AUTO:UNHANDLEDREJECTION",
@@ -732,11 +716,11 @@
                     guid: guid(),
                     path: getPagePath(_this.core),
                 });
-            };
-            this.on.request.success = function (event) {
+            });
+            this.subscribe("request.success", function (event) {
                 _this.core.InternalLogger.log("Events: Received request success: ", event);
-            };
-            this.on.request.error = function (event) {
+            });
+            this.subscribe("request.error", function (event) {
                 var messages = {
                     "API:FAILED:400:app-name": "NexysCore: Your configured app name and the app name you entered on your project is mismatching. Please check your configuration. Erasing localStorage.",
                     "API:FAILED:400:not-verified": "NexysCore: Your project is not verified. Erasing localStorage.",
@@ -751,7 +735,37 @@
                     return;
                 }
                 _this.core.InternalLogger.log("Events: Received request error: ", event);
-            };
+            });
+        };
+        Events.prototype.fire = function (event, data) {
+            var _this = this;
+            // @ts-ignore
+            if (this.on[event] == null || this.on[event] == undefined) {
+                this.core.InternalLogger.log("Events: Event ".concat(event, " is not subscribed."));
+                return;
+            }
+            this.core.InternalLogger.log("Events: Firing event ".concat(event));
+            // @ts-ignore
+            this.on[event].forEach(function (callback) {
+                if (typeof callback !== "function") {
+                    _this.core.InternalLogger.log("Events: Callback is not a function.", callback);
+                    return;
+                }
+                callback(data);
+            });
+        };
+        Events.prototype.subscribe = function (event, callback) {
+            // @ts-ignore
+            if (this.on[event] == null || this.on[event] == undefined) {
+                // @ts-ignore
+                this.on[event] = [];
+            }
+            // @ts-ignore
+            this.on[event].push(callback);
+        };
+        Events.prototype.unsubscribe = function (event) {
+            // @ts-ignore
+            this.on[event] = null;
         };
         return Events;
     }());
@@ -948,18 +962,17 @@
             });
         };
         LocalStorage.prototype.init = function () {
-            var _a, _b;
             return __awaiter$4(this, void 0, void 0, function () {
                 var localItem;
-                return __generator$4(this, function (_c) {
-                    switch (_c.label) {
+                return __generator$4(this, function (_a) {
+                    switch (_a.label) {
                         case 0:
                             if (!this.shouldUseLocalStorage)
                                 return [2 /*return*/];
                             this.core.InternalLogger.log("LocalStorage: Initializing...");
                             return [4 /*yield*/, this.get()];
                         case 1:
-                            localItem = _c.sent();
+                            localItem = _a.sent();
                             if (!localItem) return [3 /*break*/, 2];
                             this.core.InternalLogger.log("LocalStorage: Found local item:", localItem);
                             return [3 /*break*/, 4];
@@ -967,10 +980,10 @@
                             this.core.InternalLogger.log("LocalStorage: No local item found.");
                             return [4 /*yield*/, this.resetLocalValue()];
                         case 3:
-                            localItem = _c.sent();
-                            _c.label = 4;
+                            localItem = _a.sent();
+                            _a.label = 4;
                         case 4:
-                            (_b = (_a = this.core.Events.on).localStorageInit) === null || _b === void 0 ? void 0 : _b.call(_a, localItem);
+                            this.core.Events.fire("localstorage.init", localItem);
                             return [2 /*return*/];
                     }
                 });
@@ -1507,8 +1520,8 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
-    var __assign$3 = (undefined && undefined.__assign) || function () {
-        __assign$3 = Object.assign || function(t) {
+    var __assign$4 = (undefined && undefined.__assign) || function () {
+        __assign$4 = Object.assign || function(t) {
             for (var s, i = 1, n = arguments.length; i < n; i++) {
                 s = arguments[i];
                 for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -1516,7 +1529,7 @@
             }
             return t;
         };
-        return __assign$3.apply(this, arguments);
+        return __assign$4.apply(this, arguments);
     };
     var __awaiter$3 = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
         function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -1560,6 +1573,7 @@
             this.logs = [];
             this.requests = [];
             this.core = core;
+            this.core.Events.fire("logpool.init");
         }
         LogPool.prototype.setLogs = function (logs) {
             if (!Array.isArray(logs))
@@ -1585,12 +1599,11 @@
             this.process();
         };
         LogPool.prototype.push = function (_a) {
-            var _b, _c;
             var data = _a.data, options = _a.options, ts = _a.ts, guid = _a.guid, path = _a.path, stack = _a.stack;
             return __awaiter$3(this, void 0, void 0, function () {
                 var log;
-                return __generator$3(this, function (_d) {
-                    switch (_d.label) {
+                return __generator$3(this, function (_b) {
+                    switch (_b.label) {
                         case 0:
                             log = {
                                 data: data,
@@ -1602,22 +1615,21 @@
                             };
                             this.logs.push(log);
                             this.process();
-                            (_c = (_b = this.core.Events.on).logAdd) === null || _c === void 0 ? void 0 : _c.call(_b, log);
+                            this.core.Events.fire("log.add", log);
                             return [4 /*yield*/, this.core.LocalStorage.addToLogPool(log)];
                         case 1:
-                            _d.sent();
+                            _b.sent();
                             return [2 /*return*/];
                     }
                 });
             });
         };
         LogPool.prototype.pushRequest = function (_a) {
-            var _b, _c;
             var res = _a.res, status = _a.status, ts = _a.ts, guid = _a.guid;
             return __awaiter$3(this, void 0, void 0, function () {
                 var req;
-                return __generator$3(this, function (_d) {
-                    switch (_d.label) {
+                return __generator$3(this, function (_b) {
+                    switch (_b.label) {
                         case 0:
                             req = {
                                 res: res,
@@ -1627,26 +1639,25 @@
                             };
                             this.core.InternalLogger.log("LogPool: Pushing request to requests array.", req);
                             this.requests.push(req);
-                            (_c = (_b = this.core.Events.on).requestAdd) === null || _c === void 0 ? void 0 : _c.call(_b, req);
+                            this.core.Events.fire("request.add", req);
                             return [4 /*yield*/, this.core.LocalStorage.addToRequest(req)];
                         case 1:
-                            _d.sent();
+                            _b.sent();
                             return [2 /*return*/];
                     }
                 });
             });
         };
         LogPool.prototype.clearLogs = function () {
-            var _a, _b;
             return __awaiter$3(this, void 0, void 0, function () {
-                return __generator$3(this, function (_c) {
-                    switch (_c.label) {
+                return __generator$3(this, function (_a) {
+                    switch (_a.label) {
                         case 0:
                             this.logs = [];
                             return [4 /*yield*/, this.core.LocalStorage.clearLogPool()];
                         case 1:
-                            _c.sent();
-                            (_b = (_a = this.core.Events.on).logsClear) === null || _b === void 0 ? void 0 : _b.call(_a);
+                            _a.sent();
+                            this.core.Events.fire("logs.clear");
                             this.core.InternalLogger.log("LogPool: Cleared logs.");
                             return [2 /*return*/];
                     }
@@ -1654,16 +1665,15 @@
             });
         };
         LogPool.prototype.clearRequests = function () {
-            var _a, _b;
             return __awaiter$3(this, void 0, void 0, function () {
-                return __generator$3(this, function (_c) {
-                    switch (_c.label) {
+                return __generator$3(this, function (_a) {
+                    switch (_a.label) {
                         case 0:
                             this.requests = [];
                             return [4 /*yield*/, this.core.LocalStorage.clearRequests()];
                         case 1:
-                            _c.sent();
-                            (_b = (_a = this.core.Events.on).requestsClear) === null || _b === void 0 ? void 0 : _b.call(_a);
+                            _a.sent();
+                            this.core.Events.fire("requests.clear");
                             this.core.InternalLogger.log("LogPool: Cleared requests.");
                             return [2 /*return*/];
                     }
@@ -1674,12 +1684,12 @@
          * Process internal data to determine whether or not we should need to send data to the server.
          */
         LogPool.prototype.process = function () {
-            var _a, _b, _c, _d;
+            var _a, _b;
             return __awaiter$3(this, void 0, void 0, function () {
                 var sendAllOnType, i, log, i, log, logsLength, diffLength;
                 var _this = this;
-                return __generator$3(this, function (_e) {
-                    switch (_e.label) {
+                return __generator$3(this, function (_c) {
+                    switch (_c.label) {
                         case 0:
                             this.core.InternalLogger.log("LogPool: Processing logs...");
                             if (!(this.logs.length > 0 && this.core._logPoolSize != 0)) return [3 /*break*/, 9];
@@ -1688,7 +1698,7 @@
                                 return [2 /*return*/];
                             if (!Array.isArray(sendAllOnType)) return [3 /*break*/, 5];
                             i = 0;
-                            _e.label = 1;
+                            _c.label = 1;
                         case 1:
                             if (!(i < this.logs.length)) return [3 /*break*/, 4];
                             log = this.logs[i];
@@ -1700,7 +1710,7 @@
                             this.core.InternalLogger.log("LogPool: sendAllOnType is array and log includes ".concat(log.options.type, " type."));
                             return [4 /*yield*/, this.sendAll()];
                         case 2:
-                            _e.sent();
+                            _c.sent();
                             return [3 /*break*/, 4];
                         case 3:
                             i++;
@@ -1708,7 +1718,7 @@
                         case 4: return [3 /*break*/, 9];
                         case 5:
                             i = 0;
-                            _e.label = 6;
+                            _c.label = 6;
                         case 6:
                             if (!(i < this.logs.length)) return [3 /*break*/, 9];
                             log = this.logs[i];
@@ -1720,34 +1730,32 @@
                             this.core.InternalLogger.log("LogPool: sendAllOnType is string and log is ".concat(log.options.type, " type."));
                             return [4 /*yield*/, this.sendAll()];
                         case 7:
-                            _e.sent();
+                            _c.sent();
                             return [3 /*break*/, 9];
                         case 8:
                             i++;
                             return [3 /*break*/, 6];
                         case 9:
                             logsLength = 0;
-                            if (this.core._ignoreType !== false) {
-                                logsLength = this.logs.filter(function (log) {
-                                    var _a;
-                                    if (!((_a = log === null || log === void 0 ? void 0 : log.options) === null || _a === void 0 ? void 0 : _a.type))
-                                        return true;
-                                    if (Array.isArray(_this.core._ignoreType) &&
-                                        _this.core._ignoreType.includes(log.options.type))
-                                        return false;
-                                    if (typeof _this.core._ignoreType == "string" &&
-                                        _this.core._ignoreType == log.options.type)
-                                        return false;
+                            logsLength = this.logs.filter(function (log) {
+                                var _a;
+                                if (!((_a = log === null || log === void 0 ? void 0 : log.options) === null || _a === void 0 ? void 0 : _a.type))
                                     return true;
-                                }).length;
-                                diffLength = this.logs.length - logsLength;
-                                if (diffLength > this.core._ignoreTypeSize) {
-                                    this.core.InternalLogger.log("LogPool: diffLength (this.logs.length - logsLength): ".concat(diffLength, " ignoreTypeSize: ").concat(this.core._ignoreTypeSize, " - Ignored logs max reached."));
-                                    logsLength += diffLength;
-                                }
-                                else {
-                                    this.core.InternalLogger.log("LogPool: Ignoring ".concat(diffLength, " logs. ignoreType: ").concat(this.core._ignoreType, " ignoreTypeSize: ").concat(this.core._ignoreTypeSize));
-                                }
+                                if (Array.isArray(_this.core._ignoreType) &&
+                                    _this.core._ignoreType.includes(log.options.type))
+                                    return false;
+                                if (typeof _this.core._ignoreType == "string" &&
+                                    _this.core._ignoreType == log.options.type)
+                                    return false;
+                                return true;
+                            }).length;
+                            diffLength = this.logs.length - logsLength;
+                            if (diffLength > this.core._ignoreTypeSize) {
+                                this.core.InternalLogger.log("LogPool: diffLength (this.logs.length - logsLength): ".concat(diffLength, " ignoreTypeSize: ").concat(this.core._ignoreTypeSize, " - Ignored logs max reached."));
+                                logsLength += diffLength;
+                            }
+                            else {
+                                this.core.InternalLogger.log("LogPool: Ignoring ".concat(diffLength, " logs. ignoreType: ").concat(this.core._ignoreType, " ignoreTypeSize: ").concat(this.core._ignoreTypeSize));
                             }
                             if (logsLength < this.core._logPoolSize) {
                                 this.core.InternalLogger.log("LogPool: logPoolSize is ".concat(this.core._logPoolSize, " but logs length is ").concat(logsLength));
@@ -1757,7 +1765,7 @@
                                 this.core.InternalLogger.log("LogPool: Already sending request to the server.");
                                 return [2 /*return*/];
                             }
-                            (_d = (_c = this.core.Events.on).process) === null || _d === void 0 ? void 0 : _d.call(_c);
+                            this.core.Events.fire("logpool.process");
                             this.sendAll();
                             return [2 /*return*/];
                     }
@@ -1788,7 +1796,7 @@
                                 this.core.InternalLogger.error("LogPool: collectData() returned null.");
                                 return [2 /*return*/];
                             }
-                            CollectData = __assign$3(__assign$3({}, CollectData), { logs: this.logs, requests: this.requests });
+                            CollectData = __assign$4(__assign$4({}, CollectData), { logs: this.logs, requests: this.requests });
                             this.core.InternalLogger.log("LogPool: Sending data to the server.", CollectData);
                             return [4 /*yield*/, this.core.API.sendData(CollectData)];
                         case 2:
@@ -1836,8 +1844,8 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
-    var __assign$2 = (undefined && undefined.__assign) || function () {
-        __assign$2 = Object.assign || function(t) {
+    var __assign$3 = (undefined && undefined.__assign) || function () {
+        __assign$3 = Object.assign || function(t) {
             for (var s, i = 1, n = arguments.length; i < n; i++) {
                 s = arguments[i];
                 for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -1845,7 +1853,7 @@
             }
             return t;
         };
-        return __assign$2.apply(this, arguments);
+        return __assign$3.apply(this, arguments);
     };
     var __awaiter$2 = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
         function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -1888,6 +1896,7 @@
             this._isAvailable = false;
             this.core = core;
             this._isAvailable = this.core._isClient && this.checkAvailability();
+            this.core.Events.fire("device.init");
         }
         Device.prototype.checkAvailability = function () {
             if (typeof navigator !== "undefined") {
@@ -2032,7 +2041,7 @@
                             return [4 /*yield*/, this.getGeolocation().catch(function (err) { return null; })];
                         case 3:
                             geo = _a.sent();
-                            deviceData = __assign$2(__assign$2({}, deviceData), { geo: geo });
+                            deviceData = __assign$3(__assign$3({}, deviceData), { geo: geo });
                             _a.label = 4;
                         case 4: return [2 /*return*/, Promise.resolve(deviceData)];
                     }
@@ -2040,6 +2049,108 @@
             });
         };
         return Device;
+    }());
+
+    /**
+     * @license
+     * Copyright 2023 Eren Kulaksiz
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *   http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
+    var __assign$2 = (undefined && undefined.__assign) || function () {
+        __assign$2 = Object.assign || function(t) {
+            for (var s, i = 1, n = arguments.length; i < n; i++) {
+                s = arguments[i];
+                for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                    t[p] = s[p];
+            }
+            return t;
+        };
+        return __assign$2.apply(this, arguments);
+    };
+    var DOM = /** @class */ (function () {
+        function DOM(core) {
+            this._rootVnode = null;
+            this._isAvailable = false;
+            this.zort = {
+                vnode: {
+                    type: "div",
+                    props: {
+                        id: "root",
+                        style: {
+                            "background-color": "blue",
+                        },
+                    },
+                    children: {
+                        vnode: {
+                            type: "div",
+                            props: { id: "child" },
+                        },
+                    },
+                },
+            };
+            this.core = core;
+            this.core.Events.fire("dom.init");
+            this.core.InternalLogger.log("DOM: class initialized");
+            this._isAvailable = this.isAvailable();
+        }
+        DOM.prototype.isAvailable = function () {
+            if (this.core._isClient) {
+                return true;
+            }
+            return typeof document !== "undefined";
+        };
+        DOM.prototype.VNODE = function (_a) {
+            var _b = _a.vnode, type = _b.type, props = _b.props, value = _b.value, onClick = _b.onClick, children = _b.children, childrenCount = _a.childrenCount;
+            var _childrenCount = childrenCount || 0;
+            var vnode = { type: type };
+            if (props) {
+                vnode = __assign$2(__assign$2({}, vnode), { props: props });
+            }
+            if (value) {
+                vnode = __assign$2(__assign$2({}, vnode), { value: value });
+            }
+            if (onClick) {
+                vnode = __assign$2(__assign$2({}, vnode), { onClick: onClick });
+            }
+            if (typeof children != "undefined") {
+                vnode = __assign$2({}, vnode);
+            }
+            return { vnode: vnode, childrenCount: _childrenCount };
+        };
+        DOM.prototype.getElement = function (selector) {
+            if (this._isAvailable)
+                return document.querySelector(selector);
+            return null;
+        };
+        DOM.prototype.getElements = function (selector) {
+            if (this._isAvailable)
+                return Array.from(document.querySelectorAll(selector));
+            return null;
+        };
+        DOM.prototype.loadVNODEfromJSON = function () {
+            this._rootVnode = this.VNODE(this.zort);
+            this.core.InternalLogger.log("DOM: VNODE loaded from JSON", this._rootVnode);
+        };
+        DOM.prototype.renderVNODE = function (selector, vnode) {
+            this.core.InternalLogger.log("DOM: Render", vnode);
+            var el = this.getElement(selector);
+            if (!el) {
+                this.core.InternalLogger.error("DOM: Element ".concat(selector, " not found"));
+                return;
+            }
+        };
+        return DOM;
     }());
 
     function isNewerVersion(oldVer, newVer) {
@@ -2267,7 +2378,6 @@
         }
     };
     var defaultOptions = {
-        // NexysOptions
         localStorage: {
             useLocalStorage: true,
             useAdapter: false,
@@ -2280,11 +2390,9 @@
         },
     };
     var Core = /** @class */ (function () {
-        // Core
         function Core(API_KEY, options) {
             var _this = this;
-            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z;
-            // Variables
+            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x;
             this._initialized = false;
             this._processAvailable = typeof process != "undefined";
             this._version = version;
@@ -2344,8 +2452,8 @@
             this.InternalLogger = new InternalLogger({
                 active: (_k = (_j = this._options) === null || _j === void 0 ? void 0 : _j.debug) !== null && _k !== void 0 ? _k : false,
             });
-            this.LogPool = new LogPool(this);
             this.Events = new Events(this);
+            this.LogPool = new LogPool(this);
             this.API = new API(this, {
                 server: this._server,
                 apiKey: this._apiKey,
@@ -2358,6 +2466,7 @@
                 isEncrypted: (_t = (_s = this._options.localStorage) === null || _s === void 0 ? void 0 : _s.cryption) !== null && _t !== void 0 ? _t : (_u = defaultOptions.localStorage) === null || _u === void 0 ? void 0 : _u.cryption,
                 active: (_w = (_v = this._options.localStorage) === null || _v === void 0 ? void 0 : _v.useLocalStorage) !== null && _w !== void 0 ? _w : (_x = defaultOptions.localStorage) === null || _x === void 0 ? void 0 : _x.useLocalStorage,
             });
+            this.DOM = new DOM(this);
             Promise.resolve(this.LocalStorage.setup()).then(function () { return __awaiter(_this, void 0, void 0, function () {
                 return __generator(this, function (_a) {
                     switch (_a.label) {
@@ -2375,7 +2484,7 @@
                 this.InternalLogger.log("NexysCore: Altough NexysCore is designed to run on client side, it can be used on server side as well but some features will might not work.");
             }
             // Core Init Event
-            (_z = (_y = this.Events.on).coreInit) === null || _z === void 0 ? void 0 : _z.call(_y);
+            this.Events.fire("core.init");
             // Log initialization
             this.InternalLogger.log("NexysCore: Initialized", this._version, this._options);
             if (this._isClient)
@@ -2588,6 +2697,7 @@
                                     case 1:
                                         _a.sent();
                                         this.InternalLogger.log("NexysCore: User configured", user);
+                                        this.Events.fire("config.user", user);
                                         return [2 /*return*/];
                                 }
                             });
@@ -2596,6 +2706,7 @@
                             return __generator(this, function (_a) {
                                 this._config = __assign(__assign({}, this._config), { appVersion: appVersion });
                                 this.InternalLogger.log("NexysCore: App version configured", appVersion);
+                                this.Events.fire("config.app.version", appVersion);
                                 return [2 /*return*/];
                             });
                         }); },
@@ -2916,6 +3027,9 @@
         function Nexys(API_KEY, options) {
             return _super.call(this, API_KEY, options) || this;
         }
+        Nexys.prototype.init = function () {
+            this._checkInitialized();
+        };
         return Nexys;
     }(Core));
 

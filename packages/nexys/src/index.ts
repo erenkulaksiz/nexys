@@ -82,4 +82,8 @@ export default class Nexys extends Core {
   constructor(API_KEY: string, options?: NexysOptions) {
     super(API_KEY, options);
   }
+
+  public init() {
+    this._checkInitialized();
+  }
 }

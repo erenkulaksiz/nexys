@@ -94,6 +94,9 @@ var Nexys = /** @class */ (function (_super) {
     function Nexys(API_KEY, options) {
         return _super.call(this, API_KEY, options) || this;
     }
+    Nexys.prototype.init = function () {
+        this._checkInitialized();
+    };
     return Nexys;
 }(Core));
 export default Nexys;

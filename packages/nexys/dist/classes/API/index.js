@@ -75,19 +75,18 @@ var API = /** @class */ (function () {
         this._appName = appName;
     }
     API.prototype.sendRequest = function (_a) {
-        var _b, _c;
         var headers = _a.headers, data = _a.data;
         return __awaiter(this, void 0, void 0, function () {
             var server;
             var _this = this;
-            return __generator(this, function (_d) {
+            return __generator(this, function (_b) {
                 if (!this.checkAvailability())
                     throw new Error("fetch is not defined (node environment)");
                 if (this._sendingRequest) {
                     throw new Error("API:ALREADY_SENDING");
                 }
                 this._sendingRequest = true;
-                (_c = (_b = this.core.Events.on.request).sending) === null || _c === void 0 ? void 0 : _c.call(_b, data);
+                this.core.Events.fire("request.sending", data);
                 server = "".concat(this._server, "/api/report/").concat(this._apiKey, "/").concat(this._appName);
                 this.core.InternalLogger.log("API: Sending request to server", server);
                 return [2 /*return*/, fetch(server, {
@@ -96,26 +95,25 @@ var API = /** @class */ (function () {
                         body: JSON.stringify(data),
                     }).then(function (res) { return __awaiter(_this, void 0, void 0, function () {
                         var json, err_1;
-                        var _a, _b;
-                        return __generator(this, function (_c) {
-                            switch (_c.label) {
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
                                 case 0:
                                     json = null;
-                                    _c.label = 1;
+                                    _a.label = 1;
                                 case 1:
-                                    _c.trys.push([1, 3, , 4]);
+                                    _a.trys.push([1, 3, , 4]);
                                     return [4 /*yield*/, res.json()];
                                 case 2:
-                                    json = _c.sent();
+                                    json = _a.sent();
                                     return [3 /*break*/, 4];
                                 case 3:
-                                    err_1 = _c.sent();
+                                    err_1 = _a.sent();
                                     json = null;
                                     throw new Error("API:FAILED:JSON_PARSE_ERROR");
                                 case 4:
                                     if (res === null || res === void 0 ? void 0 : res.ok) {
                                         this.requestCompleted();
-                                        (_b = (_a = this.core.Events.on.request).success) === null || _b === void 0 ? void 0 : _b.call(_a, { res: res, json: json });
+                                        this.core.Events.fire("request.success", { res: res, json: json });
                                         return [2 /*return*/, {
                                                 res: res,
                                                 json: json,
@@ -137,34 +135,32 @@ var API = /** @class */ (function () {
                     })
                         .then(function (res) { return __awaiter(_this, void 0, void 0, function () {
                         var data;
-                        var _a, _b;
-                        return __generator(this, function (_c) {
-                            switch (_c.label) {
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
                                 case 0:
                                     data = res.json.data;
                                     return [4 /*yield*/, this.core.LocalStorage.setAPIValues(data)];
                                 case 1:
-                                    _c.sent();
+                                    _a.sent();
                                     this.core._APIValues = data;
                                     this.core.InternalLogger.log("API: Successful request", res);
-                                    (_b = (_a = this.core.Events.on.request).success) === null || _b === void 0 ? void 0 : _b.call(_a, { res: res, json: res.json });
+                                    this.core.Events.fire("request.add", { res: res, json: res.json });
                                     return [4 /*yield*/, this.core.LogPool.clearRequests()];
                                 case 2:
-                                    _c.sent();
+                                    _a.sent();
                                     return [4 /*yield*/, this.core.LogPool.clearLogs()];
                                 case 3:
-                                    _c.sent();
+                                    _a.sent();
                                     return [2 /*return*/, true];
                             }
                         });
                     }); })
                         .catch(function (err) { return __awaiter(_this, void 0, void 0, function () {
-                        var _a, _b;
-                        return __generator(this, function (_c) {
-                            switch (_c.label) {
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
                                 case 0:
                                     this.core.InternalLogger.error("API: Request failed.", err);
-                                    (_b = (_a = this.core.Events.on.request).error) === null || _b === void 0 ? void 0 : _b.call(_a, err);
+                                    this.core.Events.fire("request.error", err);
                                     if ((err === null || err === void 0 ? void 0 : err.message) == "API:FAILED:400:api-key") {
                                         this.core.InternalLogger.error("API: Your API key is not valid. Please make sure you entered correct credentials.");
                                     }
@@ -180,8 +176,8 @@ var API = /** @class */ (function () {
                                             guid: guid(),
                                         })];
                                 case 1:
-                                    _c.sent();
-                                    _c.label = 2;
+                                    _a.sent();
+                                    _a.label = 2;
                                 case 2: return [2 /*return*/, false];
                             }
                         });

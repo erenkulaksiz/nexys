@@ -31,22 +31,7 @@ var Events = /** @class */ (function () {
     function Events(core) {
         var _a, _b, _c;
         this._bindedErrorEvent = false;
-        this.on = {
-            error: null,
-            unhandledRejection: null,
-            logAdd: null,
-            logsClear: null,
-            requestsClear: null,
-            coreInit: null,
-            process: null,
-            request: {
-                sending: null,
-                success: null,
-                error: null,
-            },
-            requestAdd: null,
-            localStorageInit: null,
-        };
+        this.on = {};
         this.core = core;
         if ((_c = (_b = (_a = this.core) === null || _a === void 0 ? void 0 : _a._options) === null || _b === void 0 ? void 0 : _b.errors) === null || _c === void 0 ? void 0 : _c.allowAutomaticHandling) {
             this.setupEventHandlers();
@@ -68,13 +53,12 @@ var Events = /** @class */ (function () {
                         return false;
                     }
                     event.error.hasBeenCaught = true;
-                    typeof _this.on.error == "function" && _this.on.error(event);
+                    _this.fire("errors.error", event);
                     return true;
                 });
                 window.addEventListener("unhandledrejection", function (event) {
                     event.stopImmediatePropagation();
-                    typeof _this.on.unhandledRejection == "function" &&
-                        _this.on.unhandledRejection(event);
+                    _this.fire("errors.unhandled.rejection", event);
                     return true;
                 });
                 /*
@@ -84,9 +68,11 @@ var Events = /** @class */ (function () {
                 */
                 this._bindedErrorEvent = true;
                 this.core.InternalLogger.log("Events: Binded error events.");
+                this.fire("events.bind.success");
             }
             catch (err) {
                 this.core.InternalLogger.log("Events: Couuldnt bind error event.", err);
+                this.fire("events.bind.failed");
             }
             return;
         }
@@ -94,7 +80,7 @@ var Events = /** @class */ (function () {
     };
     Events.prototype.setupEventHandlers = function () {
         var _this = this;
-        this.on.error = function (event) {
+        this.subscribe("errors.error", function (event) {
             var _a, _b;
             _this.core.InternalLogger.log("Events: Received error", event);
             var extractedError = {
@@ -111,6 +97,7 @@ var Events = /** @class */ (function () {
             };
             _this.core.LogPool.push({
                 data: __assign({}, extractedError),
+                stack: extractedError.stack,
                 ts: new Date().getTime(),
                 options: {
                     type: "AUTO:ERROR",
@@ -118,8 +105,8 @@ var Events = /** @class */ (function () {
                 guid: guid(),
                 path: getPagePath(_this.core),
             });
-        };
-        this.on.unhandledRejection = function (event) {
+        });
+        this.subscribe("errors.unhandled.rejection", function (event) {
             var _a, _b;
             _this.core.InternalLogger.log("Events: Received unhandledRejection: ", event);
             var extractedRejection = {
@@ -132,6 +119,7 @@ var Events = /** @class */ (function () {
             };
             _this.core.LogPool.push({
                 data: __assign({}, extractedRejection),
+                stack: extractedRejection.stack,
                 ts: new Date().getTime(),
                 options: {
                     type: "AUTO:UNHANDLEDREJECTION",
@@ -139,11 +127,11 @@ var Events = /** @class */ (function () {
                 guid: guid(),
                 path: getPagePath(_this.core),
             });
-        };
-        this.on.request.success = function (event) {
+        });
+        this.subscribe("request.success", function (event) {
             _this.core.InternalLogger.log("Events: Received request success: ", event);
-        };
-        this.on.request.error = function (event) {
+        });
+        this.subscribe("request.error", function (event) {
             var messages = {
                 "API:FAILED:400:app-name": "NexysCore: Your configured app name and the app name you entered on your project is mismatching. Please check your configuration. Erasing localStorage.",
                 "API:FAILED:400:not-verified": "NexysCore: Your project is not verified. Erasing localStorage.",
@@ -158,7 +146,37 @@ var Events = /** @class */ (function () {
                 return;
             }
             _this.core.InternalLogger.log("Events: Received request error: ", event);
-        };
+        });
+    };
+    Events.prototype.fire = function (event, data) {
+        var _this = this;
+        // @ts-ignore
+        if (this.on[event] == null || this.on[event] == undefined) {
+            this.core.InternalLogger.log("Events: Event ".concat(event, " is not subscribed."));
+            return;
+        }
+        this.core.InternalLogger.log("Events: Firing event ".concat(event));
+        // @ts-ignore
+        this.on[event].forEach(function (callback) {
+            if (typeof callback !== "function") {
+                _this.core.InternalLogger.log("Events: Callback is not a function.", callback);
+                return;
+            }
+            callback(data);
+        });
+    };
+    Events.prototype.subscribe = function (event, callback) {
+        // @ts-ignore
+        if (this.on[event] == null || this.on[event] == undefined) {
+            // @ts-ignore
+            this.on[event] = [];
+        }
+        // @ts-ignore
+        this.on[event].push(callback);
+    };
+    Events.prototype.unsubscribe = function (event) {
+        // @ts-ignore
+        this.on[event] = null;
     };
     return Events;
 }());

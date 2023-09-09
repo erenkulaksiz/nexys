@@ -67,12 +67,12 @@ import { InternalLogger } from "./../internalLogger/index.js";
 import { LocalStorage } from "./../localStorage/index.js";
 import { LogPool } from "./../logPool/index.js";
 import { Device } from "./../device/index.js";
+import { DOM } from "../DOM/index.js";
 import { server, version, isClient, guid } from "../../utils/index.js";
 import loadFromLocalStorage from "./loadFromLocalStorage.js";
 import getPagePath from "../../utils/getPagePath.js";
 import checkVersion from "./checkVersion.js";
 var defaultOptions = {
-    // NexysOptions
     localStorage: {
         useLocalStorage: true,
         useAdapter: false,
@@ -85,11 +85,9 @@ var defaultOptions = {
     },
 };
 var Core = /** @class */ (function () {
-    // Core
     function Core(API_KEY, options) {
         var _this = this;
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z;
-        // Variables
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x;
         this._initialized = false;
         this._processAvailable = typeof process != "undefined";
         this._version = version;
@@ -149,8 +147,8 @@ var Core = /** @class */ (function () {
         this.InternalLogger = new InternalLogger({
             active: (_k = (_j = this._options) === null || _j === void 0 ? void 0 : _j.debug) !== null && _k !== void 0 ? _k : false,
         });
-        this.LogPool = new LogPool(this);
         this.Events = new Events(this);
+        this.LogPool = new LogPool(this);
         this.API = new API(this, {
             server: this._server,
             apiKey: this._apiKey,
@@ -163,6 +161,7 @@ var Core = /** @class */ (function () {
             isEncrypted: (_t = (_s = this._options.localStorage) === null || _s === void 0 ? void 0 : _s.cryption) !== null && _t !== void 0 ? _t : (_u = defaultOptions.localStorage) === null || _u === void 0 ? void 0 : _u.cryption,
             active: (_w = (_v = this._options.localStorage) === null || _v === void 0 ? void 0 : _v.useLocalStorage) !== null && _w !== void 0 ? _w : (_x = defaultOptions.localStorage) === null || _x === void 0 ? void 0 : _x.useLocalStorage,
         });
+        this.DOM = new DOM(this);
         Promise.resolve(this.LocalStorage.setup()).then(function () { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -180,7 +179,7 @@ var Core = /** @class */ (function () {
             this.InternalLogger.log("NexysCore: Altough NexysCore is designed to run on client side, it can be used on server side as well but some features will might not work.");
         }
         // Core Init Event
-        (_z = (_y = this.Events.on).coreInit) === null || _z === void 0 ? void 0 : _z.call(_y);
+        this.Events.fire("core.init");
         // Log initialization
         this.InternalLogger.log("NexysCore: Initialized", this._version, this._options);
         if (this._isClient)
@@ -393,6 +392,7 @@ var Core = /** @class */ (function () {
                                 case 1:
                                     _a.sent();
                                     this.InternalLogger.log("NexysCore: User configured", user);
+                                    this.Events.fire("config.user", user);
                                     return [2 /*return*/];
                             }
                         });
@@ -401,6 +401,7 @@ var Core = /** @class */ (function () {
                         return __generator(this, function (_a) {
                             this._config = __assign(__assign({}, this._config), { appVersion: appVersion });
                             this.InternalLogger.log("NexysCore: App version configured", appVersion);
+                            this.Events.fire("config.app.version", appVersion);
                             return [2 /*return*/];
                         });
                     }); },

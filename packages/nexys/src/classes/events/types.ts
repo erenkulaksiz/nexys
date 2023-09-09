@@ -18,18 +18,31 @@
 import type { logTypes, requestTypes } from "../../types";
 
 export interface EventTypes {
-  error: ((event: ErrorEvent) => void) | null;
-  unhandledRejection: ((event: PromiseRejectionEvent) => void) | null;
-  logAdd: ((log: logTypes) => void) | null;
-  logsClear: (() => void) | null;
-  requestsClear: (() => void) | null;
-  coreInit: (() => void) | null;
-  process: (() => void) | null;
-  request: {
-    sending: ((data?: any) => void) | null; // data: any
-    success: (({ res, json }: { res?: Response; json: any }) => void) | null;
-    error: ((error: Error) => void) | null;
-  };
-  localStorageInit: ((localItem: any) => void) | null;
-  requestAdd: (({ res, status, ts }: requestTypes) => void) | null;
+  "errors.error"?: ((event: ErrorEvent) => void) | null;
+  "errors.unhandled.rejection"?:
+    | ((event: PromiseRejectionEvent) => void)
+    | null;
+  "log.add"?: ((log: logTypes) => void) | null;
+  "logs.clear"?: (() => void) | null;
+  "requests.clear"?: (() => void) | null;
+  "core.init"?: (() => void) | null;
+  "logpool.process"?: (() => void) | null;
+  "logpool.init"?: (() => void) | null;
+  "request.sending"?: ((data?: any) => void) | null; // data: any
+  "request.success"?:
+    | (({ res, json }: { res?: Response; json: any }) => void)
+    | null;
+  "request.error"?: ((error: Error) => void) | null;
+  "request.add"?: (({ res, status, ts }: requestTypes) => void) | null;
+  test?: (() => void) | null;
+  "localstorage.init"?: ((localItem: any) => void) | null;
+  "internallogger.init"?: (() => void) | null;
+  "device.init"?: (() => void) | null;
+  "events.bind.success"?: (() => void) | null;
+  "events.bind.failed"?: (() => void) | null;
+  "config.user"?: ((data?: string) => void) | null;
+  "config.app.version"?: ((data?: string) => void) | null;
+  "dom.init"?: (() => void) | null;
+  "dom.ready"?: (() => void) | null;
+  "dom.content.loaded"?: (() => void) | null;
 }

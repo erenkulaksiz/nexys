@@ -77,5 +77,6 @@ export default class Nexys extends Core {
      * @returns A Nexys instance
      */
     constructor(API_KEY: string, options?: NexysOptions);
+    init(): void;
 }
 //# sourceMappingURL=index.d.ts.map

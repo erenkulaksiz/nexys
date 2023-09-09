@@ -24,22 +24,7 @@ export class Events {
   private core: Core;
   private _bindedErrorEvent: boolean = false;
 
-  public on: EventTypes = {
-    error: null,
-    unhandledRejection: null,
-    logAdd: null,
-    logsClear: null,
-    requestsClear: null,
-    coreInit: null,
-    process: null,
-    request: {
-      sending: null,
-      success: null,
-      error: null,
-    },
-    requestAdd: null,
-    localStorageInit: null,
-  };
+  public on: EventTypes = {};
 
   constructor(core: Core) {
     this.core = core;
@@ -66,15 +51,14 @@ export class Events {
             return false;
           }
           event.error.hasBeenCaught = true;
-          typeof this.on.error == "function" && this.on.error(event);
+          this.fire("errors.error", event);
           return true;
         });
         window.addEventListener(
           "unhandledrejection",
           (event: PromiseRejectionEvent) => {
             event.stopImmediatePropagation();
-            typeof this.on.unhandledRejection == "function" &&
-              this.on.unhandledRejection(event);
+            this.fire("errors.unhandled.rejection", event);
             return true;
           }
         );
@@ -85,8 +69,10 @@ export class Events {
         */
         this._bindedErrorEvent = true;
         this.core.InternalLogger.log("Events: Binded error events.");
+        this.fire("events.bind.success");
       } catch (err) {
         this.core.InternalLogger.log("Events: Couuldnt bind error event.", err);
+        this.fire("events.bind.failed");
       }
       return;
     }
@@ -96,7 +82,7 @@ export class Events {
   }
 
   private setupEventHandlers() {
-    this.on.error = (event: ErrorEvent) => {
+    this.subscribe("errors.error", (event: ErrorEvent) => {
       this.core.InternalLogger.log("Events: Received error", event);
 
       const extractedError = {
@@ -116,6 +102,7 @@ export class Events {
         data: {
           ...extractedError,
         },
+        stack: extractedError.stack,
         ts: new Date().getTime(),
         options: {
           type: "AUTO:ERROR",
@@ -123,41 +110,45 @@ export class Events {
         guid: guid(),
         path: getPagePath(this.core),
       });
-    };
+    });
 
-    this.on.unhandledRejection = (event: PromiseRejectionEvent) => {
-      this.core.InternalLogger.log(
-        "Events: Received unhandledRejection: ",
-        event
-      );
+    this.subscribe(
+      "errors.unhandled.rejection",
+      (event: PromiseRejectionEvent) => {
+        this.core.InternalLogger.log(
+          "Events: Received unhandledRejection: ",
+          event
+        );
 
-      const extractedRejection = {
-        message: event?.reason?.message,
-        stack: event?.reason?.stack,
-        type: event?.type,
-        isTrusted: event?.isTrusted,
-        defaultPrevented: event?.defaultPrevented,
-        timeStamp: event?.timeStamp,
-      };
+        const extractedRejection = {
+          message: event?.reason?.message,
+          stack: event?.reason?.stack,
+          type: event?.type,
+          isTrusted: event?.isTrusted,
+          defaultPrevented: event?.defaultPrevented,
+          timeStamp: event?.timeStamp,
+        };
 
-      this.core.LogPool.push({
-        data: {
-          ...extractedRejection,
-        },
-        ts: new Date().getTime(),
-        options: {
-          type: "AUTO:UNHANDLEDREJECTION",
-        },
-        guid: guid(),
-        path: getPagePath(this.core),
-      });
-    };
+        this.core.LogPool.push({
+          data: {
+            ...extractedRejection,
+          },
+          stack: extractedRejection.stack,
+          ts: new Date().getTime(),
+          options: {
+            type: "AUTO:UNHANDLEDREJECTION",
+          },
+          guid: guid(),
+          path: getPagePath(this.core),
+        });
+      }
+    );
 
-    this.on.request.success = (event) => {
+    this.subscribe("request.success", (event) => {
       this.core.InternalLogger.log("Events: Received request success: ", event);
-    };
+    });
 
-    this.on.request.error = (event) => {
+    this.subscribe("request.error", (event) => {
       const messages: {
         [key: string]: string;
       } = {
@@ -174,6 +165,44 @@ export class Events {
         return;
       }
       this.core.InternalLogger.log("Events: Received request error: ", event);
-    };
+    });
+  }
+
+  public fire(event: keyof EventTypes, data?: any): void {
+    // @ts-ignore
+    if (this.on[event] == null || this.on[event] == undefined) {
+      this.core.InternalLogger.log(`Events: Event ${event} is not subscribed.`);
+      return;
+    }
+    this.core.InternalLogger.log(`Events: Firing event ${event}`);
+    // @ts-ignore
+    this.on[event].forEach((callback) => {
+      if (typeof callback !== "function") {
+        this.core.InternalLogger.log(
+          `Events: Callback is not a function.`,
+          callback
+        );
+        return;
+      }
+      callback(data);
+    });
+  }
+
+  public subscribe(
+    event: keyof EventTypes,
+    callback: (event: any) => void
+  ): void {
+    // @ts-ignore
+    if (this.on[event] == null || this.on[event] == undefined) {
+      // @ts-ignore
+      this.on[event] = [];
+    }
+    // @ts-ignore
+    this.on[event].push(callback);
+  }
+
+  public unsubscribe(event: keyof EventTypes) {
+    // @ts-ignore
+    this.on[event] = null;
   }
 }

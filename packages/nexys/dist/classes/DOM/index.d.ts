@@ -14,17 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Core } from "../core/index.js";
-import type { EventTypes } from "./types";
-export declare class Events {
+import type { Core } from "../core/index.js";
+import type { VNODE } from "./types.js";
+export declare class DOM {
     private core;
-    private _bindedErrorEvent;
-    on: EventTypes;
+    private _rootVnode;
+    private _isAvailable;
+    private zort;
     constructor(core: Core);
-    private bindErrorEvents;
-    private setupEventHandlers;
-    fire(event: keyof EventTypes, data?: any): void;
-    subscribe(event: keyof EventTypes, callback: (event: any) => void): void;
-    unsubscribe(event: keyof EventTypes): void;
+    isAvailable(): boolean;
+    VNODE({ vnode: { type, props, value, onClick, children }, childrenCount, }: VNODE): VNODE;
+    getElement(selector: string): HTMLElement | null;
+    getElements(selector: string): HTMLElement[] | null;
+    loadVNODEfromJSON(): void;
+    renderVNODE(selector: string, vnode: VNODE): void;
 }
 //# sourceMappingURL=index.d.ts.map

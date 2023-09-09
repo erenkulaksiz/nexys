@@ -104,7 +104,7 @@ export class LocalStorage {
       this.core.InternalLogger.log("LocalStorage: No local item found.");
       localItem = await this.resetLocalValue();
     }
-    this.core.Events.on.localStorageInit?.(localItem);
+    this.core.Events.fire("localstorage.init", localItem);
   }
 
   public async removeItem(key: string): Promise<void> {

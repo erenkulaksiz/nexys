@@ -30,6 +30,7 @@ export class LogPool {
 
   constructor(core: Core) {
     this.core = core;
+    this.core.Events.fire("logpool.init");
   }
 
   public setLogs(logs: logTypes[]): void {
@@ -75,7 +76,7 @@ export class LogPool {
     };
     this.logs.push(log);
     this.process();
-    this.core.Events.on.logAdd?.(log);
+    this.core.Events.fire("log.add", log);
     await this.core.LocalStorage.addToLogPool(log);
   }
 
@@ -96,21 +97,21 @@ export class LogPool {
       req
     );
     this.requests.push(req);
-    this.core.Events.on.requestAdd?.(req);
+    this.core.Events.fire("request.add", req);
     await this.core.LocalStorage.addToRequest(req);
   }
 
   public async clearLogs(): Promise<void> {
     this.logs = [];
     await this.core.LocalStorage.clearLogPool();
-    this.core.Events.on.logsClear?.();
+    this.core.Events.fire("logs.clear");
     this.core.InternalLogger.log("LogPool: Cleared logs.");
   }
 
   public async clearRequests(): Promise<void> {
     this.requests = [];
     await this.core.LocalStorage.clearRequests();
-    this.core.Events.on.requestsClear?.();
+    this.core.Events.fire("requests.clear");
     this.core.InternalLogger.log("LogPool: Cleared requests.");
   }
 
@@ -158,32 +159,30 @@ export class LogPool {
 
     let logsLength = 0;
 
-    if (this.core._ignoreType !== false) {
-      logsLength = this.logs.filter((log) => {
-        if (!log?.options?.type) return true;
-        if (
-          Array.isArray(this.core._ignoreType) &&
-          this.core._ignoreType.includes(log.options.type)
-        )
-          return false;
-        if (
-          typeof this.core._ignoreType == "string" &&
-          this.core._ignoreType == log.options.type
-        )
-          return false;
-        return true;
-      }).length;
-      const diffLength = this.logs.length - logsLength;
-      if (diffLength > this.core._ignoreTypeSize) {
-        this.core.InternalLogger.log(
-          `LogPool: diffLength (this.logs.length - logsLength): ${diffLength} ignoreTypeSize: ${this.core._ignoreTypeSize} - Ignored logs max reached.`
-        );
-        logsLength += diffLength;
-      } else {
-        this.core.InternalLogger.log(
-          `LogPool: Ignoring ${diffLength} logs. ignoreType: ${this.core._ignoreType} ignoreTypeSize: ${this.core._ignoreTypeSize}`
-        );
-      }
+    logsLength = this.logs.filter((log) => {
+      if (!log?.options?.type) return true;
+      if (
+        Array.isArray(this.core._ignoreType) &&
+        this.core._ignoreType.includes(log.options.type)
+      )
+        return false;
+      if (
+        typeof this.core._ignoreType == "string" &&
+        this.core._ignoreType == log.options.type
+      )
+        return false;
+      return true;
+    }).length;
+    const diffLength = this.logs.length - logsLength;
+    if (diffLength > this.core._ignoreTypeSize) {
+      this.core.InternalLogger.log(
+        `LogPool: diffLength (this.logs.length - logsLength): ${diffLength} ignoreTypeSize: ${this.core._ignoreTypeSize} - Ignored logs max reached.`
+      );
+      logsLength += diffLength;
+    } else {
+      this.core.InternalLogger.log(
+        `LogPool: Ignoring ${diffLength} logs. ignoreType: ${this.core._ignoreType} ignoreTypeSize: ${this.core._ignoreTypeSize}`
+      );
     }
 
     if (logsLength < this.core._logPoolSize) {
@@ -200,7 +199,7 @@ export class LogPool {
       return;
     }
 
-    this.core.Events.on.process?.();
+    this.core.Events.fire("logpool.process");
     this.sendAll();
   }
 

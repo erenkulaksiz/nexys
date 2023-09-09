@@ -2,18 +2,13 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-
 import { nexys } from "./utils";
-import { configFunctions } from "nexys/src/types";
-
-nexys.configure((config: configFunctions) => {
-  config.setAppVersion("v0.2");
-  config.setUser("@test");
-});
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
+
+nexys.init();
 
 root.render(
   <React.StrictMode>

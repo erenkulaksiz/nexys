@@ -21,6 +21,7 @@ import { InternalLogger } from "./../internalLogger/index.js";
 import { LocalStorage } from "./../localStorage/index.js";
 import { LogPool } from "./../logPool/index.js";
 import { Device } from "./../device/index.js";
+import { DOM } from "../DOM/index.js";
 import { server, version, isClient, guid } from "../../utils/index.js";
 import loadFromLocalStorage from "./loadFromLocalStorage.js";
 import getPagePath from "../../utils/getPagePath.js";
@@ -37,7 +38,6 @@ import type { APIValues } from "../localStorage/types.js";
 import type { getDeviceDataReturnTypes } from "../device/types.js";
 
 const defaultOptions = {
-  // NexysOptions
   localStorage: {
     useLocalStorage: true,
     useAdapter: false,
@@ -51,14 +51,14 @@ const defaultOptions = {
 };
 
 export class Core {
-  // Classes
   InternalLogger: InternalLogger;
   LogPool: LogPool;
   Events: Events;
   API: API;
   Device: Device;
   LocalStorage: LocalStorage;
-  // Variables
+  DOM: DOM;
+
   _initialized: boolean = false;
   _processAvailable: boolean = typeof process != "undefined";
   _apiKey: string;
@@ -85,7 +85,6 @@ export class Core {
   _APIValues: APIValues | null = null;
   _useLocalStorageAdapter: boolean = false;
 
-  // Core
   constructor(API_KEY: string, options?: NexysOptions) {
     let _start: number | null = null,
       _end: number | null = null;
@@ -131,6 +130,7 @@ export class Core {
         : options?.localStorage?.useAdapter;
 
     if (!this._apiKey) throw new Error("NexysCore: API_KEY is not defined");
+
     if (!this._options.appName)
       throw new Error(
         "NexysCore: Please specify appName in constructor options"
@@ -139,8 +139,8 @@ export class Core {
     this.InternalLogger = new InternalLogger({
       active: this._options?.debug ?? false,
     });
-    this.LogPool = new LogPool(this);
     this.Events = new Events(this);
+    this.LogPool = new LogPool(this);
     this.API = new API(this, {
       server: this._server,
       apiKey: this._apiKey,
@@ -159,6 +159,7 @@ export class Core {
         this._options.localStorage?.useLocalStorage ??
         defaultOptions.localStorage?.useLocalStorage,
     });
+    this.DOM = new DOM(this);
 
     Promise.resolve(this.LocalStorage.setup()).then(async () => {
       await loadFromLocalStorage(this);
@@ -177,7 +178,7 @@ export class Core {
     }
 
     // Core Init Event
-    this.Events.on.coreInit?.();
+    this.Events.fire("core.init");
 
     // Log initialization
     this.InternalLogger.log(
@@ -204,7 +205,7 @@ export class Core {
     }
   }
 
-  private _checkInitialized(): void {
+  public _checkInitialized(): void {
     if (!this._initialized)
       this.InternalLogger.error(
         "NexysCore: You need to initialize NexysCore before using it. Probably you forgot to call new Nexys() or you are on wrong version."
@@ -233,7 +234,7 @@ export class Core {
    * @param options.tags - `Optional` - Log tags
    * @param options.action - `Optional` - Log action
    * @public
-   * @returns {void} - Returns nothing.
+   * @returns {Promise<void>} - Returns nothing.
    *
    */
   public async log(
@@ -274,7 +275,7 @@ export class Core {
    * @param options.tags - `Optional` - Log tags
    * @param options.action - `Optional` - Log action
    * @public
-   * @returns {void} - Returns nothing.
+   * @returns {Promise<void>} - Returns nothing.
    *
    */
   public async error(
@@ -315,7 +316,7 @@ export class Core {
    *
    * @param metric Metric data that you get from calling reportWebVitals in NextJS
    * @public
-   * @returns {void} - Returns nothing.
+   * @returns {Promise<void>} - Returns nothing.
    *
    */
   public async metric(metric: {
@@ -381,6 +382,7 @@ export class Core {
           };
           await this.LocalStorage.setUser(user);
           this.InternalLogger.log("NexysCore: User configured", user);
+          this.Events.fire("config.user", user);
         },
         setAppVersion: async (appVersion: string) => {
           this._config = {
@@ -391,6 +393,7 @@ export class Core {
             "NexysCore: App version configured",
             appVersion
           );
+          this.Events.fire("config.app.version", appVersion);
         },
       }))();
   }

@@ -43,7 +43,7 @@ export class API {
       throw new Error("API:ALREADY_SENDING");
     }
     this._sendingRequest = true;
-    this.core.Events.on.request.sending?.(data);
+    this.core.Events.fire("request.sending", data);
 
     const server = `${this._server}/api/report/${this._apiKey}/${this._appName}`;
 
@@ -68,7 +68,7 @@ export class API {
 
       if (res?.ok) {
         this.requestCompleted();
-        this.core.Events.on.request.success?.({ res, json });
+        this.core.Events.fire("request.success", { res, json });
         return {
           res,
           json,
@@ -88,14 +88,14 @@ export class API {
         await this.core.LocalStorage.setAPIValues(data);
         this.core._APIValues = data;
         this.core.InternalLogger.log("API: Successful request", res);
-        this.core.Events.on.request.success?.({ res, json: res.json });
+        this.core.Events.fire("request.add", { res, json: res.json });
         await this.core.LogPool.clearRequests();
         await this.core.LogPool.clearLogs();
         return true;
       })
       .catch(async (err) => {
         this.core.InternalLogger.error("API: Request failed.", err);
-        this.core.Events.on.request.error?.(err);
+        this.core.Events.fire("request.error", err);
         if (err?.message == "API:FAILED:400:api-key") {
           this.core.InternalLogger.error(
             "API: Your API key is not valid. Please make sure you entered correct credentials."

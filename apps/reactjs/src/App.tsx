@@ -3,124 +3,7 @@ import { nexys } from "./utils";
 function App() {
   return (
     <div>
-      <h1>Web</h1>
-      <button
-        onClick={async () => {
-          nexys.error({ message: "test" });
-          //console.log("Client return:", log);
-        }}
-      >
-        click to err
-      </button>
-      <button
-        onClick={async () => {
-          const log = nexys.log({
-            eren: true,
-          });
-          //console.log("Client return:", log);
-        }}
-      >
-        click to log
-      </button>
-      <button
-        onClick={async () => {
-          nexys.configure((config) => {
-            config.setUser("@testt");
-          });
-          //console.log("Client return:", log);
-        }}
-      >
-        set user
-      </button>
-      <button
-        onClick={() => {
-          throw new Error("DACIA");
-        }}
-      >
-        click to cause an error
-      </button>
-
-      <button
-        onClick={() => {
-          console.log(nexys);
-        }}
-      >
-        click to console log nexys
-      </button>
-
-      <button
-        onClick={async () => {
-          const userAgent = await nexys.Device.getUserAgent();
-          console.log(userAgent);
-        }}
-      >
-        click to console log useragent
-      </button>
-
-      <button
-        onClick={async () => {
-          nexys.clear();
-        }}
-      >
-        click to clear
-      </button>
-
-      <button
-        onClick={async () => {
-          nexys.forceRequest();
-        }}
-      >
-        click to force requst
-      </button>
-
-      <button
-        onClick={async () => {
-          console.log("user", nexys.getUser());
-        }}
-      >
-        get user
-      </button>
-
-      <button
-        onClick={async () => {
-          console.log("logpoollength", nexys.getLogPoolLength());
-        }}
-      >
-        get logpoollenght
-      </button>
-
-      <button
-        onClick={async () => {
-          console.log("logpooltypes", nexys.getLogPoolLogTypes());
-        }}
-      >
-        get log pool types
-      </button>
-
-      <button
-        onClick={async () => {
-          console.log("logpool logs", nexys.getLogPoolLogs());
-        }}
-      >
-        get logs on logpool
-      </button>
-
-      <button
-        onClick={async () => {
-          console.log("logpool requests", nexys.getLogPoolRequests());
-        }}
-      >
-        get requests on logpool
-      </button>
-
-      <button
-        onClick={async () => {
-          console.log("device data (async)", await nexys.getDeviceData());
-        }}
-      >
-        get device data
-      </button>
-      {/*
+      <button id="asd">selam</button>
       <button
         onClick={async () => {
           const log = await nexys.log("test.", { type: "INFO" });
@@ -162,7 +45,7 @@ function App() {
 
       <button
         onClick={async () => {
-          const log = await nexys.clearLogPool();
+          const log = await nexys.clear();
           console.log("Client return:", log);
         }}
       >
@@ -186,15 +69,7 @@ function App() {
 
       <button
         onClick={() => {
-          nexys.__DO_NOT_USE_THIS();
-        }}
-      >
-        click to view class
-      </button>
-
-      <button
-        onClick={() => {
-          nexys.flushLogPool();
+          nexys.forceRequest();
         }}
       >
         click to send all logs
@@ -202,7 +77,7 @@ function App() {
 
       <button
         onClick={() => {
-          console.log(nexys.getLogPool());
+          console.log(nexys.getLogPoolLogs());
         }}
       >
         click to view log pool
@@ -222,7 +97,7 @@ function App() {
         }}
       >
         click to cause an error
-      </button>*/}
+      </button>
     </div>
   );
 }

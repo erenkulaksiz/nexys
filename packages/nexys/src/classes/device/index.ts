@@ -30,6 +30,7 @@ export class Device {
   constructor(core: Core) {
     this.core = core;
     this._isAvailable = this.core._isClient && this.checkAvailability();
+    this.core.Events.fire("device.init");
   }
 
   private checkAvailability(): boolean {

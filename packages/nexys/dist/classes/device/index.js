@@ -66,6 +66,7 @@ var Device = /** @class */ (function () {
         this._isAvailable = false;
         this.core = core;
         this._isAvailable = this.core._isClient && this.checkAvailability();
+        this.core.Events.fire("device.init");
     }
     Device.prototype.checkAvailability = function () {
         if (typeof navigator !== "undefined") {

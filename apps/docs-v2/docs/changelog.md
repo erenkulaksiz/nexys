@@ -7,6 +7,16 @@ title: Changelog
 
 ---
 
+## 1.1.0
+
+- Added `DOM` 🚀 - Will add support to dashboard soon!
+
+## 1.0.39
+
+- Events reworked: `subscribe`, `unsubscribe` and `fire` functions added.
+- Added `nexys.init()` function.
+- Fixed a bug where `ignoreType` config was not working properly.
+
 ## 1.0.38
 
 - Fixed bug where setting `useLocalStorage` to false would use `localStorage` anyway.

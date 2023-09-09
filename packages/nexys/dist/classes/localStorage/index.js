@@ -120,18 +120,17 @@ var LocalStorage = /** @class */ (function () {
         });
     };
     LocalStorage.prototype.init = function () {
-        var _a, _b;
         return __awaiter(this, void 0, void 0, function () {
             var localItem;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
                         if (!this.shouldUseLocalStorage)
                             return [2 /*return*/];
                         this.core.InternalLogger.log("LocalStorage: Initializing...");
                         return [4 /*yield*/, this.get()];
                     case 1:
-                        localItem = _c.sent();
+                        localItem = _a.sent();
                         if (!localItem) return [3 /*break*/, 2];
                         this.core.InternalLogger.log("LocalStorage: Found local item:", localItem);
                         return [3 /*break*/, 4];
@@ -139,10 +138,10 @@ var LocalStorage = /** @class */ (function () {
                         this.core.InternalLogger.log("LocalStorage: No local item found.");
                         return [4 /*yield*/, this.resetLocalValue()];
                     case 3:
-                        localItem = _c.sent();
-                        _c.label = 4;
+                        localItem = _a.sent();
+                        _a.label = 4;
                     case 4:
-                        (_b = (_a = this.core.Events.on).localStorageInit) === null || _b === void 0 ? void 0 : _b.call(_a, localItem);
+                        this.core.Events.fire("localstorage.init", localItem);
                         return [2 /*return*/];
                 }
             });
