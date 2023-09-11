@@ -8,7 +8,7 @@ description: Unsubscribe any Nexys event.
 
 ---
 
-Unsubscribe any Nexys event. You can unsubscribe any event listed in [Event Types](/docs/functions/events/event-types).
+Unsubscribe any Nexys event. You can unsubscribe any event listed in [Event Types](/functions/events/event-types).
 
 ## Usage
 

@@ -8,7 +8,7 @@ description: Trigger any Nexys event.
 
 ---
 
-Trigger any Nexys event. You can trigger any event listed in [Event Types](/docs/functions/events/event-types).
+Trigger any Nexys event. You can trigger any event listed in [Event Types](/functions/events/event-types).
 
 ## Usage
 
