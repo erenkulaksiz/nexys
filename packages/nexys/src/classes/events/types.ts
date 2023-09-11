@@ -45,4 +45,5 @@ export interface EventTypes {
   "dom.init"?: (() => void) | null;
   "dom.ready"?: (() => void) | null;
   "dom.content.loaded"?: (() => void) | null;
+  "visibility.change"?: ((event: Event) => void) | null;
 }

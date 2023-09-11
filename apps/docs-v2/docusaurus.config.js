@@ -51,14 +51,6 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      announcementBar: {
-        id: 'contribute',
-        content:
-          'We are still building docs. <a target="_blank" rel="noopener noreferrer" href="https://github.com/erenkulaksiz/nexys/tree/master/apps/docs-v2">Contribute</a>',
-        backgroundColor: '#DBFF00',
-        textColor: '#091E42',
-        isCloseable: true,
-      },
       image: 'img/nexys.png',
       navbar: {
         logo: {

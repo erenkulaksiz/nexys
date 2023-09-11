@@ -31,11 +31,11 @@ export class Events {
 
     if (this.core?._options?.errors?.allowAutomaticHandling) {
       this.setupEventHandlers();
-      this.bindErrorEvents();
+      this.bindEvents();
     }
   }
 
-  private bindErrorEvents(): void {
+  private bindEvents(): void {
     if (this._bindedErrorEvent) {
       this.core.InternalLogger.log(
         "Events: Couldnt bind error event. Already binded."
@@ -62,11 +62,15 @@ export class Events {
             return true;
           }
         );
-        /*
-        window.addEventListener("unload", (event: BeforeUnloadEvent) => {
-          this.core.InternalLogger.log("Events: Received unload event", event);
+        window.addEventListener("visibilitychange", (event) => {
+          this.core.InternalLogger.log(
+            "Events: Received visibilitychange event",
+            event
+          );
+          if (document.visibilityState === "hidden") {
+            this.fire("visibility.change", event);
+          }
         });
-        */
         this._bindedErrorEvent = true;
         this.core.InternalLogger.log("Events: Binded error events.");
         this.fire("events.bind.success");

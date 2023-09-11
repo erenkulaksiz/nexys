@@ -12,9 +12,13 @@ Metrics are the data that you want to collect from your users. You can collect a
 
 React and NodeJS support will come soon.
 
-## Usage
+## NextJS 13 or higher
 
-You can use `nexys.metric` anywhere on your project. Here's an example:
+Please read this [documentation.](https://nextjs.org/docs/app/api-reference/functions/use-report-web-vitals)
+
+You just need to replace line 7 with this `nexys.metric(metric)` on file `app/_components/web-vitals.js|ts`
+
+## NextJS 12 or lower
 
 ```tsx title="pages/_app.tsx"
 import { nexys } from "../nexys";

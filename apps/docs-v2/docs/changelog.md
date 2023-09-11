@@ -10,6 +10,7 @@ title: Changelog
 ## 1.1.0
 
 - Added `DOM` 🚀 - Will add support to dashboard soon!
+- Added `visibility.change` event.
 
 ## 1.0.39
 

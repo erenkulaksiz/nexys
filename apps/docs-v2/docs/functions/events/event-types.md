@@ -32,3 +32,4 @@ description: You can subscribe and fire these events.
 | `dom.init` | `DOM` has been initialized. | - |
 | `dom.ready` | `DOM` is ready. | - |
 | `dom.content.loaded` | `DOM` has been loaded. | - |
+| `visibility.change` | User has changed visibility. See this [documentation.](https://developer.mozilla.org/en-US/docs/Web/API/Document/visibilitychange_event) | Event |
