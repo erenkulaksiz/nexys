@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import { Core } from "../core";
 import type { InternalLoggerConstructorParams } from "./types";
 
 /**

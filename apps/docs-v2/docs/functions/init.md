@@ -9,7 +9,7 @@ Returns `void`.
 
 ---
 
-Initializes Nexys library. Must-to-do before using any other function.
+Initializes **Nexys** library. Must-to-do before using any other function.
 
 ## Example
 

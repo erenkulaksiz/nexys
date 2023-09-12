@@ -21,7 +21,7 @@ You can simply enter the data you want to log as the first parameter and the opt
 ## Example
 
 ```ts
-nexys.error("Hello World!", { action: "HEY" });
+nexys.error({ message: "Hello World!" }, { action: "HEY" });
 ```
 
 First parameter is the data you want to log. Second parameter is the options for the log. You can check the options below.

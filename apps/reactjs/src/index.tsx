@@ -8,8 +8,6 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 
-nexys.init();
-
 root.render(
   <React.StrictMode>
     <App />

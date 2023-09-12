@@ -21,7 +21,7 @@ export declare class Events {
     private _bindedErrorEvent;
     on: EventTypes;
     constructor(core: Core);
-    private bindErrorEvents;
+    private bindEvents;
     private setupEventHandlers;
     fire(event: keyof EventTypes, data?: any): void;
     subscribe(event: keyof EventTypes, callback: (event: any) => void): void;

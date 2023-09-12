@@ -170,6 +170,14 @@ export class Events {
       }
       this.core.InternalLogger.log("Events: Received request error: ", event);
     });
+
+    this.subscribe("visibility.change", (event) => {
+      this.core.InternalLogger.log(
+        "Events: Received visibility.change: ",
+        event
+      );
+      this.core.LogPool.process();
+    });
   }
 
   public fire(event: keyof EventTypes, data?: any): void {

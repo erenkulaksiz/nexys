@@ -61,33 +61,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { API } from "../API/index.js";
-import { Events } from "../events/index.js";
-import { InternalLogger } from "./../internalLogger/index.js";
-import { LocalStorage } from "./../localStorage/index.js";
-import { LogPool } from "./../logPool/index.js";
-import { Device } from "./../device/index.js";
-import { DOM } from "../DOM/index.js";
-import { server, version, isClient, guid } from "../../utils/index.js";
-import loadFromLocalStorage from "./loadFromLocalStorage.js";
+import { server, version, isClient, guid, defaultOptions, } from "../../utils/index.js";
 import getPagePath from "../../utils/getPagePath.js";
-import checkVersion from "./checkVersion.js";
-var defaultOptions = {
-    localStorage: {
-        useLocalStorage: true,
-        useAdapter: false,
-        cryption: true,
-        key: "__nex__",
-        testKey: "__nex-t__",
-    },
-    errors: {
-        allowAutomaticHandling: true, // Used for automatic exception handling.
-    },
-};
 var Core = /** @class */ (function () {
     function Core(API_KEY, options) {
-        var _this = this;
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x;
+        var _a, _b, _c, _d, _e, _f, _g, _h;
         this._initialized = false;
         this._processAvailable = typeof process != "undefined";
         this._version = version;
@@ -109,13 +87,8 @@ var Core = /** @class */ (function () {
         this._ignoreType = "METRIC";
         this._ignoreTypeSize = 50;
         this._config = null;
-        //_internalMetrics: any = [];
         this._APIValues = null;
         this._useLocalStorageAdapter = false;
-        var _start = null, _end = null;
-        if (this._isClient)
-            _start = performance.now();
-        // Options
         this._options = __assign(__assign({}, options), { localStorage: __assign(__assign({}, this._options.localStorage), options === null || options === void 0 ? void 0 : options.localStorage), errors: __assign(__assign({}, this._options.errors), options === null || options === void 0 ? void 0 : options.errors) });
         this._apiKey = API_KEY;
         this._server = (_c = options === null || options === void 0 ? void 0 : options.server) !== null && _c !== void 0 ? _c : server;
@@ -144,89 +117,41 @@ var Core = /** @class */ (function () {
             throw new Error("NexysCore: API_KEY is not defined");
         if (!this._options.appName)
             throw new Error("NexysCore: Please specify appName in constructor options");
-        this.InternalLogger = new InternalLogger({
-            active: (_k = (_j = this._options) === null || _j === void 0 ? void 0 : _j.debug) !== null && _k !== void 0 ? _k : false,
-        });
-        this.Events = new Events(this);
-        this.LogPool = new LogPool(this);
-        this.API = new API(this, {
-            server: this._server,
-            apiKey: this._apiKey,
-            appName: this._options.appName,
-        });
-        this.Device = new Device(this);
-        this.LocalStorage = new LocalStorage(this, {
-            key: (_m = (_l = this._options.localStorage) === null || _l === void 0 ? void 0 : _l.key) !== null && _m !== void 0 ? _m : (_o = defaultOptions.localStorage) === null || _o === void 0 ? void 0 : _o.key,
-            testKey: (_q = (_p = this._options.localStorage) === null || _p === void 0 ? void 0 : _p.testKey) !== null && _q !== void 0 ? _q : (_r = defaultOptions.localStorage) === null || _r === void 0 ? void 0 : _r.testKey,
-            isEncrypted: (_t = (_s = this._options.localStorage) === null || _s === void 0 ? void 0 : _s.cryption) !== null && _t !== void 0 ? _t : (_u = defaultOptions.localStorage) === null || _u === void 0 ? void 0 : _u.cryption,
-            active: (_w = (_v = this._options.localStorage) === null || _v === void 0 ? void 0 : _v.useLocalStorage) !== null && _w !== void 0 ? _w : (_x = defaultOptions.localStorage) === null || _x === void 0 ? void 0 : _x.useLocalStorage,
-        });
-        this.DOM = new DOM(this);
-        Promise.resolve(this.LocalStorage.setup()).then(function () { return __awaiter(_this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, loadFromLocalStorage(this)];
-                    case 1:
-                        _a.sent();
-                        checkVersion(this);
-                        return [2 /*return*/];
-                }
-            });
-        }); });
-        this._initialized = true;
-        if (!this._isClient) {
-            this.InternalLogger.log("NexysCore: Detected that we are running NexysCore on non client side environment.");
-            this.InternalLogger.log("NexysCore: Altough NexysCore is designed to run on client side, it can be used on server side as well but some features will might not work.");
-        }
-        // Core Init Event
-        this.Events.fire("core.init");
-        // Log initialization
-        this.InternalLogger.log("NexysCore: Initialized", this._version, this._options);
-        if (this._isClient)
-            _end = performance.now();
-        if (_start && _end) {
-            this.LogPool.push({
-                data: {
-                    type: "CORE:INIT",
-                    diff: _end - _start,
-                },
-                ts: new Date().getTime(),
-                options: {
-                    type: "METRIC",
-                },
-                guid: guid(),
-                path: getPagePath(this),
-            });
-            this.InternalLogger.log("NexysCore: Initialized in ".concat(_end - _start, "ms"));
-        }
     }
     Core.prototype._checkInitialized = function () {
-        if (!this._initialized)
-            this.InternalLogger.error("NexysCore: You need to initialize NexysCore before using it. Probably you forgot to call new Nexys() or you are on wrong version.");
+        if (!this._initialized) {
+            console.error("📕 [NEXYS-ERROR]: ", "Nexys is not initialized. Please initialize Nexys before using it.");
+            return false;
+        }
+        return true;
     };
     /**
-     * Adds log request to logPool in Nexys instance.
+     *
+     * Documentation @see https://docs.nexys.app/functions/logging/log
+     *
+     * @description Adds log request to logPool in Nexys instance.
      *
      * @example
      * ```javascript
-     * // Initialize the client and log "Hello World"
+     * // Create a Nexys instance and log "Hello World"
      * const nexys = new Nexys("API_KEY", { appName: "My_app" });
+     * nexys.init();
      * nexys.log("Hello World");
      * ```
      *
      * ```javascript
-     * // Initialize the client and log "Hello World" with options
+     * // Log "Hello World" with options
      * nexys.log("Hello World", { type: "info" });
      * ```
      *
-     * @param data - Any data to be logged
-     * @param options - `Optional` - Log options specified below
-     * @param options.type - `Optional` - Log type
-     * @param options.level - `Optional` - Log level
-     * @param options.tags - `Optional` - Log tags
-     * @param options.action - `Optional` - Log action
+     * @param data - Any data to be logged. See types https://github.com/erenkulaksiz/nexys/blob/master/packages/nexys/src/types.ts#L68
+     * @param options - `Optional` - `object` - Log options specified below
+     * @param options.type - `Optional` - `string` - Log type
+     * @param options.level - `Optional` - `string` - Log level
+     * @param options.tags - `Optional` - `string[]` - Log tags
+     * @param options.action - `Optional` - `string` - Log action
      * @public
-     * @returns {void} - Returns nothing.
+     * @returns {Promise<void>} - Returns nothing.
      *
      */
     Core.prototype.log = function (data, options) {
@@ -235,7 +160,9 @@ var Core = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this._checkInitialized();
+                        if (!this._checkInitialized()) {
+                            return [2 /*return*/];
+                        }
                         e = new Error();
                         return [4 /*yield*/, this.LogPool.push({
                                 data: data,
@@ -253,28 +180,28 @@ var Core = /** @class */ (function () {
         });
     };
     /**
-     * Adds error request to logPool in Nexys instance.
+     *
+     * Documentation @see https://docs.nexys.app/functions/logging/error
+     *
+     * @description Adds error request to logPool in Nexys instance.
      *
      * @example
      * ```javascript
-     * // Initialize the client and log "Hello World"
+     * // Create a Nexys instance and log "Hello World"
      * const nexys = new Nexys("API_KEY", { appName: "My_app" });
-     * nexys.log("Hello World");
+     * nexys.init();
+     * // Error log parameter expects an object
+     * nexys.error({ message: "Hello World" });
      * ```
      *
-     * ```javascript
-     * // Initialize the client and give error
-     * nexys.error("I'm an error");
-     * ```
-     *
-     * @param data - Any data to be logged
-     * @param options - `Optional` - Log options specified below
-     * @param options.type - `Optional` - Log type
-     * @param options.level - `Optional` - Log level
-     * @param options.tags - `Optional` - Log tags
-     * @param options.action - `Optional` - Log action
+     * @param data - Any data to be logged. See types https://github.com/erenkulaksiz/nexys/blob/master/packages/nexys/src/types.ts#L77
+     * @param options - `Optional` - `object` - Log options specified below
+     * @param options.type - `Optional` - `string` - Log type
+     * @param options.level - `Optional` - `string` - Log level
+     * @param options.tags - `Optional` - `string[]` - Log tags
+     * @param options.action - `Optional` - `string` - Log action
      * @public
-     * @returns {void} - Returns nothing.
+     * @returns {Promise<void>} - Returns nothing.
      *
      */
     Core.prototype.error = function (data, options) {
@@ -283,11 +210,13 @@ var Core = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this._checkInitialized();
+                        if (!this._checkInitialized()) {
+                            return [2 /*return*/];
+                        }
                         e = new Error();
                         return [4 /*yield*/, this.LogPool.push({
                                 data: data,
-                                options: __assign(__assign({}, options), { type: "ERROR" }),
+                                options: __assign({ type: "ERROR" }, options),
                                 stack: e.stack,
                                 ts: new Date().getTime(),
                                 guid: guid(),
@@ -301,7 +230,10 @@ var Core = /** @class */ (function () {
         });
     };
     /**
-     * `NextJS only method`
+     *
+     * Documentation @see https://docs.nexys.app/metrics
+     *
+     * @description `NextJS only method`
      *  Collect metric data for NextJS for performance measuring
      *  The metric data will not affect logPoolSize on default, log types with "METRIC" is ignored by default.
      *  Data collected from metrics will be sent if any request to dashboard happens. We do not want to send metric data on each page load. This will cause your client to get rate limit blocked.
@@ -309,8 +241,9 @@ var Core = /** @class */ (function () {
      *
      * @example
      * ```javascript
-     * // Initialize the client
+     * // Create a Nexys instance and initialize it
      * const nexys = new Nexys("API_KEY", { appName: "My_app" });
+     * nexys.init();
      * // inside pages/_app.jsx|tsx
      * export function reportWebVitals(metric: NextWebVitalsMetric) {
      *  nexys.metric(metric);
@@ -319,7 +252,7 @@ var Core = /** @class */ (function () {
      *
      * @param metric Metric data that you get from calling reportWebVitals in NextJS
      * @public
-     * @returns {void} - Returns nothing.
+     * @returns {Promise<void>} - Returns nothing.
      *
      */
     Core.prototype.metric = function (metric) {
@@ -328,7 +261,9 @@ var Core = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this._checkInitialized();
+                        if (!this._checkInitialized()) {
+                            return [2 /*return*/];
+                        }
                         e = new Error();
                         return [4 /*yield*/, this.LogPool.push({
                                 data: metric,
@@ -348,19 +283,20 @@ var Core = /** @class */ (function () {
         });
     };
     /**
-     * Configures Nexys instance. All logs sent to Nexys will use these configurations.
+     *
+     * Documentation @see https://docs.nexys.app/category/user-configuration
+     *
+     * @description Configures Nexys instance. All logs sent to Nexys will use these configurations.
      * This method will help you trough identifying your logs where came from like which user or which device.
      *
      * @example
      * ```javascript
-     * // Import and initialize the client
-     * import Nexys from "nexys";
-     *
+     * // Create a Nexys instance and initialize it
      * const nexys = new Nexys("API_KEY", { appName: "My_app" });
-     *
+     * nexys.init();
      * // Import types of config (Optional: If TypeScript is being used)
      * import type { configFunctions } from "nexys/dist/src/types";
-     *
+     * // Configure Nexys
      * nexys.configure((config: configFunctions) => {
      *  // Set user
      *  config.setUser("123456789_UNIQUE_ID");
@@ -370,16 +306,18 @@ var Core = /** @class */ (function () {
      * });
      * ```
      *
-     * @param config - Config functions
-     * @param config.setUser - Set user
-     * @param config.setAppVersion - Set application version
+     * @param config - `Required` - `object` - Config functions
+     * @param config.setUser - `Optional` - `function` - Set user
+     * @param config.setAppVersion - `Optional` - `function` - Set application version
      * @public
      * @returns {void} - Returns nothing.
      *
      */
     Core.prototype.configure = function (config) {
         var _this = this;
-        this._checkInitialized();
+        if (!this._checkInitialized()) {
+            return;
+        }
         (function () {
             return typeof config == "function" &&
                 config({
@@ -409,7 +347,10 @@ var Core = /** @class */ (function () {
         })();
     };
     /**
-     * This method will clear whatever stored in Nexys.
+     *
+     * Documentation @see https://docs.nexys.app/functions/clear
+     *
+     * @description This method will clear whatever stored in Nexys.
      *
      * @example
      * ```javascript
@@ -425,7 +366,9 @@ var Core = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this._checkInitialized();
+                        if (!this._checkInitialized()) {
+                            return [2 /*return*/];
+                        }
                         return [4 /*yield*/, this.LogPool.clearLogs()];
                     case 1:
                         _a.sent();
@@ -438,7 +381,10 @@ var Core = /** @class */ (function () {
         });
     };
     /**
-     * This method will force a request to Nexys.
+     *
+     * Documentation @see https://docs.nexys.app/functions/force-request
+     *
+     * @description This method will force a request to Nexys.
      * Use this method if you want to send all logs to Nexys immediately.
      * This method is not recommended to use. It will cause your client to get rate limit blocked if you use it too much.
      *
@@ -457,7 +403,9 @@ var Core = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this._checkInitialized();
+                        if (!this._checkInitialized()) {
+                            return [2 /*return*/];
+                        }
                         return [4 /*yield*/, this.LogPool.sendAll()];
                     case 1:
                         _a.sent();
@@ -467,7 +415,10 @@ var Core = /** @class */ (function () {
         });
     };
     /**
-     * This method will return Nexys library version in string.
+     *
+     * Documentation @see https://docs.nexys.app/functions/get-library-version
+     *
+     * @description This method will return Nexys library version in string.
      *
      * @example
      * ```javascript
@@ -479,11 +430,16 @@ var Core = /** @class */ (function () {
      *
      */
     Core.prototype.getLibraryVersion = function () {
-        this._checkInitialized();
+        if (!this._checkInitialized()) {
+            return null;
+        }
         return this._version;
     };
     /**
-     * This method will return configured user.
+     *
+     * Documentation @see https://docs.nexys.app/functions/get-user
+     *
+     * @description This method will return configured user.
      * If user is not configured, it will return null.
      *
      * @example
@@ -497,11 +453,16 @@ var Core = /** @class */ (function () {
      */
     Core.prototype.getUser = function () {
         var _a, _b;
-        this._checkInitialized();
+        if (!this._checkInitialized()) {
+            return null;
+        }
         return (_b = (_a = this._config) === null || _a === void 0 ? void 0 : _a.user) !== null && _b !== void 0 ? _b : null;
     };
     /**
-     * This method will return log length in logPool.
+     *
+     * Documentation @see https://docs.nexys.app/functions/logpool/get-logpool-length
+     *
+     * @description This method will return log length in logPool.
      *
      * @example
      * ```javascript
@@ -513,11 +474,16 @@ var Core = /** @class */ (function () {
      *
      */
     Core.prototype.getLogPoolLength = function () {
-        this._checkInitialized();
+        if (!this._checkInitialized()) {
+            return 0;
+        }
         return this.LogPool.logs.length;
     };
     /**
-     * This method will return log types in logPool. Multiple same types will be counted as one. No-typed logs will not be counted.
+     *
+     * Documentation @see https://docs.nexys.app/functions/logpool/get-logpool-log-types
+     *
+     * @description This method will return log types in logPool. Multiple same types will be counted as one. No-typed logs will not be counted.
      *
      * @example
      * ```javascript
@@ -529,7 +495,9 @@ var Core = /** @class */ (function () {
      *
      */
     Core.prototype.getLogPoolLogTypes = function () {
-        this._checkInitialized();
+        if (!this._checkInitialized()) {
+            return null;
+        }
         var items = {};
         this.LogPool.logs.forEach(function (log) {
             var _a, _b, _c, _d;
@@ -542,7 +510,10 @@ var Core = /** @class */ (function () {
         return Object.keys(items);
     };
     /**
-     * This method will return logPool logs.
+     *
+     * Documentation @see https://docs.nexys.app/functions/logpool/get-logpool-logs
+     *
+     * @description This method will return logPool logs.
      *
      * @example
      * ```javascript
@@ -553,11 +524,16 @@ var Core = /** @class */ (function () {
      * @returns {logTypes[]} - Returns logPool logs.
      */
     Core.prototype.getLogPoolLogs = function () {
-        this._checkInitialized();
+        if (!this._checkInitialized()) {
+            return null;
+        }
         return this.LogPool.logs;
     };
     /**
-     * This method will return requests in logPool. Requests array will be cleared (also on localStorage) after each successful request to Nexys.
+     *
+     * Documentation @see https://docs.nexys.app/functions/logpool/get-logpool-requests
+     *
+     * @description This method will return requests in logPool. Requests array will be cleared (also on localStorage) after each successful request to Nexys.
      *
      * @example
      * ```javascript
@@ -569,11 +545,16 @@ var Core = /** @class */ (function () {
      *
      */
     Core.prototype.getLogPoolRequests = function () {
-        this._checkInitialized();
+        if (!this._checkInitialized()) {
+            return null;
+        }
         return this.LogPool.requests;
     };
     /**
-     * This method will return API values. API values might be null if there is no request to Nexys yet also if there is no localStorage.
+     *
+     * Documentation @see https://docs.nexys.app/functions/get-api-values
+     *
+     * @description This method will return API values. API values might be null if there is no request to Nexys yet also if there is no localStorage.
      *
      * @example
      * ```javascript
@@ -585,10 +566,16 @@ var Core = /** @class */ (function () {
      *
      */
     Core.prototype.getApiValues = function () {
+        if (!this._checkInitialized()) {
+            return null;
+        }
         return this._APIValues;
     };
     /**
-     * This method will return if Nexys is initialized or not.
+     *
+     * Documentation @see https://docs.nexys.app/functions/get-is-initialized
+     *
+     * @description This method will return if Nexys is initialized or not.
      *
      * @example
      * ```javascript
@@ -603,7 +590,10 @@ var Core = /** @class */ (function () {
         return this._initialized;
     };
     /**
-     * This method will return DeviceData Nexys can gather.
+     *
+     * Documentation @see https://docs.nexys.app/functions/get-device-data
+     *
+     * @description This method will return DeviceData Nexys can gather.
      *
      * @example
      * ```javascript
@@ -618,7 +608,11 @@ var Core = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.Device.getDeviceData()];
+                    case 0:
+                        if (!this._checkInitialized()) {
+                            return [2 /*return*/, null];
+                        }
+                        return [4 /*yield*/, this.Device.getDeviceData()];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });

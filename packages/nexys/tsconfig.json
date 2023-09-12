@@ -7,6 +7,7 @@
     "target": "es5",
     "baseUrl": ".",
     "outDir": "./dist",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "strictPropertyInitialization": false
   }
 }

@@ -16,6 +16,18 @@
  */
 
 import { Core } from "./classes/core/index.js";
+import { API } from "./classes/API/index.js";
+import { Events } from "./classes/events/index.js";
+import { InternalLogger } from "./classes/internalLogger/index.js";
+import { LocalStorage } from "./classes/localStorage/index.js";
+import { LogPool } from "./classes/logPool/index.js";
+import { Device } from "./classes/device/index.js";
+import { DOM } from "./classes/DOM/index.js";
+import loadFromLocalStorage from "./classes/core/loadFromLocalStorage.js";
+import checkVersion from "./classes/core/checkVersion.js";
+import { guid } from "./utils/guid.js";
+import getPagePath from "./utils/getPagePath.js";
+import { defaultOptions } from "./utils/index.js";
 import type { NexysOptions } from "./types";
 
 /**
@@ -53,8 +65,12 @@ export default class Nexys extends Core {
    * ```javascript
    * // Import the client
    * import Nexys from "nexys";
-   * // Initialize the client
+   * // Create a new instance
    * const nexys = new Nexys("API_KEY", { appName: "My_app" });
+   * // Initialize the client
+   * nexys.init()
+   * // Push a log
+   * nexys.log("Hello World");
    * ```
    *
    * @param API_KEY - `Required` - `string` - The Public API key you retrieve from our dashboard
@@ -83,7 +99,99 @@ export default class Nexys extends Core {
     super(API_KEY, options);
   }
 
-  public init() {
-    this._checkInitialized();
+  /**
+   * Initializes the client.
+   *
+   * @example
+   * ```javascript
+   * // Create a new instance
+   * const nexys = new Nexys("API_KEY", { appName: "My_app" });
+   * // Initialize the client
+   * nexys.init()
+   * ```
+   *
+   * @public
+   * @returns {void} - Returns nothing.
+   *
+   */
+  public init(): void {
+    if (this._checkInitialized()) {
+      this.InternalLogger.log(
+        "NexysCore: Already initialized but called nexys.init()"
+      );
+      return;
+    }
+
+    let _start: number | null = null,
+      _end: number | null = null;
+    if (this._isClient) _start = performance.now();
+
+    this.InternalLogger = new InternalLogger({
+      active: this._options?.debug ?? false,
+    });
+    this.Events = new Events(this);
+    this.LogPool = new LogPool(this);
+    this.API = new API(this, {
+      server: this._server,
+      apiKey: this._apiKey,
+      appName: this._options.appName || "",
+    });
+    this.Device = new Device(this);
+    this.LocalStorage = new LocalStorage(this, {
+      key: this._options.localStorage?.key ?? defaultOptions.localStorage?.key,
+      testKey:
+        this._options.localStorage?.testKey ??
+        defaultOptions.localStorage?.testKey,
+      isEncrypted:
+        this._options.localStorage?.cryption ??
+        defaultOptions.localStorage?.cryption,
+      active:
+        this._options.localStorage?.useLocalStorage ??
+        defaultOptions.localStorage?.useLocalStorage,
+    });
+    this.DOM = new DOM(this);
+
+    Promise.resolve(this.LocalStorage.setup()).then(async () => {
+      await loadFromLocalStorage(this);
+      checkVersion(this);
+    });
+
+    this._initialized = true;
+
+    if (!this._isClient) {
+      this.InternalLogger.log(
+        "NexysCore: Detected that we are running NexysCore on non client side environment."
+      );
+      this.InternalLogger.log(
+        "NexysCore: Altough NexysCore is designed to run on client side, it can be used on server side as well but some features will might not work."
+      );
+    }
+
+    // Core Init Event
+    this.Events.fire("core.init");
+
+    // Log initialization
+    this.InternalLogger.log(
+      "NexysCore: Initialized",
+      this._version,
+      this._options
+    );
+
+    if (this._isClient) _end = performance.now();
+    if (_start && _end) {
+      this.LogPool.push({
+        data: {
+          type: "CORE:INIT",
+          diff: _end - _start,
+        },
+        ts: new Date().getTime(),
+        options: {
+          type: "METRIC",
+        },
+        guid: guid(),
+        path: getPagePath(this),
+      });
+      this.InternalLogger.log(`NexysCore: Initialized in ${_end - _start}ms`);
+    }
   }
 }

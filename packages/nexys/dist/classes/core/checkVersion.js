@@ -20,5 +20,5 @@ export default function checkVersion(core) {
         core.InternalLogger.error("NexysCore: You are using version ".concat(core._version, " and latest version is ").concat(core._APIValues.client.hardVersion, ". You wont be able to use Nexys with this version. Please upgrade your library."));
         //core._initialized = false;
     }
-    core.InternalLogger.log("NexysCore: Version check done.");
+    core.InternalLogger.log("NexysCore: Version check done. ".concat(core._version, " is up to date. SOFT:").concat(core._APIValues.client.softVersion, " - HARD:").concat(core._APIValues.client.hardVersion, " - LAT:").concat(core._APIValues.client.latestVersion));
 }

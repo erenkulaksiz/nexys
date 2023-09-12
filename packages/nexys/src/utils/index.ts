@@ -27,3 +27,15 @@ export {
   collectVercelEnv,
   collectDOMData,
 } from "./collect.js";
+export const defaultOptions = {
+  localStorage: {
+    useLocalStorage: true,
+    useAdapter: false,
+    cryption: true,
+    key: "__nex__",
+    testKey: "__nex-t__",
+  },
+  errors: {
+    allowAutomaticHandling: true, // Used for automatic exception handling.
+  },
+};

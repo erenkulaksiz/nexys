@@ -50,6 +50,22 @@ export default nexys;
 and you are set! Make sure you replace `API_KEY` with your API key and `APP_NAME` with your app name. You can find your API key on your [dashboard](https://dash.nexys.app/).
 Want configuration options? Check out the [configuration](/category/configuration) page.
 
+## Initialize
+
+To use **Nexys**, you need to initialize it. To do that, import the `nexys` file you created earlier and call the `init` method anywhere on your application.
+You cant use any **Nexys** feature without initializing.
+
+```ts title="pages/_app.tsx"
+import nexys from "../nexys";
+
+export default function MyApp({ Component, pageProps }) {
+  // highlight-next-line
+  nexys.init();
+  return <Component {...pageProps} />
+}
+```
+
+
 ## Usage
 
 Now, you can use **Nexys** anywhere on your project. Here's an example:
@@ -72,7 +88,3 @@ export default function Home() {
   )
 }
 ```
-
-Calling **Nexys** anywhere on your project will automatically sets up event handlers, and other internal stuff. You don't need to worry about anything else.
-
-Just setting up **Nexys** wont setup any handlers and will **not** track your errors.

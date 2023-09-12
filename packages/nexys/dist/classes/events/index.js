@@ -35,10 +35,10 @@ var Events = /** @class */ (function () {
         this.core = core;
         if ((_c = (_b = (_a = this.core) === null || _a === void 0 ? void 0 : _a._options) === null || _b === void 0 ? void 0 : _b.errors) === null || _c === void 0 ? void 0 : _c.allowAutomaticHandling) {
             this.setupEventHandlers();
-            this.bindErrorEvents();
+            this.bindEvents();
         }
     }
-    Events.prototype.bindErrorEvents = function () {
+    Events.prototype.bindEvents = function () {
         var _this = this;
         if (this._bindedErrorEvent) {
             this.core.InternalLogger.log("Events: Couldnt bind error event. Already binded.");
@@ -61,11 +61,12 @@ var Events = /** @class */ (function () {
                     _this.fire("errors.unhandled.rejection", event);
                     return true;
                 });
-                /*
-                window.addEventListener("unload", (event: BeforeUnloadEvent) => {
-                  this.core.InternalLogger.log("Events: Received unload event", event);
+                window.addEventListener("visibilitychange", function (event) {
+                    _this.core.InternalLogger.log("Events: Received visibilitychange event", event);
+                    if (document.visibilityState === "hidden") {
+                        _this.fire("visibility.change", event);
+                    }
                 });
-                */
                 this._bindedErrorEvent = true;
                 this.core.InternalLogger.log("Events: Binded error events.");
                 this.fire("events.bind.success");
@@ -146,6 +147,10 @@ var Events = /** @class */ (function () {
                 return;
             }
             _this.core.InternalLogger.log("Events: Received request error: ", event);
+        });
+        this.subscribe("visibility.change", function (event) {
+            _this.core.InternalLogger.log("Events: Received visibility.change: ", event);
+            _this.core.LogPool.process();
         });
     };
     Events.prototype.fire = function (event, data) {

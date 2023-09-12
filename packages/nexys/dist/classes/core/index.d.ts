@@ -51,61 +51,68 @@ export declare class Core {
     _APIValues: APIValues | null;
     _useLocalStorageAdapter: boolean;
     constructor(API_KEY: string, options?: NexysOptions);
-    _checkInitialized(): void;
+    _checkInitialized(): boolean;
     /**
-     * Adds log request to logPool in Nexys instance.
+     *
+     * Documentation @see https://docs.nexys.app/functions/logging/log
+     *
+     * @description Adds log request to logPool in Nexys instance.
      *
      * @example
      * ```javascript
-     * // Initialize the client and log "Hello World"
+     * // Create a Nexys instance and log "Hello World"
      * const nexys = new Nexys("API_KEY", { appName: "My_app" });
+     * nexys.init();
      * nexys.log("Hello World");
      * ```
      *
      * ```javascript
-     * // Initialize the client and log "Hello World" with options
+     * // Log "Hello World" with options
      * nexys.log("Hello World", { type: "info" });
      * ```
      *
-     * @param data - Any data to be logged
-     * @param options - `Optional` - Log options specified below
-     * @param options.type - `Optional` - Log type
-     * @param options.level - `Optional` - Log level
-     * @param options.tags - `Optional` - Log tags
-     * @param options.action - `Optional` - Log action
+     * @param data - Any data to be logged. See types https://github.com/erenkulaksiz/nexys/blob/master/packages/nexys/src/types.ts#L68
+     * @param options - `Optional` - `object` - Log options specified below
+     * @param options.type - `Optional` - `string` - Log type
+     * @param options.level - `Optional` - `string` - Log level
+     * @param options.tags - `Optional` - `string[]` - Log tags
+     * @param options.action - `Optional` - `string` - Log action
      * @public
-     * @returns {void} - Returns nothing.
+     * @returns {Promise<void>} - Returns nothing.
      *
      */
     log(data: logTypes["data"], options?: logTypes["options"]): Promise<void>;
     /**
-     * Adds error request to logPool in Nexys instance.
+     *
+     * Documentation @see https://docs.nexys.app/functions/logging/error
+     *
+     * @description Adds error request to logPool in Nexys instance.
      *
      * @example
      * ```javascript
-     * // Initialize the client and log "Hello World"
+     * // Create a Nexys instance and log "Hello World"
      * const nexys = new Nexys("API_KEY", { appName: "My_app" });
-     * nexys.log("Hello World");
+     * nexys.init();
+     * // Error log parameter expects an object
+     * nexys.error({ message: "Hello World" });
      * ```
      *
-     * ```javascript
-     * // Initialize the client and give error
-     * nexys.error("I'm an error");
-     * ```
-     *
-     * @param data - Any data to be logged
-     * @param options - `Optional` - Log options specified below
-     * @param options.type - `Optional` - Log type
-     * @param options.level - `Optional` - Log level
-     * @param options.tags - `Optional` - Log tags
-     * @param options.action - `Optional` - Log action
+     * @param data - Any data to be logged. See types https://github.com/erenkulaksiz/nexys/blob/master/packages/nexys/src/types.ts#L77
+     * @param options - `Optional` - `object` - Log options specified below
+     * @param options.type - `Optional` - `string` - Log type
+     * @param options.level - `Optional` - `string` - Log level
+     * @param options.tags - `Optional` - `string[]` - Log tags
+     * @param options.action - `Optional` - `string` - Log action
      * @public
-     * @returns {void} - Returns nothing.
+     * @returns {Promise<void>} - Returns nothing.
      *
      */
     error(data: errorLogTypes["data"], options?: logTypes["options"]): Promise<void>;
     /**
-     * `NextJS only method`
+     *
+     * Documentation @see https://docs.nexys.app/metrics
+     *
+     * @description `NextJS only method`
      *  Collect metric data for NextJS for performance measuring
      *  The metric data will not affect logPoolSize on default, log types with "METRIC" is ignored by default.
      *  Data collected from metrics will be sent if any request to dashboard happens. We do not want to send metric data on each page load. This will cause your client to get rate limit blocked.
@@ -113,8 +120,9 @@ export declare class Core {
      *
      * @example
      * ```javascript
-     * // Initialize the client
+     * // Create a Nexys instance and initialize it
      * const nexys = new Nexys("API_KEY", { appName: "My_app" });
+     * nexys.init();
      * // inside pages/_app.jsx|tsx
      * export function reportWebVitals(metric: NextWebVitalsMetric) {
      *  nexys.metric(metric);
@@ -123,7 +131,7 @@ export declare class Core {
      *
      * @param metric Metric data that you get from calling reportWebVitals in NextJS
      * @public
-     * @returns {void} - Returns nothing.
+     * @returns {Promise<void>} - Returns nothing.
      *
      */
     metric(metric: {
@@ -134,19 +142,20 @@ export declare class Core {
         value: number;
     }): Promise<void>;
     /**
-     * Configures Nexys instance. All logs sent to Nexys will use these configurations.
+     *
+     * Documentation @see https://docs.nexys.app/category/user-configuration
+     *
+     * @description Configures Nexys instance. All logs sent to Nexys will use these configurations.
      * This method will help you trough identifying your logs where came from like which user or which device.
      *
      * @example
      * ```javascript
-     * // Import and initialize the client
-     * import Nexys from "nexys";
-     *
+     * // Create a Nexys instance and initialize it
      * const nexys = new Nexys("API_KEY", { appName: "My_app" });
-     *
+     * nexys.init();
      * // Import types of config (Optional: If TypeScript is being used)
      * import type { configFunctions } from "nexys/dist/src/types";
-     *
+     * // Configure Nexys
      * nexys.configure((config: configFunctions) => {
      *  // Set user
      *  config.setUser("123456789_UNIQUE_ID");
@@ -156,16 +165,19 @@ export declare class Core {
      * });
      * ```
      *
-     * @param config - Config functions
-     * @param config.setUser - Set user
-     * @param config.setAppVersion - Set application version
+     * @param config - `Required` - `object` - Config functions
+     * @param config.setUser - `Optional` - `function` - Set user
+     * @param config.setAppVersion - `Optional` - `function` - Set application version
      * @public
      * @returns {void} - Returns nothing.
      *
      */
     configure(config: (config: configFunctions) => void): void;
     /**
-     * This method will clear whatever stored in Nexys.
+     *
+     * Documentation @see https://docs.nexys.app/functions/clear
+     *
+     * @description This method will clear whatever stored in Nexys.
      *
      * @example
      * ```javascript
@@ -178,7 +190,10 @@ export declare class Core {
      */
     clear(): Promise<void>;
     /**
-     * This method will force a request to Nexys.
+     *
+     * Documentation @see https://docs.nexys.app/functions/force-request
+     *
+     * @description This method will force a request to Nexys.
      * Use this method if you want to send all logs to Nexys immediately.
      * This method is not recommended to use. It will cause your client to get rate limit blocked if you use it too much.
      *
@@ -194,7 +209,10 @@ export declare class Core {
      */
     forceRequest(): Promise<void>;
     /**
-     * This method will return Nexys library version in string.
+     *
+     * Documentation @see https://docs.nexys.app/functions/get-library-version
+     *
+     * @description This method will return Nexys library version in string.
      *
      * @example
      * ```javascript
@@ -205,9 +223,12 @@ export declare class Core {
      * @returns {string} - Returns library version.
      *
      */
-    getLibraryVersion(): string;
+    getLibraryVersion(): string | null;
     /**
-     * This method will return configured user.
+     *
+     * Documentation @see https://docs.nexys.app/functions/get-user
+     *
+     * @description This method will return configured user.
      * If user is not configured, it will return null.
      *
      * @example
@@ -221,7 +242,10 @@ export declare class Core {
      */
     getUser(): string | null;
     /**
-     * This method will return log length in logPool.
+     *
+     * Documentation @see https://docs.nexys.app/functions/logpool/get-logpool-length
+     *
+     * @description This method will return log length in logPool.
      *
      * @example
      * ```javascript
@@ -234,7 +258,10 @@ export declare class Core {
      */
     getLogPoolLength(): number;
     /**
-     * This method will return log types in logPool. Multiple same types will be counted as one. No-typed logs will not be counted.
+     *
+     * Documentation @see https://docs.nexys.app/functions/logpool/get-logpool-log-types
+     *
+     * @description This method will return log types in logPool. Multiple same types will be counted as one. No-typed logs will not be counted.
      *
      * @example
      * ```javascript
@@ -245,9 +272,12 @@ export declare class Core {
      * @returns {string[]} - Returns log types in logPool.
      *
      */
-    getLogPoolLogTypes(): string[];
+    getLogPoolLogTypes(): string[] | null;
     /**
-     * This method will return logPool logs.
+     *
+     * Documentation @see https://docs.nexys.app/functions/logpool/get-logpool-logs
+     *
+     * @description This method will return logPool logs.
      *
      * @example
      * ```javascript
@@ -257,9 +287,12 @@ export declare class Core {
      * @public
      * @returns {logTypes[]} - Returns logPool logs.
      */
-    getLogPoolLogs(): logTypes[];
+    getLogPoolLogs(): logTypes[] | null;
     /**
-     * This method will return requests in logPool. Requests array will be cleared (also on localStorage) after each successful request to Nexys.
+     *
+     * Documentation @see https://docs.nexys.app/functions/logpool/get-logpool-requests
+     *
+     * @description This method will return requests in logPool. Requests array will be cleared (also on localStorage) after each successful request to Nexys.
      *
      * @example
      * ```javascript
@@ -270,9 +303,12 @@ export declare class Core {
      * @returns {requestTypes[]} - Returns requests in logPool.
      *
      */
-    getLogPoolRequests(): requestTypes[];
+    getLogPoolRequests(): requestTypes[] | null;
     /**
-     * This method will return API values. API values might be null if there is no request to Nexys yet also if there is no localStorage.
+     *
+     * Documentation @see https://docs.nexys.app/functions/get-api-values
+     *
+     * @description This method will return API values. API values might be null if there is no request to Nexys yet also if there is no localStorage.
      *
      * @example
      * ```javascript
@@ -285,7 +321,10 @@ export declare class Core {
      */
     getApiValues(): APIValues | null;
     /**
-     * This method will return if Nexys is initialized or not.
+     *
+     * Documentation @see https://docs.nexys.app/functions/get-is-initialized
+     *
+     * @description This method will return if Nexys is initialized or not.
      *
      * @example
      * ```javascript
@@ -298,7 +337,10 @@ export declare class Core {
      */
     getIsInitialized(): boolean;
     /**
-     * This method will return DeviceData Nexys can gather.
+     *
+     * Documentation @see https://docs.nexys.app/functions/get-device-data
+     *
+     * @description This method will return DeviceData Nexys can gather.
      *
      * @example
      * ```javascript
@@ -309,6 +351,6 @@ export declare class Core {
      * @public
      * @returns {Promise<getDeviceDataReturnTypes>} - Returns DeviceData.
      */
-    getDeviceData(): Promise<getDeviceDataReturnTypes>;
+    getDeviceData(): Promise<getDeviceDataReturnTypes | null>;
 }
 //# sourceMappingURL=index.d.ts.map

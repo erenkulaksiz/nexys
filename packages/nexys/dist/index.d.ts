@@ -50,8 +50,12 @@ export default class Nexys extends Core {
      * ```javascript
      * // Import the client
      * import Nexys from "nexys";
-     * // Initialize the client
+     * // Create a new instance
      * const nexys = new Nexys("API_KEY", { appName: "My_app" });
+     * // Initialize the client
+     * nexys.init()
+     * // Push a log
+     * nexys.log("Hello World");
      * ```
      *
      * @param API_KEY - `Required` - `string` - The Public API key you retrieve from our dashboard
@@ -77,6 +81,21 @@ export default class Nexys extends Core {
      * @returns A Nexys instance
      */
     constructor(API_KEY: string, options?: NexysOptions);
+    /**
+     * Initializes the client.
+     *
+     * @example
+     * ```javascript
+     * // Create a new instance
+     * const nexys = new Nexys("API_KEY", { appName: "My_app" });
+     * // Initialize the client
+     * nexys.init()
+     * ```
+     *
+     * @public
+     * @returns {void} - Returns nothing.
+     *
+     */
     init(): void;
 }
 //# sourceMappingURL=index.d.ts.map

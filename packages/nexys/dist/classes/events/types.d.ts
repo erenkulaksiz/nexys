@@ -30,9 +30,9 @@ export interface EventTypes {
         json: any;
     }) => void) | null;
     "request.error"?: ((error: Error) => void) | null;
-    "localstorage.init"?: ((localItem: any) => void) | null;
     "request.add"?: (({ res, status, ts }: requestTypes) => void) | null;
     test?: (() => void) | null;
+    "localstorage.init"?: ((localItem: any) => void) | null;
     "internallogger.init"?: (() => void) | null;
     "device.init"?: (() => void) | null;
     "events.bind.success"?: (() => void) | null;
@@ -40,6 +40,8 @@ export interface EventTypes {
     "config.user"?: ((data?: string) => void) | null;
     "config.app.version"?: ((data?: string) => void) | null;
     "dom.init"?: (() => void) | null;
+    "dom.ready"?: (() => void) | null;
     "dom.content.loaded"?: (() => void) | null;
+    "visibility.change"?: ((event: Event) => void) | null;
 }
 //# sourceMappingURL=types.d.ts.map

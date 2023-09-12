@@ -4,6 +4,7 @@ function App() {
   return (
     <div>
       <button id="asd">selam</button>
+      <button onClick={() => nexys.init()}>init</button>
       <button
         onClick={async () => {
           const log = await nexys.log("test.", { type: "INFO" });

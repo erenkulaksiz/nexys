@@ -17,8 +17,20 @@
 export var server = "https://dash.nexys.app";
 export var debugServer = "http://localhost:3000";
 export var libraryName = "Nexys";
-export var version = "1.0.39";
+export var version = "1.1.0";
 export { Base64 } from "./base64.js";
 export { isClient } from "./isClient.js";
 export { guid } from "./guid.js";
 export { collectNextJSData, collectVercelEnv, collectDOMData, } from "./collect.js";
+export var defaultOptions = {
+    localStorage: {
+        useLocalStorage: true,
+        useAdapter: false,
+        cryption: true,
+        key: "__nex__",
+        testKey: "__nex-t__",
+    },
+    errors: {
+        allowAutomaticHandling: true, // Used for automatic exception handling.
+    },
+};

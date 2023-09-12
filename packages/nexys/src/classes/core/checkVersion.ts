@@ -44,5 +44,7 @@ export default function checkVersion(core: Core) {
     //core._initialized = false;
   }
 
-  core.InternalLogger.log("NexysCore: Version check done.");
+  core.InternalLogger.log(
+    `NexysCore: Version check done. ${core._version} is up to date. SOFT:${core._APIValues.client.softVersion} - HARD:${core._APIValues.client.hardVersion} - LAT:${core._APIValues.client.latestVersion}`
+  );
 }

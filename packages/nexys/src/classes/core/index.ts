@@ -22,10 +22,14 @@ import { LocalStorage } from "./../localStorage/index.js";
 import { LogPool } from "./../logPool/index.js";
 import { Device } from "./../device/index.js";
 import { DOM } from "../DOM/index.js";
-import { server, version, isClient, guid } from "../../utils/index.js";
-import loadFromLocalStorage from "./loadFromLocalStorage.js";
+import {
+  server,
+  version,
+  isClient,
+  guid,
+  defaultOptions,
+} from "../../utils/index.js";
 import getPagePath from "../../utils/getPagePath.js";
-import checkVersion from "./checkVersion.js";
 import type {
   NexysOptions,
   logTypes,
@@ -37,19 +41,6 @@ import type {
 import type { APIValues } from "../localStorage/types.js";
 import type { getDeviceDataReturnTypes } from "../device/types.js";
 
-const defaultOptions = {
-  localStorage: {
-    useLocalStorage: true,
-    useAdapter: false,
-    cryption: true,
-    key: "__nex__",
-    testKey: "__nex-t__",
-  },
-  errors: {
-    allowAutomaticHandling: true, // Used for automatic exception handling.
-  },
-};
-
 export class Core {
   InternalLogger: InternalLogger;
   LogPool: LogPool;
@@ -58,7 +49,6 @@ export class Core {
   Device: Device;
   LocalStorage: LocalStorage;
   DOM: DOM;
-
   _initialized: boolean = false;
   _processAvailable: boolean = typeof process != "undefined";
   _apiKey: string;
@@ -81,15 +71,10 @@ export class Core {
   _ignoreType: NexysOptions["ignoreType"] = "METRIC";
   _ignoreTypeSize: number = 50;
   _config: configTypes | null = null;
-  //_internalMetrics: any = [];
   _APIValues: APIValues | null = null;
   _useLocalStorageAdapter: boolean = false;
 
   constructor(API_KEY: string, options?: NexysOptions) {
-    let _start: number | null = null,
-      _end: number | null = null;
-    if (this._isClient) _start = performance.now();
-    // Options
     this._options = {
       ...options,
       localStorage: {
@@ -135,104 +120,44 @@ export class Core {
       throw new Error(
         "NexysCore: Please specify appName in constructor options"
       );
-
-    this.InternalLogger = new InternalLogger({
-      active: this._options?.debug ?? false,
-    });
-    this.Events = new Events(this);
-    this.LogPool = new LogPool(this);
-    this.API = new API(this, {
-      server: this._server,
-      apiKey: this._apiKey,
-      appName: this._options.appName,
-    });
-    this.Device = new Device(this);
-    this.LocalStorage = new LocalStorage(this, {
-      key: this._options.localStorage?.key ?? defaultOptions.localStorage?.key,
-      testKey:
-        this._options.localStorage?.testKey ??
-        defaultOptions.localStorage?.testKey,
-      isEncrypted:
-        this._options.localStorage?.cryption ??
-        defaultOptions.localStorage?.cryption,
-      active:
-        this._options.localStorage?.useLocalStorage ??
-        defaultOptions.localStorage?.useLocalStorage,
-    });
-    this.DOM = new DOM(this);
-
-    Promise.resolve(this.LocalStorage.setup()).then(async () => {
-      await loadFromLocalStorage(this);
-      checkVersion(this);
-    });
-
-    this._initialized = true;
-
-    if (!this._isClient) {
-      this.InternalLogger.log(
-        "NexysCore: Detected that we are running NexysCore on non client side environment."
-      );
-      this.InternalLogger.log(
-        "NexysCore: Altough NexysCore is designed to run on client side, it can be used on server side as well but some features will might not work."
-      );
-    }
-
-    // Core Init Event
-    this.Events.fire("core.init");
-
-    // Log initialization
-    this.InternalLogger.log(
-      "NexysCore: Initialized",
-      this._version,
-      this._options
-    );
-
-    if (this._isClient) _end = performance.now();
-    if (_start && _end) {
-      this.LogPool.push({
-        data: {
-          type: "CORE:INIT",
-          diff: _end - _start,
-        },
-        ts: new Date().getTime(),
-        options: {
-          type: "METRIC",
-        },
-        guid: guid(),
-        path: getPagePath(this),
-      });
-      this.InternalLogger.log(`NexysCore: Initialized in ${_end - _start}ms`);
-    }
   }
 
-  public _checkInitialized(): void {
-    if (!this._initialized)
-      this.InternalLogger.error(
-        "NexysCore: You need to initialize NexysCore before using it. Probably you forgot to call new Nexys() or you are on wrong version."
+  public _checkInitialized(): boolean {
+    if (!this._initialized) {
+      console.error(
+        "📕 [NEXYS-ERROR]: ",
+        "Nexys is not initialized. Please initialize Nexys before using it."
       );
+      return false;
+    }
+    return true;
   }
 
   /**
-   * Adds log request to logPool in Nexys instance.
+   *
+   * Documentation @see https://docs.nexys.app/functions/logging/log
+   *
+   * @description Adds log request to logPool in Nexys instance.
    *
    * @example
    * ```javascript
-   * // Initialize the client and log "Hello World"
+   * // Create a Nexys instance and log "Hello World"
    * const nexys = new Nexys("API_KEY", { appName: "My_app" });
+   * nexys.init();
    * nexys.log("Hello World");
    * ```
    *
    * ```javascript
-   * // Initialize the client and log "Hello World" with options
+   * // Log "Hello World" with options
    * nexys.log("Hello World", { type: "info" });
    * ```
    *
-   * @param data - Any data to be logged
-   * @param options - `Optional` - Log options specified below
-   * @param options.type - `Optional` - Log type
-   * @param options.level - `Optional` - Log level
-   * @param options.tags - `Optional` - Log tags
-   * @param options.action - `Optional` - Log action
+   * @param data - Any data to be logged. See types https://github.com/erenkulaksiz/nexys/blob/master/packages/nexys/src/types.ts#L68
+   * @param options - `Optional` - `object` - Log options specified below
+   * @param options.type - `Optional` - `string` - Log type
+   * @param options.level - `Optional` - `string` - Log level
+   * @param options.tags - `Optional` - `string[]` - Log tags
+   * @param options.action - `Optional` - `string` - Log action
    * @public
    * @returns {Promise<void>} - Returns nothing.
    *
@@ -241,7 +166,9 @@ export class Core {
     data: logTypes["data"],
     options?: logTypes["options"]
   ): Promise<void> {
-    this._checkInitialized();
+    if (!this._checkInitialized()) {
+      return;
+    }
     const e = new Error();
     await this.LogPool.push({
       data,
@@ -254,26 +181,26 @@ export class Core {
   }
 
   /**
-   * Adds error request to logPool in Nexys instance.
+   *
+   * Documentation @see https://docs.nexys.app/functions/logging/error
+   *
+   * @description Adds error request to logPool in Nexys instance.
    *
    * @example
    * ```javascript
-   * // Initialize the client and log "Hello World"
+   * // Create a Nexys instance and log "Hello World"
    * const nexys = new Nexys("API_KEY", { appName: "My_app" });
-   * nexys.log("Hello World");
+   * nexys.init();
+   * // Error log parameter expects an object
+   * nexys.error({ message: "Hello World" });
    * ```
    *
-   * ```javascript
-   * // Initialize the client and give error
-   * nexys.error("I'm an error");
-   * ```
-   *
-   * @param data - Any data to be logged
-   * @param options - `Optional` - Log options specified below
-   * @param options.type - `Optional` - Log type
-   * @param options.level - `Optional` - Log level
-   * @param options.tags - `Optional` - Log tags
-   * @param options.action - `Optional` - Log action
+   * @param data - Any data to be logged. See types https://github.com/erenkulaksiz/nexys/blob/master/packages/nexys/src/types.ts#L77
+   * @param options - `Optional` - `object` - Log options specified below
+   * @param options.type - `Optional` - `string` - Log type
+   * @param options.level - `Optional` - `string` - Log level
+   * @param options.tags - `Optional` - `string[]` - Log tags
+   * @param options.action - `Optional` - `string` - Log action
    * @public
    * @returns {Promise<void>} - Returns nothing.
    *
@@ -282,13 +209,15 @@ export class Core {
     data: errorLogTypes["data"],
     options?: logTypes["options"]
   ): Promise<void> {
-    this._checkInitialized();
+    if (!this._checkInitialized()) {
+      return;
+    }
     const e = new Error();
     await this.LogPool.push({
       data,
       options: {
-        ...options,
         type: "ERROR",
+        ...options,
       },
       stack: e.stack,
       ts: new Date().getTime(),
@@ -298,7 +227,10 @@ export class Core {
   }
 
   /**
-   * `NextJS only method`
+   *
+   * Documentation @see https://docs.nexys.app/metrics
+   *
+   * @description `NextJS only method`
    *  Collect metric data for NextJS for performance measuring
    *  The metric data will not affect logPoolSize on default, log types with "METRIC" is ignored by default.
    *  Data collected from metrics will be sent if any request to dashboard happens. We do not want to send metric data on each page load. This will cause your client to get rate limit blocked.
@@ -306,8 +238,9 @@ export class Core {
    *
    * @example
    * ```javascript
-   * // Initialize the client
+   * // Create a Nexys instance and initialize it
    * const nexys = new Nexys("API_KEY", { appName: "My_app" });
+   * nexys.init();
    * // inside pages/_app.jsx|tsx
    * export function reportWebVitals(metric: NextWebVitalsMetric) {
    *  nexys.metric(metric);
@@ -326,7 +259,9 @@ export class Core {
     startTime: number;
     value: number;
   }): Promise<void> {
-    this._checkInitialized();
+    if (!this._checkInitialized()) {
+      return;
+    }
     const e = new Error();
     await this.LogPool.push({
       data: metric,
@@ -341,19 +276,20 @@ export class Core {
   }
 
   /**
-   * Configures Nexys instance. All logs sent to Nexys will use these configurations.
+   *
+   * Documentation @see https://docs.nexys.app/category/user-configuration
+   *
+   * @description Configures Nexys instance. All logs sent to Nexys will use these configurations.
    * This method will help you trough identifying your logs where came from like which user or which device.
    *
    * @example
    * ```javascript
-   * // Import and initialize the client
-   * import Nexys from "nexys";
-   *
+   * // Create a Nexys instance and initialize it
    * const nexys = new Nexys("API_KEY", { appName: "My_app" });
-   *
+   * nexys.init();
    * // Import types of config (Optional: If TypeScript is being used)
    * import type { configFunctions } from "nexys/dist/src/types";
-   *
+   * // Configure Nexys
    * nexys.configure((config: configFunctions) => {
    *  // Set user
    *  config.setUser("123456789_UNIQUE_ID");
@@ -363,15 +299,17 @@ export class Core {
    * });
    * ```
    *
-   * @param config - Config functions
-   * @param config.setUser - Set user
-   * @param config.setAppVersion - Set application version
+   * @param config - `Required` - `object` - Config functions
+   * @param config.setUser - `Optional` - `function` - Set user
+   * @param config.setAppVersion - `Optional` - `function` - Set application version
    * @public
    * @returns {void} - Returns nothing.
    *
    */
   public configure(config: (config: configFunctions) => void): void {
-    this._checkInitialized();
+    if (!this._checkInitialized()) {
+      return;
+    }
     (() =>
       typeof config == "function" &&
       config({
@@ -399,7 +337,10 @@ export class Core {
   }
 
   /**
-   * This method will clear whatever stored in Nexys.
+   *
+   * Documentation @see https://docs.nexys.app/functions/clear
+   *
+   * @description This method will clear whatever stored in Nexys.
    *
    * @example
    * ```javascript
@@ -411,13 +352,18 @@ export class Core {
    *
    */
   public async clear(): Promise<void> {
-    this._checkInitialized();
+    if (!this._checkInitialized()) {
+      return;
+    }
     await this.LogPool.clearLogs();
     await this.LogPool.clearRequests();
   }
 
   /**
-   * This method will force a request to Nexys.
+   *
+   * Documentation @see https://docs.nexys.app/functions/force-request
+   *
+   * @description This method will force a request to Nexys.
    * Use this method if you want to send all logs to Nexys immediately.
    * This method is not recommended to use. It will cause your client to get rate limit blocked if you use it too much.
    *
@@ -432,12 +378,17 @@ export class Core {
    *
    */
   public async forceRequest(): Promise<void> {
-    this._checkInitialized();
+    if (!this._checkInitialized()) {
+      return;
+    }
     await this.LogPool.sendAll();
   }
 
   /**
-   * This method will return Nexys library version in string.
+   *
+   * Documentation @see https://docs.nexys.app/functions/get-library-version
+   *
+   * @description This method will return Nexys library version in string.
    *
    * @example
    * ```javascript
@@ -448,13 +399,18 @@ export class Core {
    * @returns {string} - Returns library version.
    *
    */
-  public getLibraryVersion(): string {
-    this._checkInitialized();
+  public getLibraryVersion(): string | null {
+    if (!this._checkInitialized()) {
+      return null;
+    }
     return this._version;
   }
 
   /**
-   * This method will return configured user.
+   *
+   * Documentation @see https://docs.nexys.app/functions/get-user
+   *
+   * @description This method will return configured user.
    * If user is not configured, it will return null.
    *
    * @example
@@ -467,12 +423,17 @@ export class Core {
    *
    */
   public getUser(): string | null {
-    this._checkInitialized();
+    if (!this._checkInitialized()) {
+      return null;
+    }
     return this._config?.user ?? null;
   }
 
   /**
-   * This method will return log length in logPool.
+   *
+   * Documentation @see https://docs.nexys.app/functions/logpool/get-logpool-length
+   *
+   * @description This method will return log length in logPool.
    *
    * @example
    * ```javascript
@@ -484,12 +445,17 @@ export class Core {
    *
    */
   public getLogPoolLength(): number {
-    this._checkInitialized();
+    if (!this._checkInitialized()) {
+      return 0;
+    }
     return this.LogPool.logs.length;
   }
 
   /**
-   * This method will return log types in logPool. Multiple same types will be counted as one. No-typed logs will not be counted.
+   *
+   * Documentation @see https://docs.nexys.app/functions/logpool/get-logpool-log-types
+   *
+   * @description This method will return log types in logPool. Multiple same types will be counted as one. No-typed logs will not be counted.
    *
    * @example
    * ```javascript
@@ -500,8 +466,10 @@ export class Core {
    * @returns {string[]} - Returns log types in logPool.
    *
    */
-  public getLogPoolLogTypes(): string[] {
-    this._checkInitialized();
+  public getLogPoolLogTypes(): string[] | null {
+    if (!this._checkInitialized()) {
+      return null;
+    }
     let items = {} as { [key: string]: number };
     this.LogPool.logs.forEach((log) => {
       if (log?.options?.type) {
@@ -514,7 +482,10 @@ export class Core {
   }
 
   /**
-   * This method will return logPool logs.
+   *
+   * Documentation @see https://docs.nexys.app/functions/logpool/get-logpool-logs
+   *
+   * @description This method will return logPool logs.
    *
    * @example
    * ```javascript
@@ -524,13 +495,18 @@ export class Core {
    * @public
    * @returns {logTypes[]} - Returns logPool logs.
    */
-  public getLogPoolLogs(): logTypes[] {
-    this._checkInitialized();
+  public getLogPoolLogs(): logTypes[] | null {
+    if (!this._checkInitialized()) {
+      return null;
+    }
     return this.LogPool.logs;
   }
 
   /**
-   * This method will return requests in logPool. Requests array will be cleared (also on localStorage) after each successful request to Nexys.
+   *
+   * Documentation @see https://docs.nexys.app/functions/logpool/get-logpool-requests
+   *
+   * @description This method will return requests in logPool. Requests array will be cleared (also on localStorage) after each successful request to Nexys.
    *
    * @example
    * ```javascript
@@ -541,13 +517,18 @@ export class Core {
    * @returns {requestTypes[]} - Returns requests in logPool.
    *
    */
-  public getLogPoolRequests(): requestTypes[] {
-    this._checkInitialized();
+  public getLogPoolRequests(): requestTypes[] | null {
+    if (!this._checkInitialized()) {
+      return null;
+    }
     return this.LogPool.requests;
   }
 
   /**
-   * This method will return API values. API values might be null if there is no request to Nexys yet also if there is no localStorage.
+   *
+   * Documentation @see https://docs.nexys.app/functions/get-api-values
+   *
+   * @description This method will return API values. API values might be null if there is no request to Nexys yet also if there is no localStorage.
    *
    * @example
    * ```javascript
@@ -559,11 +540,17 @@ export class Core {
    *
    */
   public getApiValues(): APIValues | null {
+    if (!this._checkInitialized()) {
+      return null;
+    }
     return this._APIValues;
   }
 
   /**
-   * This method will return if Nexys is initialized or not.
+   *
+   * Documentation @see https://docs.nexys.app/functions/get-is-initialized
+   *
+   * @description This method will return if Nexys is initialized or not.
    *
    * @example
    * ```javascript
@@ -579,7 +566,10 @@ export class Core {
   }
 
   /**
-   * This method will return DeviceData Nexys can gather.
+   *
+   * Documentation @see https://docs.nexys.app/functions/get-device-data
+   *
+   * @description This method will return DeviceData Nexys can gather.
    *
    * @example
    * ```javascript
@@ -590,7 +580,10 @@ export class Core {
    * @public
    * @returns {Promise<getDeviceDataReturnTypes>} - Returns DeviceData.
    */
-  public async getDeviceData(): Promise<getDeviceDataReturnTypes> {
+  public async getDeviceData(): Promise<getDeviceDataReturnTypes | null> {
+    if (!this._checkInitialized()) {
+      return null;
+    }
     return await this.Device.getDeviceData();
   }
 }
