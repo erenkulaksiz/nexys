@@ -115,7 +115,7 @@ export default class Nexys extends Core {
    *
    */
   public init(): void {
-    if (this._checkInitialized()) {
+    if (this._initialized) {
       this.InternalLogger.log(
         "NexysCore: Already initialized but called nexys.init()"
       );

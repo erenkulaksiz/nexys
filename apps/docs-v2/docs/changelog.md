@@ -7,6 +7,10 @@ title: Changelog
 
 ---
 
+## 1.1.1
+
+- Fixed a bug where `nexys.init()` would print wrong log on initialization.
+
 ## 1.1.0
 
 - Added `DOM` 🚀 - Will add support to dashboard soon!
