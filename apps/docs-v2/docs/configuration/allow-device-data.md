@@ -7,6 +7,12 @@ description: Allow device data configuration
 
 ---
 
+:::caution
+
+This is an clientside feature. If you want to disable this feature, you can use [allowDeviceData](#allowdevicedata) option.
+
+:::
+
 If you want to send device data with your logs, you can use this option. You can view each **batch**'s device data by clicking **View Batch** on any log inside the [Nexys dashboard](https://dash.nexys.app).
 
 | Option | Type | Default |

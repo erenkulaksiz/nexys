@@ -7,13 +7,21 @@ title: Changelog
 
 ---
 
+## 1.1.2
+
+- Removed `DOM` from `Nexys`.
+
 ## 1.1.1
 
 - Fixed a bug where `nexys.init()` would print wrong log on initialization.
+- Removed `bundle.min.js` from `dist` folder.
+- Added `setPlatform` function to `nexys.configure()`.
+- Platform and App Version now loads automatically from `localStorage` on `nexys.init()`.
+- Removed `clear()` from `localStorage` adapter.
 
 ## 1.1.0
 
-- Added `DOM` 🚀 - Will add support to dashboard soon!
+- Added `DOM` 🚀
 - Added `visibility.change` event.
 
 ## 1.0.39

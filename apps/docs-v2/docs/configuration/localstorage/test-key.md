@@ -7,6 +7,12 @@ description: Test key configuration
 
 ---
 
+:::caution
+
+This is an clientside feature.
+
+:::
+
 **Nexys** localStorage availability is checked with a test key. You can change this key with `testKey` option.
 
 | Option | Type | Default |

@@ -21,7 +21,6 @@ import { InternalLogger } from "./../internalLogger/index.js";
 import { LocalStorage } from "./../localStorage/index.js";
 import { LogPool } from "./../logPool/index.js";
 import { Device } from "./../device/index.js";
-import { DOM } from "../DOM/index.js";
 import {
   server,
   version,
@@ -48,7 +47,6 @@ export class Core {
   API: API;
   Device: Device;
   LocalStorage: LocalStorage;
-  DOM: DOM;
   _initialized: boolean = false;
   _processAvailable: boolean = typeof process != "undefined";
   _apiKey: string;

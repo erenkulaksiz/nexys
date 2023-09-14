@@ -22,7 +22,6 @@ import { InternalLogger } from "./classes/internalLogger/index.js";
 import { LocalStorage } from "./classes/localStorage/index.js";
 import { LogPool } from "./classes/logPool/index.js";
 import { Device } from "./classes/device/index.js";
-import { DOM } from "./classes/DOM/index.js";
 import loadFromLocalStorage from "./classes/core/loadFromLocalStorage.js";
 import checkVersion from "./classes/core/checkVersion.js";
 import { guid } from "./utils/guid.js";
@@ -149,7 +148,6 @@ export default class Nexys extends Core {
         this._options.localStorage?.useLocalStorage ??
         defaultOptions.localStorage?.useLocalStorage,
     });
-    this.DOM = new DOM(this);
 
     Promise.resolve(this.LocalStorage.setup()).then(async () => {
       await loadFromLocalStorage(this);

@@ -8,9 +8,19 @@ description: Set User
 
 ---
 
+:::caution
+
+This is an clientside feature.
+
+Setting different users are not available on serverside since we try to save it to `localStorage`. Since your serverside application probably has more than one user, we don't want to save it to `localStorage`.
+
+:::
+
 You can set the user of your application with this method. This method will be used to identify the user of your application. This feature is crucial for the **User Analytics** feature.
 
 Configuring user will be saved on localStorage. So, you don't need to set it on each page load. You can set it once and it will load it automatically on each page load.
+
+Accepts `string`.
 
 Example:
 

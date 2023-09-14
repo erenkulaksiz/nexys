@@ -7,6 +7,12 @@ description: Cryption configuration
 
 ---
 
+:::caution
+
+This is an clientside feature.
+
+:::
+
 If you want to add some security to your logs on **localStorage**, you can use this option.
 
 **Dont trust this feature. It is not a security feature.** This feature only makes your logs unreadable if anyone tries to read your client's logs.

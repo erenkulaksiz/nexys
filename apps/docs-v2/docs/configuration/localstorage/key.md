@@ -7,6 +7,12 @@ description: Key configuration
 
 ---
 
+:::caution
+
+This is an clientside feature.
+
+:::
+
 If you want to change the key of your logs on **localStorage**, you can use this option.
 
 | Option | Type | Default |

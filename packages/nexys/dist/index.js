@@ -72,7 +72,6 @@ import { InternalLogger } from "./classes/internalLogger/index.js";
 import { LocalStorage } from "./classes/localStorage/index.js";
 import { LogPool } from "./classes/logPool/index.js";
 import { Device } from "./classes/device/index.js";
-import { DOM } from "./classes/DOM/index.js";
 import loadFromLocalStorage from "./classes/core/loadFromLocalStorage.js";
 import checkVersion from "./classes/core/checkVersion.js";
 import { guid } from "./utils/guid.js";
@@ -164,7 +163,7 @@ var Nexys = /** @class */ (function (_super) {
     Nexys.prototype.init = function () {
         var _this = this;
         var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
-        if (this._checkInitialized()) {
+        if (this._initialized) {
             this.InternalLogger.log("NexysCore: Already initialized but called nexys.init()");
             return;
         }
@@ -188,7 +187,6 @@ var Nexys = /** @class */ (function (_super) {
             isEncrypted: (_k = (_j = this._options.localStorage) === null || _j === void 0 ? void 0 : _j.cryption) !== null && _k !== void 0 ? _k : (_l = defaultOptions.localStorage) === null || _l === void 0 ? void 0 : _l.cryption,
             active: (_o = (_m = this._options.localStorage) === null || _m === void 0 ? void 0 : _m.useLocalStorage) !== null && _o !== void 0 ? _o : (_p = defaultOptions.localStorage) === null || _p === void 0 ? void 0 : _p.useLocalStorage,
         });
-        this.DOM = new DOM(this);
         Promise.resolve(this.LocalStorage.setup()).then(function () { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {

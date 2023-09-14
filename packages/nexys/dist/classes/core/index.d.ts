@@ -20,7 +20,6 @@ import { InternalLogger } from "./../internalLogger/index.js";
 import { LocalStorage } from "./../localStorage/index.js";
 import { LogPool } from "./../logPool/index.js";
 import { Device } from "./../device/index.js";
-import { DOM } from "../DOM/index.js";
 import type { NexysOptions, logTypes, configTypes, configFunctions, errorLogTypes, requestTypes } from "../../types";
 import type { APIValues } from "../localStorage/types.js";
 import type { getDeviceDataReturnTypes } from "../device/types.js";
@@ -31,7 +30,6 @@ export declare class Core {
     API: API;
     Device: Device;
     LocalStorage: LocalStorage;
-    DOM: DOM;
     _initialized: boolean;
     _processAvailable: boolean;
     _apiKey: string;

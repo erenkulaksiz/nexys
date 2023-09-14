@@ -191,8 +191,8 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
-    var __assign$7 = (undefined && undefined.__assign) || function () {
-        __assign$7 = Object.assign || function(t) {
+    var __assign$6 = (undefined && undefined.__assign) || function () {
+        __assign$6 = Object.assign || function(t) {
             for (var s, i = 1, n = arguments.length; i < n; i++) {
                 s = arguments[i];
                 for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -200,7 +200,7 @@
             }
             return t;
         };
-        return __assign$7.apply(this, arguments);
+        return __assign$6.apply(this, arguments);
     };
     var __awaiter$7 = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
         function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -317,28 +317,28 @@
                                 libraryName: libraryName,
                                 version: version,
                             },
-                            options: __assign$7(__assign$7({}, core._options), { logPoolSize: core._logPoolSize, allowDeviceData: core._allowDeviceData, sendAllOnType: core._sendAllOnType, ignoreType: core._ignoreType, ignoreTypeSize: core._ignoreTypeSize }),
+                            options: __assign$6(__assign$6({}, core._options), { logPoolSize: core._logPoolSize, allowDeviceData: core._allowDeviceData, sendAllOnType: core._sendAllOnType, ignoreType: core._ignoreType, ignoreTypeSize: core._ignoreTypeSize }),
                             env: {
                                 type: core._env,
                                 isClient: core._isClient,
                             },
                         };
                         if (config) {
-                            CollectData = __assign$7(__assign$7({}, CollectData), { config: config });
+                            CollectData = __assign$6(__assign$6({}, CollectData), { config: config });
                         }
                         nextJSData = collectNextJSData();
                         if (nextJSData) {
-                            CollectData = __assign$7(__assign$7({}, CollectData), { env: __assign$7(__assign$7({}, CollectData.env), nextJSData) });
+                            CollectData = __assign$6(__assign$6({}, CollectData), { env: __assign$6(__assign$6({}, CollectData.env), nextJSData) });
                         }
                         vercelEnv = collectVercelEnv();
                         if (vercelEnv) {
-                            CollectData = __assign$7(__assign$7({}, CollectData), { env: __assign$7(__assign$7({}, CollectData.env), vercelEnv) });
+                            CollectData = __assign$6(__assign$6({}, CollectData), { env: __assign$6(__assign$6({}, CollectData.env), vercelEnv) });
                         }
                         if (core._isClient) {
                             if (document && "getElementById" in document && core._allowElementData) {
                                 DOMData = collectDOMData();
                                 if (DOMData) {
-                                    CollectData = __assign$7(__assign$7({}, CollectData), { env: __assign$7(__assign$7({}, CollectData.env), DOMData) });
+                                    CollectData = __assign$6(__assign$6({}, CollectData), { env: __assign$6(__assign$6({}, CollectData.env), DOMData) });
                                 }
                             }
                         }
@@ -366,7 +366,7 @@
      */
     var server = "https://dash.nexys.app";
     var libraryName = "Nexys";
-    var version = "1.1.0";
+    var version = "1.1.2";
     var defaultOptions = {
         localStorage: {
             useLocalStorage: true,
@@ -422,8 +422,8 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
-    var __assign$6 = (undefined && undefined.__assign) || function () {
-        __assign$6 = Object.assign || function(t) {
+    var __assign$5 = (undefined && undefined.__assign) || function () {
+        __assign$5 = Object.assign || function(t) {
             for (var s, i = 1, n = arguments.length; i < n; i++) {
                 s = arguments[i];
                 for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -431,7 +431,7 @@
             }
             return t;
         };
-        return __assign$6.apply(this, arguments);
+        return __assign$5.apply(this, arguments);
     };
     var __awaiter$6 = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
         function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -495,7 +495,7 @@
             this._config = null;
             this._APIValues = null;
             this._useLocalStorageAdapter = false;
-            this._options = __assign$6(__assign$6({}, options), { localStorage: __assign$6(__assign$6({}, this._options.localStorage), options === null || options === void 0 ? void 0 : options.localStorage), errors: __assign$6(__assign$6({}, this._options.errors), options === null || options === void 0 ? void 0 : options.errors) });
+            this._options = __assign$5(__assign$5({}, options), { localStorage: __assign$5(__assign$5({}, this._options.localStorage), options === null || options === void 0 ? void 0 : options.localStorage), errors: __assign$5(__assign$5({}, this._options.errors), options === null || options === void 0 ? void 0 : options.errors) });
             this._apiKey = API_KEY;
             this._server = (_c = options === null || options === void 0 ? void 0 : options.server) !== null && _c !== void 0 ? _c : server;
             this._logPoolSize = (_d = options === null || options === void 0 ? void 0 : options.logPoolSize) !== null && _d !== void 0 ? _d : this._logPoolSize;
@@ -622,7 +622,7 @@
                             e = new Error();
                             return [4 /*yield*/, this.LogPool.push({
                                     data: data,
-                                    options: __assign$6({ type: "ERROR" }, options),
+                                    options: __assign$5({ type: "ERROR" }, options),
                                     stack: e.stack,
                                     ts: new Date().getTime(),
                                     guid: guid(),
@@ -731,7 +731,7 @@
                             return __generator$6(this, function (_a) {
                                 switch (_a.label) {
                                     case 0:
-                                        this._config = __assign$6(__assign$6({}, this._config), { user: user });
+                                        this._config = __assign$5(__assign$5({}, this._config), { user: user });
                                         return [4 /*yield*/, this.LocalStorage.setUser(user)];
                                     case 1:
                                         _a.sent();
@@ -743,7 +743,7 @@
                         }); },
                         setAppVersion: function (appVersion) { return __awaiter$6(_this, void 0, void 0, function () {
                             return __generator$6(this, function (_a) {
-                                this._config = __assign$6(__assign$6({}, this._config), { appVersion: appVersion });
+                                this._config = __assign$5(__assign$5({}, this._config), { appVersion: appVersion });
                                 this.InternalLogger.log("NexysCore: App version configured", appVersion);
                                 this.Events.fire("config.app.version", appVersion);
                                 return [2 /*return*/];
@@ -1043,8 +1043,8 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
-    var __assign$5 = (undefined && undefined.__assign) || function () {
-        __assign$5 = Object.assign || function(t) {
+    var __assign$4 = (undefined && undefined.__assign) || function () {
+        __assign$4 = Object.assign || function(t) {
             for (var s, i = 1, n = arguments.length; i < n; i++) {
                 s = arguments[i];
                 for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -1052,7 +1052,7 @@
             }
             return t;
         };
-        return __assign$5.apply(this, arguments);
+        return __assign$4.apply(this, arguments);
     };
     var __awaiter$5 = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
         function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -1119,7 +1119,7 @@
                     this.core.InternalLogger.log("API: Sending request to server", server);
                     return [2 /*return*/, fetch(server, {
                             method: "POST",
-                            headers: __assign$5({ "Content-Type": "application/json" }, headers),
+                            headers: __assign$4({ "Content-Type": "application/json" }, headers),
                             body: JSON.stringify(data),
                         }).then(function (res) { return __awaiter$5(_this, void 0, void 0, function () {
                             var json;
@@ -1238,8 +1238,8 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
-    var __assign$4 = (undefined && undefined.__assign) || function () {
-        __assign$4 = Object.assign || function(t) {
+    var __assign$3 = (undefined && undefined.__assign) || function () {
+        __assign$3 = Object.assign || function(t) {
             for (var s, i = 1, n = arguments.length; i < n; i++) {
                 s = arguments[i];
                 for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -1247,7 +1247,7 @@
             }
             return t;
         };
-        return __assign$4.apply(this, arguments);
+        return __assign$3.apply(this, arguments);
     };
     var Events = /** @class */ (function () {
         function Events(core) {
@@ -1319,7 +1319,7 @@
                     timeStamp: event === null || event === void 0 ? void 0 : event.timeStamp,
                 };
                 _this.core.LogPool.push({
-                    data: __assign$4({}, extractedError),
+                    data: __assign$3({}, extractedError),
                     stack: extractedError.stack,
                     ts: new Date().getTime(),
                     options: {
@@ -1341,7 +1341,7 @@
                     timeStamp: event === null || event === void 0 ? void 0 : event.timeStamp,
                 };
                 _this.core.LogPool.push({
-                    data: __assign$4({}, extractedRejection),
+                    data: __assign$3({}, extractedRejection),
                     stack: extractedRejection.stack,
                     ts: new Date().getTime(),
                     options: {
@@ -2158,8 +2158,8 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
-    var __assign$3 = (undefined && undefined.__assign) || function () {
-        __assign$3 = Object.assign || function(t) {
+    var __assign$2 = (undefined && undefined.__assign) || function () {
+        __assign$2 = Object.assign || function(t) {
             for (var s, i = 1, n = arguments.length; i < n; i++) {
                 s = arguments[i];
                 for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -2167,7 +2167,7 @@
             }
             return t;
         };
-        return __assign$3.apply(this, arguments);
+        return __assign$2.apply(this, arguments);
     };
     var __awaiter$3 = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
         function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -2434,7 +2434,7 @@
                                 this.core.InternalLogger.error("LogPool: collectData() returned null.");
                                 return [2 /*return*/];
                             }
-                            CollectData = __assign$3(__assign$3({}, CollectData), { logs: this.logs, requests: this.requests });
+                            CollectData = __assign$2(__assign$2({}, CollectData), { logs: this.logs, requests: this.requests });
                             this.core.InternalLogger.log("LogPool: Sending data to the server.", CollectData);
                             return [4 /*yield*/, this.core.API.sendData(CollectData)];
                         case 2:
@@ -2482,8 +2482,8 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
-    var __assign$2 = (undefined && undefined.__assign) || function () {
-        __assign$2 = Object.assign || function(t) {
+    var __assign$1 = (undefined && undefined.__assign) || function () {
+        __assign$1 = Object.assign || function(t) {
             for (var s, i = 1, n = arguments.length; i < n; i++) {
                 s = arguments[i];
                 for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -2491,7 +2491,7 @@
             }
             return t;
         };
-        return __assign$2.apply(this, arguments);
+        return __assign$1.apply(this, arguments);
     };
     var __awaiter$2 = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
         function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -2679,7 +2679,7 @@
                             return [4 /*yield*/, this.getGeolocation().catch(function (err) { return null; })];
                         case 3:
                             geo = _a.sent();
-                            deviceData = __assign$2(__assign$2({}, deviceData), { geo: geo });
+                            deviceData = __assign$1(__assign$1({}, deviceData), { geo: geo });
                             _a.label = 4;
                         case 4: return [2 /*return*/, Promise.resolve(deviceData)];
                     }
@@ -2687,108 +2687,6 @@
             });
         };
         return Device;
-    }());
-
-    /**
-     * @license
-     * Copyright 2023 Eren Kulaksiz
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *   http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
-    var __assign$1 = (undefined && undefined.__assign) || function () {
-        __assign$1 = Object.assign || function(t) {
-            for (var s, i = 1, n = arguments.length; i < n; i++) {
-                s = arguments[i];
-                for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                    t[p] = s[p];
-            }
-            return t;
-        };
-        return __assign$1.apply(this, arguments);
-    };
-    var DOM = /** @class */ (function () {
-        function DOM(core) {
-            this._rootVnode = null;
-            this._isAvailable = false;
-            this.zort = {
-                vnode: {
-                    type: "div",
-                    props: {
-                        id: "root",
-                        style: {
-                            "background-color": "blue",
-                        },
-                    },
-                    children: {
-                        vnode: {
-                            type: "div",
-                            props: { id: "child" },
-                        },
-                    },
-                },
-            };
-            this.core = core;
-            this.core.Events.fire("dom.init");
-            this.core.InternalLogger.log("DOM: class initialized");
-            this._isAvailable = this.isAvailable();
-        }
-        DOM.prototype.isAvailable = function () {
-            if (this.core._isClient) {
-                return true;
-            }
-            return typeof document !== "undefined";
-        };
-        DOM.prototype.VNODE = function (_a) {
-            var _b = _a.vnode, type = _b.type, props = _b.props, value = _b.value, onClick = _b.onClick, children = _b.children, childrenCount = _a.childrenCount;
-            var _childrenCount = childrenCount || 0;
-            var vnode = { type: type };
-            if (props) {
-                vnode = __assign$1(__assign$1({}, vnode), { props: props });
-            }
-            if (value) {
-                vnode = __assign$1(__assign$1({}, vnode), { value: value });
-            }
-            if (onClick) {
-                vnode = __assign$1(__assign$1({}, vnode), { onClick: onClick });
-            }
-            if (typeof children != "undefined") {
-                vnode = __assign$1({}, vnode);
-            }
-            return { vnode: vnode, childrenCount: _childrenCount };
-        };
-        DOM.prototype.getElement = function (selector) {
-            if (this._isAvailable)
-                return document.querySelector(selector);
-            return null;
-        };
-        DOM.prototype.getElements = function (selector) {
-            if (this._isAvailable)
-                return Array.from(document.querySelectorAll(selector));
-            return null;
-        };
-        DOM.prototype.loadVNODEfromJSON = function () {
-            this._rootVnode = this.VNODE(this.zort);
-            this.core.InternalLogger.log("DOM: VNODE loaded from JSON", this._rootVnode);
-        };
-        DOM.prototype.renderVNODE = function (selector, vnode) {
-            this.core.InternalLogger.log("DOM: Render", vnode);
-            var el = this.getElement(selector);
-            if (!el) {
-                this.core.InternalLogger.error("DOM: Element ".concat(selector, " not found"));
-                return;
-            }
-        };
-        return DOM;
     }());
 
     function isNewerVersion(oldVer, newVer) {
@@ -3105,7 +3003,7 @@
         Nexys.prototype.init = function () {
             var _this = this;
             var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
-            if (this._checkInitialized()) {
+            if (this._initialized) {
                 this.InternalLogger.log("NexysCore: Already initialized but called nexys.init()");
                 return;
             }
@@ -3129,7 +3027,6 @@
                 isEncrypted: (_k = (_j = this._options.localStorage) === null || _j === void 0 ? void 0 : _j.cryption) !== null && _k !== void 0 ? _k : (_l = defaultOptions.localStorage) === null || _l === void 0 ? void 0 : _l.cryption,
                 active: (_o = (_m = this._options.localStorage) === null || _m === void 0 ? void 0 : _m.useLocalStorage) !== null && _o !== void 0 ? _o : (_p = defaultOptions.localStorage) === null || _p === void 0 ? void 0 : _p.useLocalStorage,
             });
-            this.DOM = new DOM(this);
             Promise.resolve(this.LocalStorage.setup()).then(function () { return __awaiter(_this, void 0, void 0, function () {
                 return __generator(this, function (_a) {
                     switch (_a.label) {
