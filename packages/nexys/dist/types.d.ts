@@ -85,10 +85,12 @@ export interface requestTypes {
 }
 export interface configTypes {
     user?: string | null;
+    platform?: string | null;
     appVersion?: string | null;
 }
 export interface configFunctions {
     setUser: (user: string) => void;
+    setPlatform: (platform: string) => void;
     setAppVersion: (version: string) => void;
 }
 export interface collectDataTypes {
@@ -120,7 +122,6 @@ declare global {
 export interface LocalStorageAdapters {
     getItem: (key: string) => Promise<any>;
     setItem: (key: string, value: any) => Promise<void>;
-    clear: () => Promise<void>;
     removeItem: (key: string) => Promise<void>;
 }
 //# sourceMappingURL=types.d.ts.map

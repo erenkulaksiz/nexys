@@ -270,7 +270,7 @@ var LocalStorage = /** @class */ (function () {
                                 localItem = Base64.decode(localItem);
                             }
                             catch (e) {
-                                this.clear(); // Clear localStorage so we can start fresh.
+                                this.resetLocalValue(); // Reset localStorage so we can start fresh.
                                 return [2 /*return*/, null];
                             }
                         }
@@ -278,7 +278,7 @@ var LocalStorage = /** @class */ (function () {
                             parsed = JSON.parse(localItem);
                         }
                         catch (e) {
-                            this.clear(); // Clear localStorage so we can start fresh.
+                            this.resetLocalValue(); // Reset localStorage so we can start fresh.
                             return [2 /*return*/, null];
                         }
                         return [2 /*return*/, parsed];
@@ -341,23 +341,6 @@ var LocalStorage = /** @class */ (function () {
                         return [4 /*yield*/, this.set(merged)];
                     case 2:
                         _a.sent();
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
-    LocalStorage.prototype.clear = function () {
-        var _a;
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        if (!this.shouldUseLocalStorage)
-                            return [2 /*return*/];
-                        this.core.InternalLogger.log("LocalStorage: Clearing everything.");
-                        return [4 /*yield*/, ((_a = this === null || this === void 0 ? void 0 : this._localStorage) === null || _a === void 0 ? void 0 : _a.clear())];
-                    case 1:
-                        _b.sent();
                         return [2 /*return*/];
                 }
             });
@@ -537,27 +520,6 @@ var LocalStorage = /** @class */ (function () {
             });
         });
     };
-    LocalStorage.prototype.getLocalUser = function () {
-        var _a;
-        return __awaiter(this, void 0, void 0, function () {
-            var localValue;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        if (!this.shouldUseLocalStorage)
-                            return [2 /*return*/, null];
-                        return [4 /*yield*/, this.get()];
-                    case 1:
-                        localValue = _b.sent();
-                        if (!localValue) {
-                            this.core.InternalLogger.log("LocalStorage: Local value is null in getLocalUserData.");
-                            return [2 /*return*/, null];
-                        }
-                        return [2 /*return*/, ((_a = localValue === null || localValue === void 0 ? void 0 : localValue.userData) === null || _a === void 0 ? void 0 : _a.user) || null];
-                }
-            });
-        });
-    };
     LocalStorage.prototype.resetLocalValue = function () {
         return __awaiter(this, void 0, void 0, function () {
             var val;
@@ -624,14 +586,14 @@ var LocalStorage = /** @class */ (function () {
             });
         });
     };
-    LocalStorage.prototype.setUser = function (user) {
+    LocalStorage.prototype.setConfigValue = function (key, value) {
         return __awaiter(this, void 0, void 0, function () {
             var localValue;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         if (!this.shouldUseLocalStorage) {
-                            this.core.InternalLogger.log("LocalStorage: Not using localStorage in setUser.");
+                            this.core.InternalLogger.log("LocalStorage: Not using localStorage in setConfigValue.");
                             return [2 /*return*/];
                         }
                         return [4 /*yield*/, this.get()];
@@ -647,14 +609,35 @@ var LocalStorage = /** @class */ (function () {
                         localValue = _a.sent();
                         return [2 /*return*/];
                     case 4:
-                        if (!localValue.userData) {
-                            localValue.userData = {};
+                        if (!localValue.config) {
+                            localValue.config = {};
                         }
-                        localValue.userData.user = user;
+                        localValue.config[key] = value;
                         return [4 /*yield*/, this.set(localValue)];
                     case 5:
                         _a.sent();
                         return [2 /*return*/];
+                }
+            });
+        });
+    };
+    LocalStorage.prototype.getConfigValue = function (key) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function () {
+            var localValue;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        if (!this.shouldUseLocalStorage)
+                            return [2 /*return*/, null];
+                        return [4 /*yield*/, this.get()];
+                    case 1:
+                        localValue = _b.sent();
+                        if (!localValue) {
+                            this.core.InternalLogger.log("LocalStorage: Local value is null in getAPIValue.");
+                            return [2 /*return*/, null];
+                        }
+                        return [2 /*return*/, ((_a = localValue === null || localValue === void 0 ? void 0 : localValue.config) === null || _a === void 0 ? void 0 : _a[key]) || null];
                 }
             });
         });

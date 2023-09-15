@@ -19,64 +19,77 @@ import { Core } from ".";
 import checkVersion from "../core/checkVersion.js";
 
 export default async function loadFromLocalStorage(core: Core): Promise<void> {
-  // Load logs from localStorage
+  if (!core._options.localStorage?.useLocalStorage) return;
+
   const localLogs = await core.LocalStorage.getLocalLogs();
-  if (
-    Array.isArray(localLogs) &&
-    localLogs.length > 0 &&
-    core._options.localStorage?.useLocalStorage
-  ) {
+  if (Array.isArray(localLogs) && localLogs.length > 0) {
     core.LogPool.setLogs(localLogs);
     core.InternalLogger.log(
       "NexysCore: Set logs from localStorage.",
       localLogs
     );
-  } else if (
-    Array.isArray(localLogs) &&
-    localLogs.length == 0 &&
-    core._options.localStorage?.useLocalStorage
-  ) {
+  } else if (Array.isArray(localLogs) && localLogs.length == 0) {
     core.InternalLogger.log("NexysCore: LocalStorage is empty, no logs found.");
   }
 
-  // Load requests from localStorage
   const localRequests = await core.LocalStorage.getLocalRequests();
-  if (
-    Array.isArray(localRequests) &&
-    localRequests.length > 0 &&
-    core._options.localStorage?.useLocalStorage
-  ) {
+  if (Array.isArray(localRequests) && localRequests.length > 0) {
     core.LogPool.setRequests(localRequests);
     core.InternalLogger.log(
       "NexysCore: Set requests from localStorage.",
       localRequests
     );
-  } else if (
-    Array.isArray(localRequests) &&
-    localRequests.length == 0 &&
-    core._options.localStorage?.useLocalStorage
-  ) {
+  } else if (Array.isArray(localRequests) && localRequests.length == 0) {
     core.InternalLogger.log(
       "NexysCore: LocalStorage is empty, no requests found."
     );
   }
 
-  if (core._options.localStorage?.useLocalStorage) {
-    const localUser = await core.LocalStorage.getLocalUser();
-    if (localUser) {
-      core._config = {
-        ...core._config,
-        user: localUser,
-      };
-      core.InternalLogger.log(
-        "NexysCore: Set user from localStorage.",
-        localUser
-      );
-    } else {
-      core.InternalLogger.log(
-        "NexysCore: LocalStorage is empty, no user found."
-      );
-    }
+  const localUser = await core.LocalStorage.getConfigValue("user");
+  const localPlatform = await core.LocalStorage.getConfigValue("platform");
+  const localVersion = await core.LocalStorage.getConfigValue("appVersion");
+
+  if (localUser) {
+    core._config = {
+      ...core._config,
+      user: localUser,
+    };
+    core.InternalLogger.log(
+      "NexysCore: Set user from localStorage.",
+      localUser
+    );
+  } else {
+    core.InternalLogger.log("NexysCore: LocalStorage is empty, no user found.");
+  }
+
+  if (localPlatform) {
+    core._config = {
+      ...core._config,
+      platform: localPlatform,
+    };
+    core.InternalLogger.log(
+      "NexysCore: Set platform from localStorage.",
+      localPlatform
+    );
+  } else {
+    core.InternalLogger.log(
+      "NexysCore: LocalStorage is empty, no platform found."
+    );
+  }
+
+  if (localVersion) {
+    core._config = {
+      ...core._config,
+      appVersion: localVersion,
+    };
+    core.InternalLogger.log(
+      "NexysCore: Set version from localStorage.",
+      localVersion
+    );
+  } else {
+    core.InternalLogger.log(
+      "NexysCore: LocalStorage is empty, no version found."
+    );
   }
 
   const APIValues = await core.LocalStorage.getAPIValues();

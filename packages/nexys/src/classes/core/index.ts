@@ -316,7 +316,7 @@ export class Core {
             ...this._config,
             user,
           };
-          await this.LocalStorage.setUser(user);
+          await this.LocalStorage.setConfigValue("user", user);
           this.InternalLogger.log("NexysCore: User configured", user);
           this.Events.fire("config.user", user);
         },
@@ -325,11 +325,21 @@ export class Core {
             ...this._config,
             appVersion,
           };
+          await this.LocalStorage.setConfigValue("appVersion", appVersion);
           this.InternalLogger.log(
             "NexysCore: App version configured",
             appVersion
           );
           this.Events.fire("config.app.version", appVersion);
+        },
+        setPlatform: async (platform: string) => {
+          this._config = {
+            ...this._config,
+            platform,
+          };
+          await this.LocalStorage.setConfigValue("platform", platform);
+          this.InternalLogger.log("NexysCore: Platform configured", platform);
+          this.Events.fire("config.platform", platform);
         },
       }))();
   }

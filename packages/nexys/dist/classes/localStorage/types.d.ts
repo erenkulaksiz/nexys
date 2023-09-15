@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { logTypes, requestTypes } from "src/types";
+import type { configTypes, logTypes, requestTypes } from "src/types";
 export interface LocalStorageConstructorParams {
     key: string;
     testKey: string;
@@ -39,8 +39,6 @@ export interface LocalStorageTypes {
     lastLogUpdate: number;
     requests: requestTypes[];
     API?: APIValues;
-    userData?: {
-        user?: string;
-    };
+    config?: configTypes;
 }
 //# sourceMappingURL=types.d.ts.map

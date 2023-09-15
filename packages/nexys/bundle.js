@@ -366,7 +366,7 @@
      */
     var server = "https://dash.nexys.app";
     var libraryName = "Nexys";
-    var version = "1.1.2";
+    var version = "1.1.3";
     var defaultOptions = {
         localStorage: {
             useLocalStorage: true,
@@ -732,7 +732,7 @@
                                 switch (_a.label) {
                                     case 0:
                                         this._config = __assign$5(__assign$5({}, this._config), { user: user });
-                                        return [4 /*yield*/, this.LocalStorage.setUser(user)];
+                                        return [4 /*yield*/, this.LocalStorage.setConfigValue("user", user)];
                                     case 1:
                                         _a.sent();
                                         this.InternalLogger.log("NexysCore: User configured", user);
@@ -743,10 +743,30 @@
                         }); },
                         setAppVersion: function (appVersion) { return __awaiter$6(_this, void 0, void 0, function () {
                             return __generator$6(this, function (_a) {
-                                this._config = __assign$5(__assign$5({}, this._config), { appVersion: appVersion });
-                                this.InternalLogger.log("NexysCore: App version configured", appVersion);
-                                this.Events.fire("config.app.version", appVersion);
-                                return [2 /*return*/];
+                                switch (_a.label) {
+                                    case 0:
+                                        this._config = __assign$5(__assign$5({}, this._config), { appVersion: appVersion });
+                                        return [4 /*yield*/, this.LocalStorage.setConfigValue("appVersion", appVersion)];
+                                    case 1:
+                                        _a.sent();
+                                        this.InternalLogger.log("NexysCore: App version configured", appVersion);
+                                        this.Events.fire("config.app.version", appVersion);
+                                        return [2 /*return*/];
+                                }
+                            });
+                        }); },
+                        setPlatform: function (platform) { return __awaiter$6(_this, void 0, void 0, function () {
+                            return __generator$6(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0:
+                                        this._config = __assign$5(__assign$5({}, this._config), { platform: platform });
+                                        return [4 /*yield*/, this.LocalStorage.setConfigValue("platform", platform)];
+                                    case 1:
+                                        _a.sent();
+                                        this.InternalLogger.log("NexysCore: Platform configured", platform);
+                                        this.Events.fire("config.platform", platform);
+                                        return [2 /*return*/];
+                                }
                             });
                         }); },
                     });
@@ -1363,7 +1383,6 @@
                 var message = messages[event.message];
                 if (message) {
                     _this.core.InternalLogger.log(message);
-                    _this.core.LocalStorage.clear();
                     _this.core.LogPool.clearLogs();
                     _this.core.LogPool.clearRequests();
                     return;
@@ -1750,7 +1769,7 @@
                                     localItem = Base64.decode(localItem);
                                 }
                                 catch (e) {
-                                    this.clear(); // Clear localStorage so we can start fresh.
+                                    this.resetLocalValue(); // Reset localStorage so we can start fresh.
                                     return [2 /*return*/, null];
                                 }
                             }
@@ -1758,7 +1777,7 @@
                                 parsed = JSON.parse(localItem);
                             }
                             catch (e) {
-                                this.clear(); // Clear localStorage so we can start fresh.
+                                this.resetLocalValue(); // Reset localStorage so we can start fresh.
                                 return [2 /*return*/, null];
                             }
                             return [2 /*return*/, parsed];
@@ -1821,23 +1840,6 @@
                             return [4 /*yield*/, this.set(merged)];
                         case 2:
                             _a.sent();
-                            return [2 /*return*/];
-                    }
-                });
-            });
-        };
-        LocalStorage.prototype.clear = function () {
-            var _a;
-            return __awaiter$4(this, void 0, void 0, function () {
-                return __generator$4(this, function (_b) {
-                    switch (_b.label) {
-                        case 0:
-                            if (!this.shouldUseLocalStorage)
-                                return [2 /*return*/];
-                            this.core.InternalLogger.log("LocalStorage: Clearing everything.");
-                            return [4 /*yield*/, ((_a = this === null || this === void 0 ? void 0 : this._localStorage) === null || _a === void 0 ? void 0 : _a.clear())];
-                        case 1:
-                            _b.sent();
                             return [2 /*return*/];
                     }
                 });
@@ -2017,27 +2019,6 @@
                 });
             });
         };
-        LocalStorage.prototype.getLocalUser = function () {
-            var _a;
-            return __awaiter$4(this, void 0, void 0, function () {
-                var localValue;
-                return __generator$4(this, function (_b) {
-                    switch (_b.label) {
-                        case 0:
-                            if (!this.shouldUseLocalStorage)
-                                return [2 /*return*/, null];
-                            return [4 /*yield*/, this.get()];
-                        case 1:
-                            localValue = _b.sent();
-                            if (!localValue) {
-                                this.core.InternalLogger.log("LocalStorage: Local value is null in getLocalUserData.");
-                                return [2 /*return*/, null];
-                            }
-                            return [2 /*return*/, ((_a = localValue === null || localValue === void 0 ? void 0 : localValue.userData) === null || _a === void 0 ? void 0 : _a.user) || null];
-                    }
-                });
-            });
-        };
         LocalStorage.prototype.resetLocalValue = function () {
             return __awaiter$4(this, void 0, void 0, function () {
                 var val;
@@ -2104,14 +2085,14 @@
                 });
             });
         };
-        LocalStorage.prototype.setUser = function (user) {
+        LocalStorage.prototype.setConfigValue = function (key, value) {
             return __awaiter$4(this, void 0, void 0, function () {
                 var localValue;
                 return __generator$4(this, function (_a) {
                     switch (_a.label) {
                         case 0:
                             if (!this.shouldUseLocalStorage) {
-                                this.core.InternalLogger.log("LocalStorage: Not using localStorage in setUser.");
+                                this.core.InternalLogger.log("LocalStorage: Not using localStorage in setConfigValue.");
                                 return [2 /*return*/];
                             }
                             return [4 /*yield*/, this.get()];
@@ -2127,14 +2108,35 @@
                             localValue = _a.sent();
                             return [2 /*return*/];
                         case 4:
-                            if (!localValue.userData) {
-                                localValue.userData = {};
+                            if (!localValue.config) {
+                                localValue.config = {};
                             }
-                            localValue.userData.user = user;
+                            localValue.config[key] = value;
                             return [4 /*yield*/, this.set(localValue)];
                         case 5:
                             _a.sent();
                             return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        LocalStorage.prototype.getConfigValue = function (key) {
+            var _a;
+            return __awaiter$4(this, void 0, void 0, function () {
+                var localValue;
+                return __generator$4(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            if (!this.shouldUseLocalStorage)
+                                return [2 /*return*/, null];
+                            return [4 /*yield*/, this.get()];
+                        case 1:
+                            localValue = _b.sent();
+                            if (!localValue) {
+                                this.core.InternalLogger.log("LocalStorage: Local value is null in getAPIValue.");
+                                return [2 /*return*/, null];
+                            }
+                            return [2 /*return*/, ((_a = localValue === null || localValue === void 0 ? void 0 : localValue.config) === null || _a === void 0 ? void 0 : _a[key]) || null];
                     }
                 });
             });
@@ -2791,43 +2793,43 @@
         }
     };
     function loadFromLocalStorage(core) {
-        var _a, _b, _c, _d, _e;
+        var _a;
         return __awaiter$1(this, void 0, void 0, function () {
-            var localLogs, localRequests, localUser, APIValues;
-            return __generator$1(this, function (_f) {
-                switch (_f.label) {
-                    case 0: return [4 /*yield*/, core.LocalStorage.getLocalLogs()];
+            var localLogs, localRequests, localUser, localPlatform, localVersion, APIValues;
+            return __generator$1(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        if (!((_a = core._options.localStorage) === null || _a === void 0 ? void 0 : _a.useLocalStorage))
+                            return [2 /*return*/];
+                        return [4 /*yield*/, core.LocalStorage.getLocalLogs()];
                     case 1:
-                        localLogs = _f.sent();
-                        if (Array.isArray(localLogs) &&
-                            localLogs.length > 0 &&
-                            ((_a = core._options.localStorage) === null || _a === void 0 ? void 0 : _a.useLocalStorage)) {
+                        localLogs = _b.sent();
+                        if (Array.isArray(localLogs) && localLogs.length > 0) {
                             core.LogPool.setLogs(localLogs);
                             core.InternalLogger.log("NexysCore: Set logs from localStorage.", localLogs);
                         }
-                        else if (Array.isArray(localLogs) &&
-                            localLogs.length == 0 &&
-                            ((_b = core._options.localStorage) === null || _b === void 0 ? void 0 : _b.useLocalStorage)) {
+                        else if (Array.isArray(localLogs) && localLogs.length == 0) {
                             core.InternalLogger.log("NexysCore: LocalStorage is empty, no logs found.");
                         }
                         return [4 /*yield*/, core.LocalStorage.getLocalRequests()];
                     case 2:
-                        localRequests = _f.sent();
-                        if (Array.isArray(localRequests) &&
-                            localRequests.length > 0 &&
-                            ((_c = core._options.localStorage) === null || _c === void 0 ? void 0 : _c.useLocalStorage)) {
+                        localRequests = _b.sent();
+                        if (Array.isArray(localRequests) && localRequests.length > 0) {
                             core.LogPool.setRequests(localRequests);
                             core.InternalLogger.log("NexysCore: Set requests from localStorage.", localRequests);
                         }
-                        else if (Array.isArray(localRequests) &&
-                            localRequests.length == 0 &&
-                            ((_d = core._options.localStorage) === null || _d === void 0 ? void 0 : _d.useLocalStorage)) {
+                        else if (Array.isArray(localRequests) && localRequests.length == 0) {
                             core.InternalLogger.log("NexysCore: LocalStorage is empty, no requests found.");
                         }
-                        if (!((_e = core._options.localStorage) === null || _e === void 0 ? void 0 : _e.useLocalStorage)) return [3 /*break*/, 4];
-                        return [4 /*yield*/, core.LocalStorage.getLocalUser()];
+                        return [4 /*yield*/, core.LocalStorage.getConfigValue("user")];
                     case 3:
-                        localUser = _f.sent();
+                        localUser = _b.sent();
+                        return [4 /*yield*/, core.LocalStorage.getConfigValue("platform")];
+                    case 4:
+                        localPlatform = _b.sent();
+                        return [4 /*yield*/, core.LocalStorage.getConfigValue("appVersion")];
+                    case 5:
+                        localVersion = _b.sent();
                         if (localUser) {
                             core._config = __assign(__assign({}, core._config), { user: localUser });
                             core.InternalLogger.log("NexysCore: Set user from localStorage.", localUser);
@@ -2835,10 +2837,23 @@
                         else {
                             core.InternalLogger.log("NexysCore: LocalStorage is empty, no user found.");
                         }
-                        _f.label = 4;
-                    case 4: return [4 /*yield*/, core.LocalStorage.getAPIValues()];
-                    case 5:
-                        APIValues = _f.sent();
+                        if (localPlatform) {
+                            core._config = __assign(__assign({}, core._config), { platform: localPlatform });
+                            core.InternalLogger.log("NexysCore: Set platform from localStorage.", localPlatform);
+                        }
+                        else {
+                            core.InternalLogger.log("NexysCore: LocalStorage is empty, no platform found.");
+                        }
+                        if (localVersion) {
+                            core._config = __assign(__assign({}, core._config), { appVersion: localVersion });
+                            core.InternalLogger.log("NexysCore: Set version from localStorage.", localVersion);
+                        }
+                        else {
+                            core.InternalLogger.log("NexysCore: LocalStorage is empty, no version found.");
+                        }
+                        return [4 /*yield*/, core.LocalStorage.getAPIValues()];
+                    case 6:
+                        APIValues = _b.sent();
                         if (APIValues) {
                             core._APIValues = APIValues;
                             core.InternalLogger.log("NexysCore: Set API values from localStorage.", APIValues);

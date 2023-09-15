@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { Core } from "../core/index.js";
-import type { logTypes, requestTypes } from "../../types";
+import type { configTypes, logTypes, requestTypes } from "../../types";
 import type { APIValues, LocalStorageConstructorParams, LocalStorageTypes } from "./types";
 /**
  * @class LocalStorage
@@ -40,17 +40,16 @@ export declare class LocalStorage {
     get(): Promise<LocalStorageTypes | null>;
     set(value: any): Promise<void>;
     setOverride(value: any): Promise<void>;
-    clear(): Promise<void>;
     clearLogPool(): Promise<void>;
     clearRequests(): Promise<void>;
     addToLogPool({ data, options, guid, path, stack, }: logTypes): Promise<void>;
     addToRequest({ res, status, ts, guid, }: requestTypes): Promise<void>;
     getLocalLogs(): Promise<logTypes[] | null>;
     getLocalRequests(): Promise<requestTypes[] | null>;
-    getLocalUser(): Promise<string | null>;
     resetLocalValue(): Promise<LocalStorageTypes>;
     setAPIValues(value: APIValues): Promise<void>;
     getAPIValues(): Promise<APIValues | null>;
-    setUser(user: string): Promise<void>;
+    setConfigValue(key: keyof configTypes, value: string): Promise<void>;
+    getConfigValue(key: keyof configTypes): Promise<string | null>;
 }
 //# sourceMappingURL=index.d.ts.map

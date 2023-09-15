@@ -4,8 +4,8 @@ import { debugServer } from "nexys/dist/utils";
 export const nexys: Nexys = new Nexys("d1ae511a-af59-46a8-8db7-d0db795be3c4", {
   appName: "test2",
   debug: true,
-  server: debugServer,
-  ignoreType: "INFO",
+  //server: debugServer,
+  //ignoreType: "INFO",
   localStorage: {
     useLocalStorage: true,
     cryption: false,
@@ -19,9 +19,6 @@ export const nexys: Nexys = new Nexys("d1ae511a-af59-46a8-8db7-d0db795be3c4", {
       },
       removeItem: async (key: string) => {
         return await localStorage.removeItem(key);
-      },
-      clear: async () => {
-        return await localStorage.clear();
       },
     },
   },

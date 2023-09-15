@@ -40,8 +40,9 @@ export interface EventTypes {
   "device.init"?: (() => void) | null;
   "events.bind.success"?: (() => void) | null;
   "events.bind.failed"?: (() => void) | null;
-  "config.user"?: ((data?: string) => void) | null;
-  "config.app.version"?: ((data?: string) => void) | null;
+  "config.user"?: ((user?: string) => void) | null;
+  "config.app.version"?: ((version?: string) => void) | null;
+  "config.platform"?: ((platform?: string) => void) | null;
   "dom.init"?: (() => void) | null;
   "dom.ready"?: (() => void) | null;
   "dom.content.loaded"?: (() => void) | null;

@@ -163,7 +163,6 @@ export class Events {
       const message = messages[event.message];
       if (message) {
         this.core.InternalLogger.log(message);
-        this.core.LocalStorage.clear();
         this.core.LogPool.clearLogs();
         this.core.LogPool.clearRequests();
         return;
