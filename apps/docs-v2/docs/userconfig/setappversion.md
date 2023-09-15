@@ -8,6 +8,12 @@ description: Set App Version
 
 ---
 
+:::caution
+
+This is an clientside feature.
+
+:::
+
 You can set the client version of your application with this method. This method will be used to identify the version of your application. This feature is crucial if you want to track the version of your application with the logs.
 
 Accepts `string`.

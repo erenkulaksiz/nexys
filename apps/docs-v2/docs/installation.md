@@ -72,7 +72,6 @@ nexys.init();
 ...
 ```
 
-
 ## Usage
 
 Now, you can use **Nexys** anywhere on your project. Here's an example:

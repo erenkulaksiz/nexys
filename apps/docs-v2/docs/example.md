@@ -15,4 +15,10 @@ title: Example Projects
 - View **React Native** example project [here](https://github.com/erenkulaksiz/nexys-js-example/tree/master/react-native).
 - View **Electron** example project [here](https://github.com/erenkulaksiz/nexys-js-example/tree/master/electron).
 
+:::tip
+
+Basically anything with **JavaScript** can run **Nexys**.
+
+:::
+
 Make sure to configure **Nexys** after running these projects since they might have altered configurations.
