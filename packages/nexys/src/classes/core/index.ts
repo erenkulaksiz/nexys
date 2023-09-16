@@ -292,9 +292,9 @@ export class Core {
    *  // Set user
    *  config.setUser("123456789_UNIQUE_ID");
    *  // Set application version (likely to be your app version)
-   *  // This config is MUST-to-do because we will analyze each of your versions
+   *  // This config is MUST-to-do(but not required) because we will analyze each of your versions
    *  config.setAppVersion("1.0.0");
-   *  // This config is optional. If you want to identify your logs where came from, you can set platform
+   *  // This config is optional. If you want to identify your logs which platforms they came from, you can set platform config
    *  config.setPlatform("web");
    * });
    * ```
