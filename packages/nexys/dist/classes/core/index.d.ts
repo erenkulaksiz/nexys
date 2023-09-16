@@ -160,12 +160,15 @@ export declare class Core {
      *  // Set application version (likely to be your app version)
      *  // This config is MUST-to-do because we will analyze each of your versions
      *  config.setAppVersion("1.0.0");
+     *  // This config is optional. If you want to identify your logs where came from, you can set platform
+     *  config.setPlatform("web");
      * });
      * ```
      *
      * @param config - `Required` - `object` - Config functions
      * @param config.setUser - `Optional` - `function` - Set user
      * @param config.setAppVersion - `Optional` - `function` - Set application version
+     * @param config.setPlatform - `Optional` - `function` - Set platform
      * @public
      * @returns {void} - Returns nothing.
      *

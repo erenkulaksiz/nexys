@@ -1,11 +1,9 @@
 import Nexys from "nexys";
 import { debugServer } from "nexys/dist/utils";
 
-export const nexys: Nexys = new Nexys("d1ae511a-af59-46a8-8db7-d0db795be3c4", {
-  appName: "test2",
+export const nexys: Nexys = new Nexys("API_KEY", {
+  appName: "reactSample",
   debug: true,
-  //server: debugServer,
-  //ignoreType: "INFO",
   localStorage: {
     useLocalStorage: true,
     cryption: false,

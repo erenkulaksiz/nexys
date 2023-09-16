@@ -7,7 +7,6 @@ export function reportWebVitals(metric: NextWebVitalsMetric) {
 
 nexys.configure((config) => {
   config.setUser("test");
-  config.setClient("test");
 });
 
 export default function App({ Component, pageProps }: AppProps) {

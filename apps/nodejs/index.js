@@ -1,12 +1,21 @@
 import Nexys from "nexys";
 
-const nexys = new Nexys("test", { appName: "test", debug: true })
+const nexys = new Nexys("API_KEY", { appName: "nodejsSample", debug: true })
 
-function test() {
-  console.log("test");
-  nexys.log("test");
-}
+// simple log
+nexys.log("Info log.");
 
-test();
-nexys.log("test");
-nexys.error("test");
+// log with type
+nexys.log(
+  {
+    name: 'steve',
+    age: 24
+  },
+  { type: "INFO" }
+);
+
+// log simple error 
+nexys.error("Error log.");
+
+// clear all logs
+nexys.clear();

@@ -37,3 +37,4 @@ yarn-error.log*
 # production
 /build
 bundle.js
+package-lock.json

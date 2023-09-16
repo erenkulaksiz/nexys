@@ -3,11 +3,11 @@ import { nexys } from "./utils";
 function App() {
   return (
     <div>
-      <button id="asd">selam</button>
+      <button>Hello world!</button>
       <button onClick={() => nexys.init()}>init</button>
       <button
         onClick={async () => {
-          const log = await nexys.log("test.", { type: "INFO" });
+          const log = await nexys.log("Info log.", { type: "INFO" });
           console.log("Client return:", log);
         }}
       >
@@ -18,8 +18,8 @@ function App() {
         onClick={async () => {
           const log = await nexys.log(
             {
-              halo: true,
-              selamlar: false,
+              name: 'steve',
+              age: 24
             },
             { type: "INFO" }
           );
@@ -33,8 +33,8 @@ function App() {
         onClick={async () => {
           const log = await nexys.log(
             {
-              halo: true,
-              selamlar: false,
+              name: 'steve',
+              age: 24
             },
             { type: "ERROR" }
           );
@@ -57,8 +57,8 @@ function App() {
         onClick={async () => {
           const log = await nexys.log(
             {
-              halo: true,
-              selamlar: false,
+              name: 'steve',
+              age: 24
             },
             { type: "WARNING" }
           );
@@ -94,7 +94,7 @@ function App() {
 
       <button
         onClick={() => {
-          throw new Error("test");
+          throw new Error("Test purposed throw error.");
         }}
       >
         click to cause an error
@@ -103,7 +103,7 @@ function App() {
       <button
         onClick={() => {
           nexys.configure((config) => {
-            config.setPlatform("testweb");
+            config.setPlatform("web");
           });
         }}
       >
