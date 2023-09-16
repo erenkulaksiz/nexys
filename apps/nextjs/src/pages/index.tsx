@@ -6,7 +6,7 @@ export default function App() {
       <h1>Web</h1>
       <button
         onClick={async () => {
-          const log = nexys.log("test.");
+          const log = nexys.log("Info log.");
           console.log("Client return:", log);
         }}
       >
@@ -14,7 +14,7 @@ export default function App() {
       </button>
       <button
         onClick={() => {
-          throw new Error("Exception test");
+          throw new Error("Test purposed throw error.");
         }}
       >
         click to cause an error
