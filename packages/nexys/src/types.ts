@@ -102,13 +102,13 @@ export interface requestTypes {
 
 export interface configTypes {
   user?: string | null;
-  //client?: string | null;
+  platform?: string | null;
   appVersion?: string | null;
 }
 
 export interface configFunctions {
   setUser: (user: string) => void;
-  //setClient: (client: string) => void;
+  setPlatform: (platform: string) => void;
   setAppVersion: (version: string) => void;
 }
 
@@ -143,6 +143,5 @@ declare global {
 export interface LocalStorageAdapters {
   getItem: (key: string) => Promise<any>;
   setItem: (key: string, value: any) => Promise<void>;
-  clear: () => Promise<void>;
   removeItem: (key: string) => Promise<void>;
 }

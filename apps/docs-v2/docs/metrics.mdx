@@ -2,6 +2,9 @@
 sidebar_position: 5
 ---
 
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
 # Metrics
 
 ---
@@ -18,11 +21,17 @@ Metrics are the data that you want to collect from your users. You can collect a
 
 React and NodeJS support will come soon.
 
+<Tabs>
+<TabItem value="nextjs13" label="NextJS > 13" default>
+
 ## NextJS 13 or higher
 
 Please read this [documentation.](https://nextjs.org/docs/app/api-reference/functions/use-report-web-vitals)
 
 You just need to replace line 7 with this `nexys.metric(metric)` on file `app/_components/web-vitals.js|ts`
+
+</TabItem>
+<TabItem value="nextjs12" label="NextJS < 13">
 
 ## NextJS 12 or lower
 
@@ -41,8 +50,11 @@ export default function App({ Component, pageProps }: AppProps) {
 }
 ```
 
+</TabItem>
+</Tabs>
+
 This code will collect FCP (First Contentful Paint), LCP (Largest Contentful Paint), CLS (Cumulative Layout Shift), FID (First Input Delay), TTFB (Time to First Byte).
- 
+
 You can view your app metrics on your project's [dashboard](https://dash.nexys.app/) inside **Metrics** tab.
 
 Also, if you dont want to collect metrics, just don't add `nexys.metric` to your project.

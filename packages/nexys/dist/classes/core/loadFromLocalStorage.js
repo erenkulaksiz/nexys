@@ -63,43 +63,43 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 import checkVersion from "../core/checkVersion.js";
 export default function loadFromLocalStorage(core) {
-    var _a, _b, _c, _d, _e;
+    var _a;
     return __awaiter(this, void 0, void 0, function () {
-        var localLogs, localRequests, localUser, APIValues;
-        return __generator(this, function (_f) {
-            switch (_f.label) {
-                case 0: return [4 /*yield*/, core.LocalStorage.getLocalLogs()];
+        var localLogs, localRequests, localUser, localPlatform, localVersion, APIValues;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    if (!((_a = core._options.localStorage) === null || _a === void 0 ? void 0 : _a.useLocalStorage))
+                        return [2 /*return*/];
+                    return [4 /*yield*/, core.LocalStorage.getLocalLogs()];
                 case 1:
-                    localLogs = _f.sent();
-                    if (Array.isArray(localLogs) &&
-                        localLogs.length > 0 &&
-                        ((_a = core._options.localStorage) === null || _a === void 0 ? void 0 : _a.useLocalStorage)) {
+                    localLogs = _b.sent();
+                    if (Array.isArray(localLogs) && localLogs.length > 0) {
                         core.LogPool.setLogs(localLogs);
                         core.InternalLogger.log("NexysCore: Set logs from localStorage.", localLogs);
                     }
-                    else if (Array.isArray(localLogs) &&
-                        localLogs.length == 0 &&
-                        ((_b = core._options.localStorage) === null || _b === void 0 ? void 0 : _b.useLocalStorage)) {
+                    else if (Array.isArray(localLogs) && localLogs.length == 0) {
                         core.InternalLogger.log("NexysCore: LocalStorage is empty, no logs found.");
                     }
                     return [4 /*yield*/, core.LocalStorage.getLocalRequests()];
                 case 2:
-                    localRequests = _f.sent();
-                    if (Array.isArray(localRequests) &&
-                        localRequests.length > 0 &&
-                        ((_c = core._options.localStorage) === null || _c === void 0 ? void 0 : _c.useLocalStorage)) {
+                    localRequests = _b.sent();
+                    if (Array.isArray(localRequests) && localRequests.length > 0) {
                         core.LogPool.setRequests(localRequests);
                         core.InternalLogger.log("NexysCore: Set requests from localStorage.", localRequests);
                     }
-                    else if (Array.isArray(localRequests) &&
-                        localRequests.length == 0 &&
-                        ((_d = core._options.localStorage) === null || _d === void 0 ? void 0 : _d.useLocalStorage)) {
+                    else if (Array.isArray(localRequests) && localRequests.length == 0) {
                         core.InternalLogger.log("NexysCore: LocalStorage is empty, no requests found.");
                     }
-                    if (!((_e = core._options.localStorage) === null || _e === void 0 ? void 0 : _e.useLocalStorage)) return [3 /*break*/, 4];
-                    return [4 /*yield*/, core.LocalStorage.getLocalUser()];
+                    return [4 /*yield*/, core.LocalStorage.getConfigValue("user")];
                 case 3:
-                    localUser = _f.sent();
+                    localUser = _b.sent();
+                    return [4 /*yield*/, core.LocalStorage.getConfigValue("platform")];
+                case 4:
+                    localPlatform = _b.sent();
+                    return [4 /*yield*/, core.LocalStorage.getConfigValue("appVersion")];
+                case 5:
+                    localVersion = _b.sent();
                     if (localUser) {
                         core._config = __assign(__assign({}, core._config), { user: localUser });
                         core.InternalLogger.log("NexysCore: Set user from localStorage.", localUser);
@@ -107,10 +107,23 @@ export default function loadFromLocalStorage(core) {
                     else {
                         core.InternalLogger.log("NexysCore: LocalStorage is empty, no user found.");
                     }
-                    _f.label = 4;
-                case 4: return [4 /*yield*/, core.LocalStorage.getAPIValues()];
-                case 5:
-                    APIValues = _f.sent();
+                    if (localPlatform) {
+                        core._config = __assign(__assign({}, core._config), { platform: localPlatform });
+                        core.InternalLogger.log("NexysCore: Set platform from localStorage.", localPlatform);
+                    }
+                    else {
+                        core.InternalLogger.log("NexysCore: LocalStorage is empty, no platform found.");
+                    }
+                    if (localVersion) {
+                        core._config = __assign(__assign({}, core._config), { appVersion: localVersion });
+                        core.InternalLogger.log("NexysCore: Set version from localStorage.", localVersion);
+                    }
+                    else {
+                        core.InternalLogger.log("NexysCore: LocalStorage is empty, no version found.");
+                    }
+                    return [4 /*yield*/, core.LocalStorage.getAPIValues()];
+                case 6:
+                    APIValues = _b.sent();
                     if (APIValues) {
                         core._APIValues = APIValues;
                         core.InternalLogger.log("NexysCore: Set API values from localStorage.", APIValues);

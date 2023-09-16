@@ -141,7 +141,6 @@ var Events = /** @class */ (function () {
             var message = messages[event.message];
             if (message) {
                 _this.core.InternalLogger.log(message);
-                _this.core.LocalStorage.clear();
                 _this.core.LogPool.clearLogs();
                 _this.core.LogPool.clearRequests();
                 return;

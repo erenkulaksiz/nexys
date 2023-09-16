@@ -99,6 +99,16 @@ function App() {
       >
         click to cause an error
       </button>
+
+      <button
+        onClick={() => {
+          nexys.configure((config) => {
+            config.setPlatform("testweb");
+          });
+        }}
+      >
+        set platform
+      </button>
     </div>
   );
 }

@@ -326,7 +326,7 @@ var Core = /** @class */ (function () {
                             switch (_a.label) {
                                 case 0:
                                     this._config = __assign(__assign({}, this._config), { user: user });
-                                    return [4 /*yield*/, this.LocalStorage.setUser(user)];
+                                    return [4 /*yield*/, this.LocalStorage.setConfigValue("user", user)];
                                 case 1:
                                     _a.sent();
                                     this.InternalLogger.log("NexysCore: User configured", user);
@@ -337,10 +337,30 @@ var Core = /** @class */ (function () {
                     }); },
                     setAppVersion: function (appVersion) { return __awaiter(_this, void 0, void 0, function () {
                         return __generator(this, function (_a) {
-                            this._config = __assign(__assign({}, this._config), { appVersion: appVersion });
-                            this.InternalLogger.log("NexysCore: App version configured", appVersion);
-                            this.Events.fire("config.app.version", appVersion);
-                            return [2 /*return*/];
+                            switch (_a.label) {
+                                case 0:
+                                    this._config = __assign(__assign({}, this._config), { appVersion: appVersion });
+                                    return [4 /*yield*/, this.LocalStorage.setConfigValue("appVersion", appVersion)];
+                                case 1:
+                                    _a.sent();
+                                    this.InternalLogger.log("NexysCore: App version configured", appVersion);
+                                    this.Events.fire("config.app.version", appVersion);
+                                    return [2 /*return*/];
+                            }
+                        });
+                    }); },
+                    setPlatform: function (platform) { return __awaiter(_this, void 0, void 0, function () {
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    this._config = __assign(__assign({}, this._config), { platform: platform });
+                                    return [4 /*yield*/, this.LocalStorage.setConfigValue("platform", platform)];
+                                case 1:
+                                    _a.sent();
+                                    this.InternalLogger.log("NexysCore: Platform configured", platform);
+                                    this.Events.fire("config.platform", platform);
+                                    return [2 /*return*/];
+                            }
                         });
                     }); },
                 });
