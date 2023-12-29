@@ -71,11 +71,28 @@ export class Events {
             this.fire("visibility.change", event);
           }
         });
+        window.addEventListener("beforeunload", (event) => {
+          this.core.InternalLogger.log(
+            "Events: Received beforeunload event",
+            event
+          );
+          this.fire("beforeunload", event);
+        });
+        if (this.core._clickTrack) {
+          this.core.InternalLogger.log("Events: Binding click event.");
+          window.addEventListener("click", (event) => {
+            this.core.InternalLogger.log(
+              "Events: Received click event",
+              this.core._clickTrack
+            );
+            this.fire("click", event);
+          });
+        }
         this._bindedErrorEvent = true;
         this.core.InternalLogger.log("Events: Binded error events.");
         this.fire("events.bind.success");
       } catch (err) {
-        this.core.InternalLogger.log("Events: Couuldnt bind error event.", err);
+        this.core.InternalLogger.log("Events: Couldnt bind error event.", err);
         this.fire("events.bind.failed");
       }
       return;
@@ -176,6 +193,34 @@ export class Events {
         event
       );
       this.core.LogPool.process();
+    });
+
+    this.subscribe("click", (event) => {
+      this.core.InternalLogger.log("Events: Received click: ", event);
+
+      this.core.LogPool.push({
+        data: {
+          target: {
+            id: event?.target?.id,
+            class: event?.target?.className,
+            tag: event?.target?.tagName,
+            type: event?.target?.type,
+            innerText: event?.target?.innerText
+              ? event?.target?.innerText.substring(0, 32)
+              : "",
+          },
+          screenX: event?.screenX,
+          screenY: event?.screenY,
+          pointerId: event?.pointerId,
+          pointerType: event?.pointerType,
+        },
+        ts: new Date().getTime(),
+        options: {
+          type: "AUTO:CLICK",
+        },
+        guid: guid(),
+        path: getPagePath(this.core),
+      });
     });
   }
 

@@ -3,7 +3,9 @@ import { nexys } from "./utils";
 function App() {
   return (
     <div>
-      <button>Hello world!</button>
+      <button className="test" id="test" style={{ background: "red" }}>
+        Hello world!
+      </button>
       <button onClick={() => nexys.init()}>init</button>
       <button
         onClick={async () => {
@@ -18,8 +20,8 @@ function App() {
         onClick={async () => {
           const log = await nexys.log(
             {
-              name: 'steve',
-              age: 24
+              name: "steve",
+              age: 24,
             },
             { type: "INFO" }
           );
@@ -33,8 +35,8 @@ function App() {
         onClick={async () => {
           const log = await nexys.log(
             {
-              name: 'steve',
-              age: 24
+              name: "steve",
+              age: 24,
             },
             { type: "ERROR" }
           );
@@ -57,8 +59,8 @@ function App() {
         onClick={async () => {
           const log = await nexys.log(
             {
-              name: 'steve',
-              age: 24
+              name: "steve",
+              age: 24,
             },
             { type: "WARNING" }
           );
@@ -108,6 +110,15 @@ function App() {
         }}
       >
         set platform
+      </button>
+      <button
+        onClick={() => {
+          nexys.configure((config) => {
+            config.setUser("erenkulaksz@gmail.com");
+          });
+        }}
+      >
+        set user
       </button>
     </div>
   );

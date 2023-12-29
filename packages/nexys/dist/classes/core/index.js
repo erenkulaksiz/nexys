@@ -65,7 +65,7 @@ import { server, version, isClient, guid, defaultOptions, } from "../../utils/in
 import getPagePath from "../../utils/getPagePath.js";
 var Core = /** @class */ (function () {
     function Core(API_KEY, options) {
-        var _a, _b, _c, _d, _e, _f, _g, _h;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
         this._initialized = false;
         this._processAvailable = typeof process != "undefined";
         this._version = version;
@@ -84,11 +84,12 @@ var Core = /** @class */ (function () {
             "AUTO:ERROR",
             "AUTO:UNHANDLEDREJECTION",
         ];
-        this._ignoreType = "METRIC";
+        this._ignoreType = ["METRIC", "AUTO:CLICK"];
         this._ignoreTypeSize = 50;
         this._config = null;
         this._APIValues = null;
         this._useLocalStorageAdapter = false;
+        this._clickTrack = true;
         this._options = __assign(__assign({}, options), { localStorage: __assign(__assign({}, this._options.localStorage), options === null || options === void 0 ? void 0 : options.localStorage), errors: __assign(__assign({}, this._options.errors), options === null || options === void 0 ? void 0 : options.errors) });
         this._apiKey = API_KEY;
         this._server = (_c = options === null || options === void 0 ? void 0 : options.server) !== null && _c !== void 0 ? _c : server;
@@ -97,6 +98,7 @@ var Core = /** @class */ (function () {
         this._allowGeoLocation =
             (_f = options === null || options === void 0 ? void 0 : options.allowGeoLocation) !== null && _f !== void 0 ? _f : this._allowGeoLocation;
         this._allowElementData = typeof (options === null || options === void 0 ? void 0 : options.allowElementData) == "undefined";
+        this._clickTrack = (_g = options === null || options === void 0 ? void 0 : options.clickTrack) !== null && _g !== void 0 ? _g : this._clickTrack;
         this._sendAllOnType =
             typeof (options === null || options === void 0 ? void 0 : options.sendAllOnType) == "undefined"
                 ? this._sendAllOnType
@@ -110,9 +112,9 @@ var Core = /** @class */ (function () {
                 ? this._ignoreTypeSize
                 : options === null || options === void 0 ? void 0 : options.ignoreTypeSize;
         this._useLocalStorageAdapter =
-            typeof ((_g = options === null || options === void 0 ? void 0 : options.localStorage) === null || _g === void 0 ? void 0 : _g.useAdapter) == "undefined"
+            typeof ((_h = options === null || options === void 0 ? void 0 : options.localStorage) === null || _h === void 0 ? void 0 : _h.useAdapter) == "undefined"
                 ? this._useLocalStorageAdapter
-                : (_h = options === null || options === void 0 ? void 0 : options.localStorage) === null || _h === void 0 ? void 0 : _h.useAdapter;
+                : (_j = options === null || options === void 0 ? void 0 : options.localStorage) === null || _j === void 0 ? void 0 : _j.useAdapter;
         if (!this._apiKey)
             throw new Error("NexysCore: API_KEY is not defined");
         if (!this._options.appName)

@@ -45,7 +45,7 @@ export class API {
     this._sendingRequest = true;
     this.core.Events.fire("request.sending", data);
 
-    const server = `${this._server}/api/report/${this._apiKey}/${this._appName}`;
+    const server = `${this._server}/v1/dash/report/${this._apiKey}`;
 
     this.core.InternalLogger.log("API: Sending request to server", server);
 
@@ -55,7 +55,7 @@ export class API {
         "Content-Type": "application/json",
         ...headers,
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify({ ...data, project: this._appName }),
     }).then(async (res: Response) => {
       let json = null;
 

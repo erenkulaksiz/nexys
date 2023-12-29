@@ -70,6 +70,7 @@ export default class Nexys extends Core {
      * @param options.allowDeviceData - `Optional` - `boolean` - Should send device data - Collects device data - Default is `true`
      * @param options.allowGeoLocation - `Optional` - `boolean` - Should send geolocation data - Disable if you dont want your users to get notified for geolocation - Default is `false`
      * @param options.allowElementData - `Optional` - `boolean` - Should send body element data - Collects body element data - Default is `true`
+     * @param options.clickTrack - `Optional` - `boolean` - Should track clicks - Default is `true`
      * @param options.localStorage - `Optional` - `object` - Object containing options about localStorage
      * @param options.localStorage.useLocalStorage - `Optional` - `boolean` - Should use localStorage - Nexys will try to use localStorage if available if value is true - Default is `true`
      * @param options.localStorage.cryption - `Optional` - `boolean` - Should use cryption on localStorage - Default is `true`

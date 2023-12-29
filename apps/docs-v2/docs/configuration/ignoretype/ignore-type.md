@@ -13,7 +13,7 @@ Ignoring any type will not going to remove that log, but will not count as a log
 
 | Option | Type | Default |
 | --- | --- | --- |
-| ignoreType | `string` `string[]` `false` | "METRIC" |
+| ignoreType | `string` `string[]` `false` | ["METRIC", "AUTO:CLICK"] |
 
 ## Example
 

@@ -66,11 +66,12 @@ export class Core {
     "AUTO:ERROR",
     "AUTO:UNHANDLEDREJECTION",
   ];
-  _ignoreType: NexysOptions["ignoreType"] = "METRIC";
+  _ignoreType: NexysOptions["ignoreType"] = ["METRIC", "AUTO:CLICK"];
   _ignoreTypeSize: number = 50;
   _config: configTypes | null = null;
   _APIValues: APIValues | null = null;
   _useLocalStorageAdapter: boolean = false;
+  _clickTrack: boolean = true;
 
   constructor(API_KEY: string, options?: NexysOptions) {
     this._options = {
@@ -91,6 +92,7 @@ export class Core {
     this._allowGeoLocation =
       options?.allowGeoLocation ?? this._allowGeoLocation;
     this._allowElementData = typeof options?.allowElementData == "undefined";
+    this._clickTrack = options?.clickTrack ?? this._clickTrack;
 
     this._sendAllOnType =
       typeof options?.sendAllOnType == "undefined"

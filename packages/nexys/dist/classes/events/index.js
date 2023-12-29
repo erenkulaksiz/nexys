@@ -67,12 +67,23 @@ var Events = /** @class */ (function () {
                         _this.fire("visibility.change", event);
                     }
                 });
+                window.addEventListener("beforeunload", function (event) {
+                    _this.core.InternalLogger.log("Events: Received beforeunload event", event);
+                    _this.fire("beforeunload", event);
+                });
+                if (this.core._clickTrack) {
+                    this.core.InternalLogger.log("Events: Binding click event.");
+                    window.addEventListener("click", function (event) {
+                        _this.core.InternalLogger.log("Events: Received click event", _this.core._clickTrack);
+                        _this.fire("click", event);
+                    });
+                }
                 this._bindedErrorEvent = true;
                 this.core.InternalLogger.log("Events: Binded error events.");
                 this.fire("events.bind.success");
             }
             catch (err) {
-                this.core.InternalLogger.log("Events: Couuldnt bind error event.", err);
+                this.core.InternalLogger.log("Events: Couldnt bind error event.", err);
                 this.fire("events.bind.failed");
             }
             return;
@@ -150,6 +161,33 @@ var Events = /** @class */ (function () {
         this.subscribe("visibility.change", function (event) {
             _this.core.InternalLogger.log("Events: Received visibility.change: ", event);
             _this.core.LogPool.process();
+        });
+        this.subscribe("click", function (event) {
+            var _a, _b, _c, _d, _e, _f;
+            _this.core.InternalLogger.log("Events: Received click: ", event);
+            _this.core.LogPool.push({
+                data: {
+                    target: {
+                        id: (_a = event === null || event === void 0 ? void 0 : event.target) === null || _a === void 0 ? void 0 : _a.id,
+                        class: (_b = event === null || event === void 0 ? void 0 : event.target) === null || _b === void 0 ? void 0 : _b.className,
+                        tag: (_c = event === null || event === void 0 ? void 0 : event.target) === null || _c === void 0 ? void 0 : _c.tagName,
+                        type: (_d = event === null || event === void 0 ? void 0 : event.target) === null || _d === void 0 ? void 0 : _d.type,
+                        innerText: ((_e = event === null || event === void 0 ? void 0 : event.target) === null || _e === void 0 ? void 0 : _e.innerText)
+                            ? (_f = event === null || event === void 0 ? void 0 : event.target) === null || _f === void 0 ? void 0 : _f.innerText.substring(0, 32)
+                            : "",
+                    },
+                    screenX: event === null || event === void 0 ? void 0 : event.screenX,
+                    screenY: event === null || event === void 0 ? void 0 : event.screenY,
+                    pointerId: event === null || event === void 0 ? void 0 : event.pointerId,
+                    pointerType: event === null || event === void 0 ? void 0 : event.pointerType,
+                },
+                ts: new Date().getTime(),
+                options: {
+                    type: "AUTO:CLICK",
+                },
+                guid: guid(),
+                path: getPagePath(_this.core),
+            });
         });
     };
     Events.prototype.fire = function (event, data) {

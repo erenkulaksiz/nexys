@@ -7,7 +7,15 @@ title: Changelog
 
 ---
 
+## 1.1.4
+
+- Changed API URL from `https://dash.nexys.app` to `https://api.nexys.dash`.
+- Added `clickTrack` feature. If enabled, Nexys will track user's clicks on HTML document.
+- Added `clickTrack` option to enable/disable this feature.
+
 ## 1.1.3
+
+- No comments for this one.
 
 ## 1.1.2
 

@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-export const server = "https://dash.nexys.app";
-export const debugServer = "http://localhost:3000";
+export const server = "https://api.nexys.app";
+export const debugServer = "http://localhost:8000";
 export const libraryName = "Nexys";
-export const version = "1.1.3";
+export const version = "1.1.4";
 export { Base64 } from "./base64.js";
 export { isClient } from "./isClient.js";
 export { guid } from "./guid.js";

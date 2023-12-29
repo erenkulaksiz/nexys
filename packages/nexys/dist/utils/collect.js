@@ -142,7 +142,7 @@ export function collectData(core) {
                             libraryName: libraryName,
                             version: version,
                         },
-                        options: __assign(__assign({}, core._options), { logPoolSize: core._logPoolSize, allowDeviceData: core._allowDeviceData, sendAllOnType: core._sendAllOnType, ignoreType: core._ignoreType, ignoreTypeSize: core._ignoreTypeSize }),
+                        options: __assign(__assign({}, core._options), { logPoolSize: core._logPoolSize, allowDeviceData: core._allowDeviceData, sendAllOnType: core._sendAllOnType, ignoreType: core._ignoreType, ignoreTypeSize: core._ignoreTypeSize, clickTrack: core._clickTrack }),
                         env: {
                             type: core._env,
                             isClient: core._isClient,

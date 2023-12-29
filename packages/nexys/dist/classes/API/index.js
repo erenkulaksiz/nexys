@@ -87,12 +87,12 @@ var API = /** @class */ (function () {
                 }
                 this._sendingRequest = true;
                 this.core.Events.fire("request.sending", data);
-                server = "".concat(this._server, "/api/report/").concat(this._apiKey, "/").concat(this._appName);
+                server = "".concat(this._server, "/v1/dash/report/").concat(this._apiKey);
                 this.core.InternalLogger.log("API: Sending request to server", server);
                 return [2 /*return*/, fetch(server, {
                         method: "POST",
                         headers: __assign({ "Content-Type": "application/json" }, headers),
-                        body: JSON.stringify(data),
+                        body: JSON.stringify(__assign(__assign({}, data), { project: this._appName })),
                     }).then(function (res) { return __awaiter(_this, void 0, void 0, function () {
                         var json, err_1;
                         return __generator(this, function (_a) {

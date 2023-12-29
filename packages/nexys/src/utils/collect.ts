@@ -106,6 +106,7 @@ export async function collectData(core: Core) {
       sendAllOnType: core._sendAllOnType,
       ignoreType: core._ignoreType,
       ignoreTypeSize: core._ignoreTypeSize,
+      clickTrack: core._clickTrack,
     },
     env: {
       type: core._env,

@@ -28,6 +28,7 @@ export interface NexysOptions {
   allowElementData?: boolean;
   ignoreType?: false | logOptionTypes | logOptionTypes[];
   ignoreTypeSize?: number;
+  clickTrack?: boolean;
 
   errors?: {
     allowAutomaticHandling?: boolean;
@@ -54,6 +55,7 @@ export type logOptionTypes =
   | "FATAL"
   | "AUTO:ERROR"
   | "AUTO:UNHANDLEDREJECTION"
+  | "AUTO:CLICK"
   | "METRIC";
 export type logOptionLevels = "LOW" | "MEDIUM" | "HIGH";
 
@@ -126,6 +128,7 @@ export interface collectDataTypes {
     sendAllOnType: NexysOptions["sendAllOnType"];
     ignoreType: NexysOptions["ignoreType"];
     ignoreTypeSize: number;
+    clickTrack: boolean;
   };
   env: {
     type: string;

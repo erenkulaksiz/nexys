@@ -48,6 +48,7 @@ export declare class Core {
     _config: configTypes | null;
     _APIValues: APIValues | null;
     _useLocalStorageAdapter: boolean;
+    _clickTrack: boolean;
     constructor(API_KEY: string, options?: NexysOptions);
     _checkInitialized(): boolean;
     /**
