@@ -14,15 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Core } from "../core/index.js";
 import type { EventTypes } from "./types";
+import type { Core } from "../core/index.js";
 export declare class Events {
     private core;
-    private _bindedErrorEvent;
     on: EventTypes;
     constructor(core: Core);
-    private bindEvents;
-    private setupEventHandlers;
     fire(event: keyof EventTypes, data?: any): void;
     subscribe(event: keyof EventTypes, callback: (event: any) => void): void;
     unsubscribe(event: keyof EventTypes): void;

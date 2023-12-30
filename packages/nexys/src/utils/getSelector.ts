@@ -14,12 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export function getPagePath(core) {
-    if (core._isClient) {
-        if (window === null || window === void 0 ? void 0 : window.location) {
-            return window.location.pathname;
-        }
-        return null;
-    }
-    return null;
+
+export function getSelector(element: HTMLElement) {
+  if (!element) return "";
+  const tagName = element.tagName.toLowerCase();
+  const id = element.id ? `#${element.id}` : "";
+  const classes = element.className
+    ? `.${element.className.trim().replace(/\s+/g, ".")}`
+    : "";
+
+  let selector = `${tagName}${id}${classes}`;
+
+  if (element.parentElement) {
+    selector = getSelector(element.parentElement) + ">" + selector;
+  }
+
+  return selector;
 }

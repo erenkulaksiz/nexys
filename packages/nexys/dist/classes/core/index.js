@@ -61,8 +61,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { server, version, isClient, guid, defaultOptions, } from "../../utils/index.js";
-import getPagePath from "../../utils/getPagePath.js";
+import { server, version, isClient, guid, defaultOptions, getPagePath, } from "../../utils/index.js";
 var Core = /** @class */ (function () {
     function Core(API_KEY, options) {
         var _a, _b, _c, _d, _e, _f, _g, _h, _j;

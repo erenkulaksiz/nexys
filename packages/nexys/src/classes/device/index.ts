@@ -16,12 +16,12 @@
  */
 
 import { isClient } from "../../utils/index.js";
-import { Core } from "./../core/index.js";
 import {
   BatteryManager,
   getDeviceDataReturnTypes,
   NetworkInformation,
 } from "./types";
+import type { Core } from "./../core/index.js";
 
 export class Device {
   private core: Core;

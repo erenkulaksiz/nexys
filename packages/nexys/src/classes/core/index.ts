@@ -27,8 +27,8 @@ import {
   isClient,
   guid,
   defaultOptions,
+  getPagePath,
 } from "../../utils/index.js";
-import getPagePath from "../../utils/getPagePath.js";
 import type {
   NexysOptions,
   logTypes,

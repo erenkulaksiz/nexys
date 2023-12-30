@@ -25,8 +25,7 @@ import { Device } from "./classes/device/index.js";
 import loadFromLocalStorage from "./classes/core/loadFromLocalStorage.js";
 import checkVersion from "./classes/core/checkVersion.js";
 import { guid } from "./utils/guid.js";
-import getPagePath from "./utils/getPagePath.js";
-import { defaultOptions } from "./utils/index.js";
+import { getPagePath, defaultOptions } from "./utils/index.js";
 import type { NexysOptions } from "./types";
 
 /**

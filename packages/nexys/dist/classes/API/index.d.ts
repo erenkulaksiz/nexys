@@ -14,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Core } from "../core/index.js";
 import type { APIConstructorParams, sendRequestParams } from "./types";
+import type { Core } from "../core/index.js";
 export declare class API {
     private core;
     private _server;

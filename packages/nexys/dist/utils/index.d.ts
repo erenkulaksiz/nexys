@@ -22,6 +22,8 @@ export { Base64 } from "./base64.js";
 export { isClient } from "./isClient.js";
 export { guid } from "./guid.js";
 export { collectNextJSData, collectVercelEnv, collectDOMData, } from "./collect.js";
+export { getSelector } from "./getSelector.js";
+export { getPagePath } from "./getPagePath.js";
 export declare const defaultOptions: {
     localStorage: {
         useLocalStorage: boolean;

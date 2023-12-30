@@ -15,5 +15,5 @@
  * limitations under the License.
  */
 import { Core } from "../classes/core";
-export default function getPagePath(core: Core): string | null;
+export declare function getPagePath(core: Core): string | null;
 //# sourceMappingURL=getPagePath.d.ts.map

@@ -17,7 +17,7 @@
 
 import { Core } from "../classes/core";
 
-export default function getPagePath(core: Core): string | null {
+export function getPagePath(core: Core): string | null {
   if (core._isClient) {
     if (window?.location) {
       return window.location.pathname;

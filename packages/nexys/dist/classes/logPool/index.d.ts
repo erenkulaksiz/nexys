@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Core } from "../core/index.js";
 import type { requestTypes } from "../../types";
 import type { logTypes } from "./../../types";
+import type { Core } from "../core/index.js";
 export declare class LogPool {
     private core;
     logs: logTypes[];
