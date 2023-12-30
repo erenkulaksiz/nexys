@@ -74,8 +74,7 @@ import { LogPool } from "./classes/logPool/index.js";
 import { Device } from "./classes/device/index.js";
 import loadFromLocalStorage from "./classes/core/loadFromLocalStorage.js";
 import checkVersion from "./classes/core/checkVersion.js";
-import { guid } from "./utils/guid.js";
-import { getPagePath, defaultOptions } from "./utils/index.js";
+import { guid, defaultOptions, getPagePath } from "./utils/index.js";
 /**
  * Nexys Client Library
  *

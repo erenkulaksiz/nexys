@@ -16,7 +16,6 @@
  */
 
 export function getSelector(element: HTMLElement) {
-  if (!element) return "";
   const tagName = element.tagName.toLowerCase();
   const id = element.id ? `#${element.id}` : "";
   const classes = element.className
@@ -25,14 +24,16 @@ export function getSelector(element: HTMLElement) {
 
   let selector = `${tagName}${id}${classes}`;
 
-  const siblings = element.parentElement?.querySelectorAll(tagName);
-  if (siblings && siblings.length > 1) {
-    const index = Array.from(siblings).indexOf(element);
-    selector += `:nth-child(${index + 1})`;
+  if (!id || !classes || document.querySelectorAll(selector).length > 1) {
+    const siblings = element.parentElement?.querySelectorAll(tagName);
+    if (siblings && siblings.length > 1) {
+      const index = Array.from(siblings).indexOf(element);
+      selector += `:nth-child(${index + 1})`;
+    }
   }
 
   if (element.parentElement) {
-    selector = getSelector(element.parentElement) + ">" + selector;
+    selector = getSelector(element.parentElement) + " " + selector;
   }
 
   return selector;
