@@ -16,7 +16,6 @@
  */
 
 import { Base64 } from "../../utils/index.js";
-import { Core } from "../core/index.js";
 import type { configTypes, logTypes, requestTypes } from "../../types";
 import type {
   APIValues,
@@ -24,6 +23,7 @@ import type {
   LocalStorageTypes,
 } from "./types";
 import type { LocalStorageAdapters } from "../../types";
+import type { Core } from "../core/index.js";
 
 /**
  * @class LocalStorage

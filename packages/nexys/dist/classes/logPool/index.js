@@ -61,8 +61,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { guid } from "../../utils/index.js";
-import getPagePath from "../../utils/getPagePath.js";
+import { guid, getPagePath } from "../../utils/index.js";
 import { collectData } from "../../utils/collect.js";
 var LogPool = /** @class */ (function () {
     function LogPool(core) {

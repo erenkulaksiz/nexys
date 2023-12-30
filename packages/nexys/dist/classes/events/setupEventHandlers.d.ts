@@ -14,12 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export function getPagePath(core) {
-    if (core._isClient) {
-        if (window === null || window === void 0 ? void 0 : window.location) {
-            return window.location.pathname;
-        }
-        return null;
-    }
-    return null;
-}
+import type { Events } from "./index.js";
+import type { Core } from "../core/index.js";
+export declare function setupEventHandlers(core: Core, events: Events): void;
+//# sourceMappingURL=setupEventHandlers.d.ts.map

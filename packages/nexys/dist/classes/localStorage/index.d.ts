@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Core } from "../core/index.js";
 import type { configTypes, logTypes, requestTypes } from "../../types";
 import type { APIValues, LocalStorageConstructorParams, LocalStorageTypes } from "./types";
+import type { Core } from "../core/index.js";
 /**
  * @class LocalStorage
  * @description This class is used to handle internal localStorage operations.

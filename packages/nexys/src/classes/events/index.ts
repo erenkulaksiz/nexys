@@ -15,14 +15,13 @@
  * limitations under the License.
  */
 
-import { Core } from "../core/index.js";
-import { guid } from "../../utils/guid.js";
-import getPagePath from "../../utils/getPagePath.js";
+import { bindEvents } from "./bindEvents.js";
+import { setupEventHandlers } from "./setupEventHandlers.js";
 import type { EventTypes } from "./types";
+import type { Core } from "../core/index.js";
 
 export class Events {
   private core: Core;
-  private _bindedErrorEvent: boolean = false;
 
   public on: EventTypes = {};
 
@@ -30,201 +29,13 @@ export class Events {
     this.core = core;
 
     if (this.core?._options?.errors?.allowAutomaticHandling) {
-      this.setupEventHandlers();
-      this.bindEvents();
+      setupEventHandlers(this.core, this);
+      bindEvents(this.core, this);
     }
-  }
-
-  private bindEvents(): void {
-    if (this._bindedErrorEvent) {
-      this.core.InternalLogger.log(
-        "Events: Couldnt bind error event. Already binded."
-      );
-      return;
-    }
-    if (this.core._isClient) {
-      this.core.InternalLogger.log("Events: Binding error events.");
-      try {
-        window.addEventListener("error", (event: ErrorEvent) => {
-          event.stopImmediatePropagation();
-          if (event.error.hasBeenCaught !== undefined) {
-            return false;
-          }
-          event.error.hasBeenCaught = true;
-          this.fire("errors.error", event);
-          return true;
-        });
-        window.addEventListener(
-          "unhandledrejection",
-          (event: PromiseRejectionEvent) => {
-            event.stopImmediatePropagation();
-            this.fire("errors.unhandled.rejection", event);
-            return true;
-          }
-        );
-        window.addEventListener("visibilitychange", (event) => {
-          this.core.InternalLogger.log(
-            "Events: Received visibilitychange event",
-            event
-          );
-          if (document.visibilityState === "hidden") {
-            this.fire("visibility.change", event);
-          }
-        });
-        window.addEventListener("beforeunload", (event) => {
-          this.core.InternalLogger.log(
-            "Events: Received beforeunload event",
-            event
-          );
-          this.fire("beforeunload", event);
-        });
-        if (this.core._clickTrack) {
-          this.core.InternalLogger.log("Events: Binding click event.");
-          window.addEventListener("click", (event) => {
-            this.core.InternalLogger.log(
-              "Events: Received click event",
-              this.core._clickTrack
-            );
-            this.fire("click", event);
-          });
-        }
-        this._bindedErrorEvent = true;
-        this.core.InternalLogger.log("Events: Binded error events.");
-        this.fire("events.bind.success");
-      } catch (err) {
-        this.core.InternalLogger.log("Events: Couldnt bind error event.", err);
-        this.fire("events.bind.failed");
-      }
-      return;
-    }
-    this.core.InternalLogger.log(
-      "Events: Couldnt bind error event. Not client."
-    );
-  }
-
-  private setupEventHandlers() {
-    this.subscribe("errors.error", (event: ErrorEvent) => {
-      this.core.InternalLogger.log("Events: Received error", event);
-
-      const extractedError = {
-        message: event?.message,
-        errmessage: event?.error?.message,
-        stack: event?.error?.stack,
-        type: event?.type,
-        colno: event?.colno,
-        lineno: event?.lineno,
-        filename: event?.filename,
-        defaultPrevented: event?.defaultPrevented,
-        isTrusted: event?.isTrusted,
-        timeStamp: event?.timeStamp,
-      };
-
-      this.core.LogPool.push({
-        data: {
-          ...extractedError,
-        },
-        stack: extractedError.stack,
-        ts: new Date().getTime(),
-        options: {
-          type: "AUTO:ERROR",
-        },
-        guid: guid(),
-        path: getPagePath(this.core),
-      });
-    });
-
-    this.subscribe(
-      "errors.unhandled.rejection",
-      (event: PromiseRejectionEvent) => {
-        this.core.InternalLogger.log(
-          "Events: Received unhandledRejection: ",
-          event
-        );
-
-        const extractedRejection = {
-          message: event?.reason?.message,
-          stack: event?.reason?.stack,
-          type: event?.type,
-          isTrusted: event?.isTrusted,
-          defaultPrevented: event?.defaultPrevented,
-          timeStamp: event?.timeStamp,
-        };
-
-        this.core.LogPool.push({
-          data: {
-            ...extractedRejection,
-          },
-          stack: extractedRejection.stack,
-          ts: new Date().getTime(),
-          options: {
-            type: "AUTO:UNHANDLEDREJECTION",
-          },
-          guid: guid(),
-          path: getPagePath(this.core),
-        });
-      }
-    );
-
-    this.subscribe("request.success", (event) => {
-      this.core.InternalLogger.log("Events: Received request success: ", event);
-    });
-
-    this.subscribe("request.error", (event) => {
-      const messages: {
-        [key: string]: string;
-      } = {
-        "API:FAILED:400:app-name": `NexysCore: Your configured app name and the app name you entered on your project is mismatching. Please check your configuration. Erasing localStorage.`,
-        "API:FAILED:400:not-verified": `NexysCore: Your project is not verified. Erasing localStorage.`,
-        "API:FAILED:400:domain": `NexysCore: This domain is not allowed. Enable localhost access on your project if you are testing. Erasing localStorage.`,
-      };
-      const message = messages[event.message];
-      if (message) {
-        this.core.InternalLogger.log(message);
-        this.core.LogPool.clearLogs();
-        this.core.LogPool.clearRequests();
-        return;
-      }
-      this.core.InternalLogger.log("Events: Received request error: ", event);
-    });
-
-    this.subscribe("visibility.change", (event) => {
-      this.core.InternalLogger.log(
-        "Events: Received visibility.change: ",
-        event
-      );
-      this.core.LogPool.process();
-    });
-
-    this.subscribe("click", (event) => {
-      this.core.InternalLogger.log("Events: Received click: ", event);
-
-      this.core.LogPool.push({
-        data: {
-          target: {
-            id: event?.target?.id,
-            class: event?.target?.className,
-            tag: event?.target?.tagName,
-            type: event?.target?.type,
-            innerText: event?.target?.innerText
-              ? event?.target?.innerText.substring(0, 32)
-              : "",
-          },
-          screenX: event?.screenX,
-          screenY: event?.screenY,
-          pointerId: event?.pointerId,
-          pointerType: event?.pointerType,
-        },
-        ts: new Date().getTime(),
-        options: {
-          type: "AUTO:CLICK",
-        },
-        guid: guid(),
-        path: getPagePath(this.core),
-      });
-    });
   }
 
   public fire(event: keyof EventTypes, data?: any): void {
+    // #TODO: Fix ts-ignore
     // @ts-ignore
     if (this.on[event] == null || this.on[event] == undefined) {
       this.core.InternalLogger.log(`Events: Event ${event} is not subscribed.`);

@@ -14,12 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export function getPagePath(core) {
-    if (core._isClient) {
-        if (window === null || window === void 0 ? void 0 : window.location) {
-            return window.location.pathname;
-        }
-        return null;
-    }
-    return null;
+export function getBoundingClientRect(element) {
+    return element.getBoundingClientRect();
 }

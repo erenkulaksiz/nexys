@@ -3,7 +3,7 @@ import { nexys } from "./utils";
 function App() {
   return (
     <div>
-      <button className="test" id="test" style={{ background: "red" }}>
+      <button className="test1" id="test1" style={{ background: "red" }}>
         Hello world!
       </button>
       <button onClick={() => nexys.init()}>init</button>
@@ -119,6 +119,12 @@ function App() {
         }}
       >
         set user
+      </button>
+      <button id="test" className="test">
+        id=test
+      </button>
+      <button id="test" className="test">
+        id=test
       </button>
     </div>
   );

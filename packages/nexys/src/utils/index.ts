@@ -18,7 +18,7 @@
 export const server = "https://api.nexys.app";
 export const debugServer = "http://localhost:8000";
 export const libraryName = "Nexys";
-export const version = "1.1.4";
+export const version = "1.1.5";
 export { Base64 } from "./base64.js";
 export { isClient } from "./isClient.js";
 export { guid } from "./guid.js";
@@ -27,6 +27,8 @@ export {
   collectVercelEnv,
   collectDOMData,
 } from "./collect.js";
+export { getSelector } from "./getSelector.js";
+export { getPagePath } from "./getPagePath.js";
 export const defaultOptions = {
   localStorage: {
     useLocalStorage: true,
@@ -36,6 +38,6 @@ export const defaultOptions = {
     testKey: "__nex-t__",
   },
   errors: {
-    allowAutomaticHandling: true, // Used for automatic exception handling.
+    allowAutomaticHandling: true,
   },
 };

@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-import { Core } from "../core/index.js";
 import { guid } from "../../utils/index.js";
 import type { APIConstructorParams, sendRequestParams } from "./types";
+import type { Core } from "../core/index.js";
 
 export class API {
   private core: Core;
@@ -93,7 +93,7 @@ export class API {
         await this.core.LogPool.clearLogs();
         return true;
       })
-      .catch(async (err) => {
+      .catch(async (err: Error) => {
         this.core.InternalLogger.error("API: Request failed.", err);
         this.core.Events.fire("request.error", err);
         if (err?.message == "API:FAILED:400:api-key") {

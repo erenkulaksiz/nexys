@@ -15,12 +15,11 @@
  * limitations under the License.
  */
 
-import { Core } from "../core/index.js";
-import { guid } from "../../utils/index.js";
-import getPagePath from "../../utils/getPagePath.js";
+import { guid, getPagePath } from "../../utils/index.js";
 import { collectData } from "../../utils/collect.js";
 import type { requestTypes } from "../../types";
 import type { logTypes } from "./../../types";
+import type { Core } from "../core/index.js";
 
 export class LogPool {
   private core: Core;
