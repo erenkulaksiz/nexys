@@ -7,11 +7,22 @@ title: Changelog
 
 ---
 
+## 1.1.5
+
+- Fixed small text in LICENSE file.
+- Changed import on various file to import types of Core, not the core itself, reducing bundle size.
+- Seperated events on different files: `bindEvents.ts` and `setupEventHandlers.ts` inside events directory.
+- Added `getSelector.ts` to utils, featuring dynamic selector string building.
+- Removed unneccesary boolean in events file.
+- Added more click details such as click position and selector to click events.
+- Added `getPagePath.ts` inside `utils/index.ts` to reduce the bundle size, changed imports on various files.
+- Removed unneccesary comment line on `utils/index.ts`
+
 ## 1.1.4
 
 - Changed API URL from `https://dash.nexys.app` to `https://api.nexys.dash`.
 - Added `clickTrack` feature. If enabled, Nexys will track user's clicks on HTML document.
-- Added `clickTrack` option to enable/disable this feature.
+- Added `clickTrack` option to enable/disable this feature inside configuration.
 
 ## 1.1.3
 
