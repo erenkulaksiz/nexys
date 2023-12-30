@@ -25,6 +25,12 @@ export function getSelector(element: HTMLElement) {
 
   let selector = `${tagName}${id}${classes}`;
 
+  const siblings = element.parentElement?.querySelectorAll(tagName);
+  if (siblings && siblings.length > 1) {
+    const index = Array.from(siblings).indexOf(element);
+    selector += `:nth-child(${index + 1})`;
+  }
+
   if (element.parentElement) {
     selector = getSelector(element.parentElement) + ">" + selector;
   }

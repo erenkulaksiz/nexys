@@ -100,7 +100,12 @@ export function setupEventHandlers(core, events) {
     });
     events.subscribe("click", function (event) {
         var _a, _b, _c, _d, _e, _f;
+        if (!event.target) {
+            core.InternalLogger.error("Events: Got click event without target", event);
+            return;
+        }
         var selector = getSelector(event.target);
+        var pos = event.target.getBoundingClientRect();
         core.InternalLogger.log("Events: Received click: ", event, " Clicked:", selector);
         core.LogPool.push({
             data: {
@@ -118,6 +123,7 @@ export function setupEventHandlers(core, events) {
                 screenY: event === null || event === void 0 ? void 0 : event.screenY,
                 pointerId: event === null || event === void 0 ? void 0 : event.pointerId,
                 pointerType: event === null || event === void 0 ? void 0 : event.pointerType,
+                pos: pos,
             },
             ts: new Date().getTime(),
             options: {

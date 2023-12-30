@@ -108,7 +108,16 @@ export function setupEventHandlers(core: Core, events: Events) {
   });
 
   events.subscribe("click", (event) => {
+    if (!event.target) {
+      core.InternalLogger.error(
+        "Events: Got click event without target",
+        event
+      );
+      return;
+    }
+
     const selector = getSelector(event.target);
+    const pos = event.target.getBoundingClientRect();
     core.InternalLogger.log(
       "Events: Received click: ",
       event,
@@ -132,6 +141,7 @@ export function setupEventHandlers(core: Core, events: Events) {
         screenY: event?.screenY,
         pointerId: event?.pointerId,
         pointerType: event?.pointerType,
+        pos,
       },
       ts: new Date().getTime(),
       options: {
