@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { guid, getPagePath, getSelector } from "../../utils";
+import { guid, getPagePath, getSelector } from "../../utils/index.js";
 import type { Events } from "./index.js";
 import type { Core } from "../core/index.js";
 

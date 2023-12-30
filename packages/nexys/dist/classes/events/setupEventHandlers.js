@@ -25,7 +25,7 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-import { guid, getPagePath, getSelector } from "../../utils";
+import { guid, getPagePath, getSelector } from "../../utils/index.js";
 export function setupEventHandlers(core, events) {
     events.subscribe("errors.error", function (event) {
         var _a, _b;
