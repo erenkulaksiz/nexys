@@ -19,7 +19,9 @@ jobs:
         run: |
           npm ci
           npm run build:all
-      - uses: JS-DevTools/npm-publish@v3
-        working-directory: packages/nexys
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
+      - name: Change directory and publish
+        run: |
+          cd packages/nexys
+          npx @jsdevtools/npm-publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
