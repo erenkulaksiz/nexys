@@ -22,6 +22,4 @@ jobs:
       - name: Change directory and publish
         run: |
           cd packages/nexys
-          npx @jsdevtools/npm-publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          npx @jsdevtools/npm-publish --token ${{ secrets.NPM_TOKEN }}
