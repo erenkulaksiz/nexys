@@ -32,14 +32,11 @@ jobs:
           node-version: 16
           registry-url: "https://registry.npmjs.org"
 
-      # Change working directory to /packages/nexys
-      - run: cd packages/nexys
-
       # Run npm ci and npm publish commands within the /packages/nexys directory
       - run: |
+          cd packages/nexys
+          pwd
           npm ci
           npm publish
         env:
           NPM_TOKEN: ${{secrets.NPM_TOKEN}}
-
-      - run: pwd
