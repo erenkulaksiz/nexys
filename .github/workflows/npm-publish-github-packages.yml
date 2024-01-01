@@ -20,5 +20,6 @@ jobs:
           npm ci
           npm run build:all
       - uses: JS-DevTools/npm-publish@v3
+        working-directory: packages/nexys
         with:
           token: ${{ secrets.NPM_TOKEN }}
