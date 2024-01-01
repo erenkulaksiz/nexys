@@ -7,6 +7,10 @@ title: Changelog
 
 ---
 
+## 1.1.6
+
+- Fixed `getSelector.ts` accuraccy issue.
+
 ## 1.1.5
 
 - Fixed small text in LICENSE file.

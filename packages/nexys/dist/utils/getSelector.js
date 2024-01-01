@@ -22,8 +22,10 @@ export function getSelector(element) {
         ? ".".concat(element.className.trim().replace(/\s+/g, "."))
         : "";
     var selector = "".concat(tagName).concat(id).concat(classes);
-    if (!id || !classes || document.querySelectorAll(selector).length > 1) {
-        var siblings = (_a = element.parentElement) === null || _a === void 0 ? void 0 : _a.querySelectorAll(tagName);
+    if (document.querySelectorAll(selector).length === 1)
+        return selector;
+    if (!id || !classes) {
+        var siblings = (_a = element.parentElement) === null || _a === void 0 ? void 0 : _a.querySelectorAll(selector);
         if (siblings && siblings.length > 1) {
             var index = Array.from(siblings).indexOf(element);
             selector += ":nth-child(".concat(index + 1, ")");

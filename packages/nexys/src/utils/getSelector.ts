@@ -24,8 +24,10 @@ export function getSelector(element: HTMLElement) {
 
   let selector = `${tagName}${id}${classes}`;
 
-  if (!id || !classes || document.querySelectorAll(selector).length > 1) {
-    const siblings = element.parentElement?.querySelectorAll(tagName);
+  if (document.querySelectorAll(selector).length === 1) return selector;
+
+  if (!id || !classes) {
+    const siblings = element.parentElement?.querySelectorAll(selector);
     if (siblings && siblings.length > 1) {
       const index = Array.from(siblings).indexOf(element);
       selector += `:nth-child(${index + 1})`;
