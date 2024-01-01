@@ -16,5 +16,9 @@ jobs:
           npm ci
           npm run build:all
       - uses: JS-DevTools/npm-publish@v3
+        id: publish
         with:
           token: ${{ secrets.NPM_TOKEN }}
+      
+      - if: ${{ steps.publish.outputs.type }}
++       run: echo "Version changed!"
