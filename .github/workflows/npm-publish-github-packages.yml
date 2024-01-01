@@ -37,6 +37,7 @@ jobs:
           cd packages/nexys
           pwd
           npm ci
+          npm run build:all
           npm publish
         env:
           NPM_TOKEN: ${{secrets.NPM_TOKEN}}

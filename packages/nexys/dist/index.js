@@ -200,7 +200,7 @@ var Nexys = /** @class */ (function (_super) {
         this._initialized = true;
         if (!this._isClient) {
             this.InternalLogger.log("NexysCore: Detected that we are running NexysCore on non client side environment.");
-            this.InternalLogger.log("NexysCore: Altough NexysCore is designed to run on client side, it can be used on server side as well but some features will might not work.");
+            this.InternalLogger.log("NexysCore: Although NexysCore is designed to run on client side, it can be used on server side as well but some features will might not work.");
         }
         // Core Init Event
         this.Events.fire("core.init");
