@@ -160,7 +160,7 @@ export default class Nexys extends Core {
         "NexysCore: Detected that we are running NexysCore on non client side environment."
       );
       this.InternalLogger.log(
-        "NexysCore: Altough NexysCore is designed to run on client side, it can be used on server side as well but some features will might not work."
+        "NexysCore: Although NexysCore is designed to run on client side, it can be used on server side as well but some features will might not work."
       );
     }
 
