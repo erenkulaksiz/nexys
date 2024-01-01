@@ -10,6 +10,10 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "20"
+      - name: Print package version
+        working-directory: packages/nexys
+        run: node -p "require('./package.json').version"
+        
       - name: Install dependencies and build
         working-directory: packages/nexys
         run: |
