@@ -10,9 +10,11 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "20"
-      - run: cd packages/nexys
-      - run: npm ci
-      - run: npm run build:all
+      - name: Install dependencies and build
+        working-directory: packages/nexys
+        run: |
+          npm ci
+          npm run build:all
       - uses: JS-DevTools/npm-publish@v3
         with:
           token: ${{ secrets.NPM_TOKEN }}
