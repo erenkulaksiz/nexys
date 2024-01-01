@@ -17,7 +17,7 @@
 export var server = "https://api.nexys.app";
 export var debugServer = "http://localhost:8000";
 export var libraryName = "Nexys";
-export var version = "1.1.6";
+export var version = "1.1.8";
 export { Base64 } from "./base64.js";
 export { isClient } from "./isClient.js";
 export { guid } from "./guid.js";

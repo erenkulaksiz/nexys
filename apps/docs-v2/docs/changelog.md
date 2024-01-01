@@ -7,9 +7,10 @@ title: Changelog
 
 ---
 
-## 1.1.6
+## 1.1.8
 
-- Fixed `getSelector.ts` accuraccy issue.
+- Fixed `getSelector.ts` accuraccy issue with Tailwind CSS.
+- Fixed a bug inside events, where if `allowAutomaticHandling` set to false, no events were set.
 
 ## 1.1.5
 

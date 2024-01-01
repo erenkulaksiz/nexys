@@ -27,11 +27,8 @@ export class Events {
 
   constructor(core: Core) {
     this.core = core;
-
-    if (this.core?._options?.errors?.allowAutomaticHandling) {
-      setupEventHandlers(this.core, this);
-      bindEvents(this.core, this);
-    }
+    setupEventHandlers(this.core, this);
+    bindEvents(this.core, this);
   }
 
   public fire(event: keyof EventTypes, data?: any): void {
