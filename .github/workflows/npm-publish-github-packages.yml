@@ -1,41 +1,18 @@
-name: Node.js Package
-
 on:
   push:
-    branches: [ "CI/CD-Npm" ]
+    branches: CI/CD-Npm
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
-
-      # Change working directory to /packages/nexys
+          node-version: "20"
       - run: cd packages/nexys
-
-      # Run npm ci command within the /packages/nexys directory
       - run: npm ci
-
-  publish-gpr:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - run: npm run build:all
+      - uses: JS-DevTools/npm-publish@v3
         with:
-          node-version: 16
-          registry-url: "https://registry.npmjs.org"
-
-      # Run npm ci and npm publish commands within the /packages/nexys directory
-      - run: |
-          cd packages/nexys
-          pwd
-          npm ci
-          npm run build:all
-          NPM_TOKEN=${{secrets.NPM_TOKEN}} npm publish
+          token: ${{ secrets.NPM_TOKEN }}
