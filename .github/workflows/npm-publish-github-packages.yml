@@ -5,7 +5,7 @@ name: Node.js Package
 
 on:
   push:
-    branches: [ "test" ]
+    branches: [ "CI/CD-Npm" ]
 
 jobs:
   build:
