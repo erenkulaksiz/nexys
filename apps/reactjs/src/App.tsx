@@ -16,6 +16,11 @@ function App() {
       <div className="focus:outline-blue-500/50">
         <input type="text" className="focus:outline-blue-500/50" />
       </div>
+      <div className="focus:outline-blue-500/50">
+        <div className="&_-[500px]">
+          <input type="text" className="focus:outline-blue-500/50" />
+        </div>
+      </div>
       <button className="test1" id="test1" style={{ background: "red" }}>
         Hello world!
       </button>

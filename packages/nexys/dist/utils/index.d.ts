@@ -17,7 +17,7 @@
 export declare const server = "https://api.nexys.app";
 export declare const debugServer = "http://localhost:8000";
 export declare const libraryName = "Nexys";
-export declare const version = "1.1.8";
+export declare const version = "1.1.9";
 export { Base64 } from "./base64.js";
 export { isClient } from "./isClient.js";
 export { guid } from "./guid.js";
