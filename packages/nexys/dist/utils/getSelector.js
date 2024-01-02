@@ -16,23 +16,32 @@
  */
 export function getSelector(element) {
     var _a;
-    var tagName = element.tagName.toLowerCase();
-    var id = element.id ? "#".concat(element.id) : "";
-    var classes = element.className
-        ? ".".concat(element.className.trim().replace(/\s+/g, "."))
-        : "";
-    var selector = "".concat(tagName).concat(id).concat(classes);
-    if (document.querySelectorAll(selector).length === 1)
-        return selector;
-    if (!id || !classes) {
+    try {
+        var tagName = element.tagName.toLowerCase();
+        var id = element.id ? "#".concat(element.id) : "";
+        var classes = element.className
+            ? ".".concat(parseSelector(element.className))
+            : "";
+        var selector = "".concat(tagName).concat(id).concat(classes);
+        if (document.querySelectorAll(selector).length === 1)
+            return selector;
         var siblings = (_a = element.parentElement) === null || _a === void 0 ? void 0 : _a.querySelectorAll(selector);
         if (siblings && siblings.length > 1) {
             var index = Array.from(siblings).indexOf(element);
             selector += ":nth-child(".concat(index + 1, ")");
         }
+        if (element.parentElement) {
+            selector = getSelector(element.parentElement) + " " + selector;
+        }
+        return selector;
     }
-    if (element.parentElement) {
-        selector = getSelector(element.parentElement) + " " + selector;
+    catch (error) {
+        return "";
     }
-    return selector;
+}
+function parseSelector(selector) {
+    return selector
+        .trim()
+        .replace(/\s+/g, ".")
+        .replace(/(\.(?=\d)|:|\/|\[|\]|&|-)/g, "\\$1");
 }

@@ -18,13 +18,10 @@ import { bindEvents } from "./bindEvents.js";
 import { setupEventHandlers } from "./setupEventHandlers.js";
 var Events = /** @class */ (function () {
     function Events(core) {
-        var _a, _b, _c;
         this.on = {};
         this.core = core;
-        if ((_c = (_b = (_a = this.core) === null || _a === void 0 ? void 0 : _a._options) === null || _b === void 0 ? void 0 : _b.errors) === null || _c === void 0 ? void 0 : _c.allowAutomaticHandling) {
-            setupEventHandlers(this.core, this);
-            bindEvents(this.core, this);
-        }
+        setupEventHandlers(this.core, this);
+        bindEvents(this.core, this);
     }
     Events.prototype.fire = function (event, data) {
         var _this = this;

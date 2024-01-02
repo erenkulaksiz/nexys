@@ -16,27 +16,36 @@
  */
 
 export function getSelector(element: HTMLElement) {
-  const tagName = element.tagName.toLowerCase();
-  const id = element.id ? `#${element.id}` : "";
-  const classes = element.className
-    ? `.${element.className.trim().replace(/\s+/g, ".")}`
-    : "";
+  try {
+    const tagName = element.tagName.toLowerCase();
+    const id = element.id ? `#${element.id}` : "";
+    const classes = element.className
+      ? `.${parseSelector(element.className)}`
+      : "";
 
-  let selector = `${tagName}${id}${classes}`;
+    let selector = `${tagName}${id}${classes}`;
 
-  if (document.querySelectorAll(selector).length === 1) return selector;
+    if (document.querySelectorAll(selector).length === 1) return selector;
 
-  if (!id || !classes) {
     const siblings = element.parentElement?.querySelectorAll(selector);
     if (siblings && siblings.length > 1) {
       const index = Array.from(siblings).indexOf(element);
       selector += `:nth-child(${index + 1})`;
     }
-  }
 
-  if (element.parentElement) {
-    selector = getSelector(element.parentElement) + " " + selector;
-  }
+    if (element.parentElement) {
+      selector = getSelector(element.parentElement) + " " + selector;
+    }
 
-  return selector;
+    return selector;
+  } catch (error) {
+    return "";
+  }
+}
+
+function parseSelector(selector: string) {
+  return selector
+    .trim()
+    .replace(/\s+/g, ".")
+    .replace(/(\.(?=\d)|:|\/|\[|\]|&|-)/g, "\\$1");
 }

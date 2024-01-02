@@ -15,23 +15,26 @@
  * limitations under the License.
  */
 export function bindEvents(core, events) {
+    var _a, _b;
     if (core._isClient) {
         core.InternalLogger.log("Events: Binding error events.");
         try {
-            window.addEventListener("error", function (event) {
-                event.stopImmediatePropagation();
-                if (event.error.hasBeenCaught !== undefined) {
-                    return false;
-                }
-                event.error.hasBeenCaught = true;
-                events.fire("errors.error", event);
-                return true;
-            });
-            window.addEventListener("unhandledrejection", function (event) {
-                event.stopImmediatePropagation();
-                events.fire("errors.unhandled.rejection", event);
-                return true;
-            });
+            if ((_b = (_a = core === null || core === void 0 ? void 0 : core._options) === null || _a === void 0 ? void 0 : _a.errors) === null || _b === void 0 ? void 0 : _b.allowAutomaticHandling) {
+                window.addEventListener("error", function (event) {
+                    event.stopImmediatePropagation();
+                    if (event.error.hasBeenCaught !== undefined) {
+                        return false;
+                    }
+                    event.error.hasBeenCaught = true;
+                    events.fire("errors.error", event);
+                    return true;
+                });
+                window.addEventListener("unhandledrejection", function (event) {
+                    event.stopImmediatePropagation();
+                    events.fire("errors.unhandled.rejection", event);
+                    return true;
+                });
+            }
             window.addEventListener("visibilitychange", function (event) {
                 core.InternalLogger.log("Events: Received visibilitychange event", event);
                 if (document.visibilityState === "hidden") {
@@ -49,14 +52,14 @@ export function bindEvents(core, events) {
                     events.fire("click", event);
                 });
             }
-            core.InternalLogger.log("Events: Binded error events.");
+            core.InternalLogger.log("Events: Binded events.");
             events.fire("events.bind.success");
         }
         catch (err) {
-            core.InternalLogger.log("Events: Couldnt bind error event.", err);
+            core.InternalLogger.log("Events: Couldnt bind events.", err);
             events.fire("events.bind.failed");
         }
         return;
     }
-    core.InternalLogger.log("Events: Couldnt bind error event. Not client.");
+    core.InternalLogger.log("Events: Couldnt bind events. Not client.");
 }
