@@ -1,0 +1,25 @@
+on:
+  push:
+    branches: CI/CD-Npm
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+      - name: Print package version
+        working-directory: packages/nexys
+        run: node -p "require('./package.json').version"
+        
+      - name: Install dependencies and build
+        working-directory: packages/nexys
+        run: |
+          npm ci
+          npm run build:all
+      - name: Change directory and publish
+        run: |
+          cd packages/nexys
+          npx @jsdevtools/npm-publish --token ${{ secrets.NPM_TOKEN }}
