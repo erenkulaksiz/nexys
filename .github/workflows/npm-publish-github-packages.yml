@@ -18,7 +18,8 @@ jobs:
         working-directory: packages/nexys
         run: |
           npm install
-          npm run build:all
+          npm run build
+          npm run build:umd-minify
       - name: Change directory and publish
         run: |
           cd packages/nexys
