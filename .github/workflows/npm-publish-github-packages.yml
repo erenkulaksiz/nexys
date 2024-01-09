@@ -17,7 +17,7 @@ jobs:
       - name: Install dependencies and build
         working-directory: packages/nexys
         run: |
-          npm ci
+          npm install
           npm run build:all
       - name: Change directory and publish
         run: |
