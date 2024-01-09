@@ -76,7 +76,6 @@ export class LocalStorage {
     if (this.isActive) {
       this.isAvailable = await this.checkAvailability();
       this.core.InternalLogger.log("LocalStorage: Set to Active");
-      // We will not going to use localStorage if library is loaded in server environment.
       this.shouldUseLocalStorage =
         this.isAvailable && this._localStorage && this.core._isClient
           ? true
@@ -115,13 +114,11 @@ export class LocalStorage {
 
   public async setItem(key: string, value: any): Promise<void> {
     if (!this.shouldUseLocalStorage) return;
-    //this.core.InternalLogger.log("LocalStorage: Setting...", value);
     await this._localStorage?.setItem(key, value);
   }
 
   public async getItem(key: string): Promise<any> {
     if (!this.shouldUseLocalStorage) return null;
-    //this.core.InternalLogger.log("LocalStorage: Getting...", key);
     return await this._localStorage?.getItem(key);
   }
 
@@ -152,7 +149,6 @@ export class LocalStorage {
     }
   }
 
-  // Returns any since item can be anything
   public async get(): Promise<LocalStorageTypes | null> {
     if (!this.shouldUseLocalStorage) return null;
     let localItem = null;
@@ -169,11 +165,10 @@ export class LocalStorage {
     }
 
     if (this.isEncrypted) {
-      // Decode with Base64.
       try {
         localItem = Base64.decode(localItem);
       } catch (e) {
-        this.resetLocalValue(); // Reset localStorage so we can start fresh.
+        this.resetLocalValue();
         return null;
       }
     }
@@ -181,7 +176,7 @@ export class LocalStorage {
     try {
       parsed = JSON.parse(localItem);
     } catch (e) {
-      this.resetLocalValue(); // Reset localStorage so we can start fresh.
+      this.resetLocalValue();
       return null;
     }
 
@@ -199,7 +194,6 @@ export class LocalStorage {
     }
 
     if (this.isEncrypted) {
-      // Encode with Base64.
       try {
         localItem = Base64.encode(localItem);
       } catch (e) {
@@ -214,12 +208,26 @@ export class LocalStorage {
     }
   }
 
-  // This function overrides specified values.
   public async setOverride(value: any): Promise<void> {
     if (!this.shouldUseLocalStorage) return;
     let localValue = await this.get();
     const merged = Object.assign({}, value, localValue);
     await this.set(merged);
+  }
+
+  public async setLogs(logs: logTypes[]): Promise<void> {
+    if (!this.shouldUseLocalStorage) return;
+    let localValue = await this.get();
+    if (!localValue) {
+      this.core.InternalLogger.log(
+        "LocalStorage: Local value is null in setLogs."
+      );
+      await this.resetLocalValue();
+      localValue = await this.get();
+      return;
+    }
+    localValue.logPool = logs;
+    await this.set(localValue);
   }
 
   public async clearLogPool(): Promise<void> {
@@ -264,7 +272,6 @@ export class LocalStorage {
         "LocalStorage: Local value is null in addToLogPool."
       );
       await this.resetLocalValue();
-      // Resets and pushes first log.
       localValue = {
         logPool: [
           { ts: new Date().getTime(), data, options, guid, path, stack },
@@ -300,7 +307,6 @@ export class LocalStorage {
         "LocalStorage: Local value is null in addToRequest."
       );
       await this.resetLocalValue();
-      // Resets and pushes first log.
       localValue = {
         logPool: [],
         requests: [{ res, status, ts, guid }],

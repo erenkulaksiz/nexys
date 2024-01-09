@@ -38,3 +38,6 @@ yarn-error.log*
 /build
 bundle.js
 package-lock.json
+
+# build
+dist/

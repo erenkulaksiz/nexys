@@ -42,10 +42,7 @@ export interface EventTypes {
   "config.user"?: ((user?: string) => void) | null;
   "config.app.version"?: ((version?: string) => void) | null;
   "config.platform"?: ((platform?: string) => void) | null;
-  "dom.init"?: (() => void) | null;
-  "dom.ready"?: (() => void) | null;
-  "dom.content.loaded"?: (() => void) | null;
   "visibility.change"?: ((event: Event) => void) | null;
-  "beforeunload"?: ((event: Event) => void) | null;
-  "click"?: ((event: Event) => void) | null;
+  beforeunload?: ((event: Event) => void) | null;
+  click?: ((event: Event) => void) | null;
 }

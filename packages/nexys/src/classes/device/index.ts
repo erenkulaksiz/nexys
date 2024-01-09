@@ -23,6 +23,10 @@ import {
 } from "./types";
 import type { Core } from "./../core/index.js";
 
+/**
+ * @class Events
+ * @description This class is used to handle device information gathering.
+ */
 export class Device {
   private core: Core;
   private _isAvailable: boolean = false;

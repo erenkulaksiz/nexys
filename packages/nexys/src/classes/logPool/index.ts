@@ -15,15 +15,17 @@
  * limitations under the License.
  */
 
-import { guid, getPagePath } from "../../utils/index.js";
 import { collectData } from "../../utils/collect.js";
 import type { requestTypes } from "../../types";
 import type { logTypes } from "./../../types";
 import type { Core } from "../core/index.js";
 
+/**
+ * @class LogPool
+ * @description This class is used to handle logs and requests.
+ */
 export class LogPool {
   private core: Core;
-  // All logs stored here.
   public logs: logTypes[] = [];
   public requests: requestTypes[] = [];
 
@@ -35,7 +37,6 @@ export class LogPool {
   public setLogs(logs: logTypes[]): void {
     if (!Array.isArray(logs))
       throw new Error("LogPool: setLogs() expects an array.");
-    // Checking if logs has timestamps and data.
     logs.forEach((log: logTypes) => {
       if (!log.ts || !log.data || !log.guid)
         throw new Error("LogPool: setLogs() expects an array of logs.");
@@ -47,57 +48,29 @@ export class LogPool {
   public setRequests(requests: requestTypes[]): void {
     if (!Array.isArray(requests))
       throw new Error("LogPool: setRequests() expects an array.");
-    // Checking if requests has timestamps and data.
     requests.forEach((request: requestTypes) => {
       if (!request?.res || !request?.status || !request?.ts || !request?.guid)
         throw new Error("LogPool: setRequests() expects an array of requests.");
     });
     this.requests = requests;
-    // Also process logs.
     this.process();
   }
 
-  public async push({
-    data,
-    options,
-    ts,
-    guid,
-    path,
-    stack,
-  }: logTypes): Promise<void> {
-    const log = {
-      data,
-      options,
-      ts,
-      guid,
-      path,
-      stack,
-    };
+  public async push(log: logTypes): Promise<void> {
     this.logs.push(log);
-    this.process();
     this.core.Events.fire("log.add", log);
     await this.core.LocalStorage.addToLogPool(log);
+    this.process();
   }
 
-  public async pushRequest({
-    res,
-    status,
-    ts,
-    guid,
-  }: requestTypes): Promise<void> {
-    const req = {
-      res,
-      status,
-      ts,
-      guid,
-    };
+  public async pushRequest(request: requestTypes): Promise<void> {
     this.core.InternalLogger.log(
       "LogPool: Pushing request to requests array.",
-      req
+      request
     );
-    this.requests.push(req);
-    this.core.Events.fire("request.add", req);
-    await this.core.LocalStorage.addToRequest(req);
+    this.requests.push(request);
+    this.core.Events.fire("request.add", request);
+    await this.core.LocalStorage.addToRequest(request);
   }
 
   public async clearLogs(): Promise<void> {
@@ -114,24 +87,17 @@ export class LogPool {
     this.core.InternalLogger.log("LogPool: Cleared requests.");
   }
 
-  /**
-   * Process internal data to determine whether or not we should need to send data to the server.
-   */
   public async process(): Promise<void> {
     this.core.InternalLogger.log("LogPool: Processing logs...");
 
     if (this.logs.length > 0 && this.core._logPoolSize != 0) {
-      const sendAllOnType = this.core._sendAllOnType;
-      if (!sendAllOnType) return;
-
-      // Check if sendAllOnType is array or string.
-      if (Array.isArray(sendAllOnType)) {
-        // Array
+      if (!this.core._sendAllOnType) return;
+      if (Array.isArray(this.core._sendAllOnType)) {
         for (let i = 0; i < this.logs.length; i++) {
           const log = this.logs[i];
           if (!log?.options?.type) continue;
           if (this.core.API._sendingRequest) continue;
-          if (sendAllOnType.includes(log.options.type)) {
+          if (this.core._sendAllOnType.includes(log.options.type)) {
             this.core.InternalLogger.log(
               `LogPool: sendAllOnType is array and log includes ${log.options.type} type.`
             );
@@ -140,12 +106,11 @@ export class LogPool {
           }
         }
       } else {
-        // String
         for (let i = 0; i < this.logs.length; i++) {
           const log = this.logs[i];
           if (!log?.options?.type) continue;
           if (this.core.API._sendingRequest) continue;
-          if (log.options.type == sendAllOnType) {
+          if (log.options.type == this.core._sendAllOnType) {
             this.core.InternalLogger.log(
               `LogPool: sendAllOnType is string and log is ${log.options.type} type.`
             );
@@ -156,23 +121,43 @@ export class LogPool {
       }
     }
 
+    if (
+      this.logs.filter((log) => log?.options?.type == "AUTO:CLICK").length >
+      this.core._ignoreTypeSize
+    ) {
+      this.logs = this.logs.filter((log) => log?.options?.type != "AUTO:CLICK");
+      await this.core.LocalStorage.setLogs(this.logs);
+      this.core.InternalLogger.log(
+        `LogPool: Cleared AUTO:CLICK logs. ignoreTypeSize: ${this.core._ignoreTypeSize}`
+      );
+    } else {
+      this.core.InternalLogger.log(
+        `LogPool: AUTO:CLICK size ${
+          this.logs.filter((log) => log?.options?.type == "AUTO:CLICK").length
+        }. ignoreTypeSize: ${this.core._ignoreTypeSize}`
+      );
+    }
+
     let logsLength = 0;
 
     logsLength = this.logs.filter((log) => {
       if (!log?.options?.type) return true;
       if (
         Array.isArray(this.core._ignoreType) &&
-        this.core._ignoreType.includes(log.options.type)
+        this.core._ignoreType.includes(log?.options?.type)
       )
         return false;
       if (
         typeof this.core._ignoreType == "string" &&
-        this.core._ignoreType == log.options.type
+        this.core._ignoreType == log?.options?.type
       )
         return false;
+      if (log?.options?.type == "AUTO:CLICK") return false;
       return true;
     }).length;
-    const diffLength = this.logs.length - logsLength;
+    const diffLength =
+      this.logs.filter((log) => log?.options?.type != "AUTO:CLICK").length -
+      logsLength;
     if (diffLength > this.core._ignoreTypeSize) {
       this.core.InternalLogger.log(
         `LogPool: diffLength (this.logs.length - logsLength): ${diffLength} ignoreTypeSize: ${this.core._ignoreTypeSize} - Ignored logs max reached.`
@@ -198,13 +183,16 @@ export class LogPool {
       return;
     }
 
+    this.logs = this.logs.filter((log) => {
+      if (!log?.options?.type) return true;
+      if (log?.options?.type == "AUTO:CLICK") return false;
+      return true;
+    });
+
     this.core.Events.fire("logpool.process");
     this.sendAll();
   }
 
-  /**
-   * Sends all data on Nexys to the server.
-   */
   public async sendAll(): Promise<void> {
     let _start: number | null = null,
       _end: number | null = null;
@@ -239,18 +227,15 @@ export class LogPool {
     if (this.core._isClient) _end = performance.now();
 
     if (_start && _end && sent) {
-      await this.core.LogPool.push({
-        data: {
+      this.core.log(
+        {
           type: "LOGPOOL:SENDALL",
           diff: _end - _start,
         },
-        ts: new Date().getTime(),
-        options: {
+        {
           type: "METRIC",
-        },
-        guid: guid(),
-        path: getPagePath(this.core),
-      });
+        }
+      );
       this.core.InternalLogger.log(`API: Request took ${_end - _start}ms.`);
     }
   }
