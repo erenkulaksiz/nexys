@@ -29,7 +29,5 @@ description: You can subscribe and fire these events.
 | `events.bind.failed` | Binding automatic error handler is failed. | - |
 | `config.user` | User has been configured. | data?: string |
 | `config.app.version` | App version has been configured. | data?: string |
-| `dom.init` | `DOM` has been initialized. | - |
-| `dom.ready` | `DOM` is ready. | - |
-| `dom.content.loaded` | `DOM` has been loaded. | - |
 | `visibility.change` | User has changed visibility. See this [documentation.](https://developer.mozilla.org/en-US/docs/Web/API/Document/visibilitychange_event) | Event |
+| `click` | User has clicked on the document. | [ClickEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) |

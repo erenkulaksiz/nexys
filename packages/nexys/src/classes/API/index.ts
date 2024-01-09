@@ -19,6 +19,10 @@ import { guid } from "../../utils/index.js";
 import type { APIConstructorParams, sendRequestParams } from "./types";
 import type { Core } from "../core/index.js";
 
+/**
+ * @class API
+ * @description This class is used to handle API requests.
+ */
 export class API {
   private core: Core;
   private _server: string = "";
@@ -96,7 +100,7 @@ export class API {
       .catch(async (err: Error) => {
         this.core.InternalLogger.error("API: Request failed.", err);
         this.core.Events.fire("request.error", err);
-        if (err?.message == "API:FAILED:400:api-key") {
+        if (err?.message == "API:FAILED:401:api/invalid-key") {
           this.core.InternalLogger.error(
             "API: Your API key is not valid. Please make sure you entered correct credentials."
           );

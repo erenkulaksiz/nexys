@@ -23,31 +23,23 @@ export function setupEventHandlers(core: Core, events: Events) {
   events.subscribe("errors.error", (event: ErrorEvent) => {
     core.InternalLogger.log("Events: Received error", event);
 
-    const extractedError = {
-      message: event?.message,
-      errmessage: event?.error?.message,
-      stack: event?.error?.stack,
-      type: event?.type,
-      colno: event?.colno,
-      lineno: event?.lineno,
-      filename: event?.filename,
-      defaultPrevented: event?.defaultPrevented,
-      isTrusted: event?.isTrusted,
-      timeStamp: event?.timeStamp,
-    };
-
-    core.LogPool.push({
-      data: {
-        ...extractedError,
+    core.log(
+      {
+        message: event?.message,
+        errmessage: event?.error?.message,
+        stack: event?.error?.stack,
+        type: event?.type,
+        colno: event?.colno,
+        lineno: event?.lineno,
+        filename: event?.filename,
+        defaultPrevented: event?.defaultPrevented,
+        isTrusted: event?.isTrusted,
+        timeStamp: event?.timeStamp,
       },
-      stack: extractedError.stack,
-      ts: new Date().getTime(),
-      options: {
+      {
         type: "AUTO:ERROR",
-      },
-      guid: guid(),
-      path: getPagePath(core),
-    });
+      }
+    );
   });
 
   events.subscribe(
@@ -55,27 +47,19 @@ export function setupEventHandlers(core: Core, events: Events) {
     (event: PromiseRejectionEvent) => {
       core.InternalLogger.log("Events: Received unhandledRejection: ", event);
 
-      const extractedRejection = {
-        message: event?.reason?.message,
-        stack: event?.reason?.stack,
-        type: event?.type,
-        isTrusted: event?.isTrusted,
-        defaultPrevented: event?.defaultPrevented,
-        timeStamp: event?.timeStamp,
-      };
-
-      core.LogPool.push({
-        data: {
-          ...extractedRejection,
+      core.log(
+        {
+          message: event?.reason?.message,
+          stack: event?.reason?.stack,
+          type: event?.type,
+          isTrusted: event?.isTrusted,
+          defaultPrevented: event?.defaultPrevented,
+          timeStamp: event?.timeStamp,
         },
-        stack: extractedRejection.stack,
-        ts: new Date().getTime(),
-        options: {
+        {
           type: "AUTO:UNHANDLEDREJECTION",
-        },
-        guid: guid(),
-        path: getPagePath(core),
-      });
+        }
+      );
     }
   );
 
@@ -88,13 +72,12 @@ export function setupEventHandlers(core: Core, events: Events) {
     const messages: {
       [key: string]: string;
     } = {
-      "API:FAILED:400:app-name": `NexysCore: Your configured app name and the app name you entered on your project is mismatching. Please check your configuration. Erasing localStorage.`,
-      "API:FAILED:400:not-verified": `NexysCore: Your project is not verified. Erasing localStorage.`,
-      "API:FAILED:400:domain": `NexysCore: This domain is not allowed. Enable localhost access on your project if you are testing. Erasing localStorage.`,
+      "API:FAILED:401:project/not-found": `NexysCore: Couldn't find project. Erasing localStorage.`,
+      "API:FAILED:401:api/invalid-project": `NexysCore: Invalid project. Make sure you entered correct app name and API key as shown as on dashboard. Erasing localStorage.`,
+      "API:FAILED:401:api/invalid-origin": `NexysCore: This domain is not allowed. Enable localhost access on your project if you are testing. Erasing localStorage.`,
     };
-    const message = messages[event.message];
-    if (message) {
-      core.InternalLogger.log(message);
+    if (messages[event.message]) {
+      core.InternalLogger.log(messages[event.message]);
       core.LogPool.clearLogs();
       core.LogPool.clearRequests();
       return;
@@ -125,8 +108,8 @@ export function setupEventHandlers(core: Core, events: Events) {
       selector
     );
 
-    core.LogPool.push({
-      data: {
+    core.log(
+      {
         target: {
           selector: selector,
           id: event?.target?.id,
@@ -143,12 +126,9 @@ export function setupEventHandlers(core: Core, events: Events) {
         pointerType: event?.pointerType,
         pos,
       },
-      ts: new Date().getTime(),
-      options: {
+      {
         type: "AUTO:CLICK",
-      },
-      guid: guid(),
-      path: getPagePath(core),
-    });
+      }
+    );
   });
 }

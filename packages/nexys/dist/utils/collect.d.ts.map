@@ -1,1 +1,0 @@
-{"version":3,"file":"collect.d.ts","sourceRoot":"","sources":["../../src/utils/collect.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;;GAeG;AAGH,OAAO,EAAE,IAAI,EAAE,MAAM,2BAA2B,CAAC;AAEjD,OAAO,KAAK,EAAE,gBAAgB,EAAE,MAAM,cAAc,CAAC;AAGrD,wBAAgB,iBAAiB;;;;;;SAiBhC;AAED,wBAAgB,gBAAgB;;;;;;;;;;;;;SAyB/B;AAED,wBAAgB,cAAc;;SAU7B;AAED,wBAAsB,WAAW,CAAC,IAAI,EAAE,IAAI,6BAgF3C"}

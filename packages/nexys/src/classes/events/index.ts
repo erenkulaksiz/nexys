@@ -20,6 +20,10 @@ import { setupEventHandlers } from "./setupEventHandlers.js";
 import type { EventTypes } from "./types";
 import type { Core } from "../core/index.js";
 
+/**
+ * @class Events
+ * @description This class is used to handle events.
+ */
 export class Events {
   private core: Core;
 
