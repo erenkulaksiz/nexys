@@ -1,6 +1,6 @@
 on:
   push:
-    branches: CI/CD-Npm
+    branches: master
 
 jobs:
   publish:
