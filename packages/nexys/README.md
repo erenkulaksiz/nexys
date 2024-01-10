@@ -21,12 +21,7 @@
 - Customizable & Flexible
 - Clientside & Serverside
 
-Nexys is a logging service that will enable to review your errors, metrics and much more in production applications.\
-Nexys will gather all device data automatically (screen size, user agent, device memory, language, connection type and geolocation if permitted)\
-Also, Nexys will gather all errors on your production application, reports them to dashboard automatically.\
-You can examine each error and log's stack trace, which file/page the error occurred and many more details.
-
-Nexys supports TypeScript and JavaScript.
+More information on [nexys.app](https://nexys.app)
 
 # Let's get you started!
 
@@ -45,7 +40,7 @@ import Nexys from "nexys";
 or put this on your HTML file's `<head>` tag:
 
 ```html
-<script src="https://unpkg.com/nexys@latest/dist/bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/erenkulaksiz/nexys/packages/nexys/bundle.min.js"></script>
 ```
 
 ### Then initialize Nexys
@@ -61,12 +56,6 @@ nexys.log("and start logging!");
 throw new Error("I should be able to see this error on dashboard");
 ```
 
-### Want to debug? Use debug parameter on initialization
-
-```javascript
-const nexys = new Nexys("API_KEY", { appName: "APP_NAME", debug: true });
-```
-
 # Documentation
 
-[View Nexys documentation here](https://docs.nexys.app)
+[View documentation here](https://docs.nexys.app)
