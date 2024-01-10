@@ -148,10 +148,9 @@ export default class Nexys extends Core {
         defaultOptions.localStorage?.useLocalStorage,
     });
 
-    Promise.resolve(this.LocalStorage.setup()).then(async () => {
-      await loadFromLocalStorage(this);
-      checkVersion(this);
-    });
+    Promise.resolve(this.LocalStorage.setup())
+      .then(() => loadFromLocalStorage(this))
+      .then(() => checkVersion(this));
 
     this._initialized = true;
 
