@@ -76,9 +76,9 @@ export default class Nexys extends Core {
    * @param options.debug - `Optional` - `boolean` - Enables debug mode for internal logs - Default is `false`
    * @param options.logPoolSize - `Optional` - `number` - Sets the logPool max log size to send when logPool size exceedes this limit - Default is `10`
    * @param options.sendAllOnType - `Optional` - `logOptionTypes | logOptionTypes[] | false` - Ignores logPoolSize when any log with specified type is recieved sends data to API - Default is `["AUTO:ERROR", "AUTO:UNHANDLEDREJECTION", "ERROR"]`
-   * @param options.ignoreType - `Optional` - `logOptionTypes | logOptionTypes[] | false` - Ignores logs with specified type (these logs will not count as log and not affect logPool length but will be sent if any request be made) - Default is `"METRIC"`
+   * @param options.ignoreType - `Optional` - `logOptionTypes | logOptionTypes[] | false | ["AUTO:CLICK"]` - Ignores logs with specified type (these logs will not count as log and not affect logPool length but will be sent if any request be made) - Default is `"METRIC"`
    * @param options.ignoreTypeSize - `Optional` - `number` - Determine max length of ignored log types could be stored in logPool before sending request - Keeping this number high is preferred - Default is `50`
-   * @param options.server - `Optional` - `string` - Change logging server - Default is `https://dash.nexys.app`
+   * @param options.server - `Optional` - `string` - Change logging server - Default is `https://api.nexys.app`
    * @param options.allowDeviceData - `Optional` - `boolean` - Should send device data - Collects device data - Default is `true`
    * @param options.allowGeoLocation - `Optional` - `boolean` - Should send geolocation data - Disable if you dont want your users to get notified for geolocation - Default is `false`
    * @param options.allowElementData - `Optional` - `boolean` - Should send body element data - Collects body element data - Default is `true`
